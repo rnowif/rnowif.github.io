@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Macosx | Renaud Humbert-Labeaumaz]]></title>
+  <link href="https://rnowif.github.io/blog/categories/macosx/atom.xml" rel="self"/>
+  <link href="https://rnowif.github.io/"/>
+  <updated>2016-02-08T21:57:40+01:00</updated>
+  <id>https://rnowif.github.io/</id>
+  <author>
+    <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
+    <email><![CDATA[renaud.humbert-labeaumaz@zenika.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Distribuer Son Application Java Sur Mac OSX Grâce à Maven]]></title>
+    <link href="https://rnowif.github.io/blog/2015/03/20/distribuer-son-application-java-sur-mac-osx-grace-a-maven/"/>
+    <updated>2015-03-20T21:21:43+01:00</updated>
+    <id>https://rnowif.github.io/blog/2015/03/20/distribuer-son-application-java-sur-mac-osx-grace-a-maven</id>
+    <content type="html"><![CDATA[<p>Dans un article précédent, nous avons vu comment distribuer son application Java sur Windows grâce à Maven. Cet article vise à faire la même chose sur MacOSX.
+Nous n'allons donc pas revenir sur l'alternative qui vise à distribuer directement le jar et passer directement à la partie qui nous intéresse, à savoir distribuer un exécutable Mac OSX.</p>
+
+<!-- more -->
+
+
+<h2>Distribuer son application sur Mac OSX</h2>
+
+<p>Sous Mac OSX, l'installation d'une application se fait via un fichier dmg. Le plugin <a href="http://mojo.codehaus.org/osxappbundle-maven-plugin/">osxappbundle</a> permet de générer automatiquement ce fichier.</p>
+
+<h3>Générer le fichier dmg sous Mac</h3>
+
+<p>L'utilisation de ce plugin est cependant différente selon qu'il est exécuté sous Mac ou sous un autre OS. En effet, le fichier dmg ne peut être généré <em>que sous Mac</em>.</p>
+
+<pre><code class="xml">&lt;plugin&gt;
+  &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+  &lt;artifactId&gt;osxappbundle-maven-plugin&lt;/artifactId&gt;
+  &lt;version&gt;1.0-alpha-1&lt;/version&gt;
+  &lt;configuration&gt;
+    &lt;bundleName&gt;MyApp&lt;/bundleName&gt;
+    &lt;mainClass&gt;com.foo.MyApplication&lt;/mainClass&gt;
+    &lt;internetEnable&gt;true&lt;/internetEnable&gt;
+    &lt;diskImageFile&gt;${project.build.directory}/MyApp.dmg&lt;/diskImageFile&gt;
+  &lt;/configuration&gt;
+  &lt;executions&gt;
+    &lt;execution&gt;
+      &lt;phase&gt;package&lt;/phase&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;bundle&lt;/goal&gt;
+      &lt;/goals&gt;
+    &lt;/execution&gt;
+  &lt;/executions&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<h3>Générer le fichier app sous Windows ou Linux</h3>
+
+<p>Sous un autre OS, il n'est pas possible de générer le fichier dmg. Le plugin va seulement générer un fichier zip qui, une fois dézippé, va se transformer en application Mac (format app).
+Ce fichier app pourra être exécuté en double cliquant dessus simplement.</p>
+
+<p>Pour fonctionner, le plugin a besoin du fichier <code>JavaApplicationStub</code> qui se trouve dans le dossier <code>/System/Library/Frameworks/JavaVM.framework/Resources/MacOS</code> de MacOS. Dans l'exemple ci-dessous, ce fichier a été déposé dans le dossier <code>src/main/resources</code> du projet.</p>
+
+<pre><code class="xml">&lt;plugin&gt;
+  &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+  &lt;artifactId&gt;osxappbundle-maven-plugin&lt;/artifactId&gt;
+  &lt;version&gt;1.0-alpha-1&lt;/version&gt;
+  &lt;configuration&gt;
+    &lt;bundleName&gt;MyApp&lt;/bundleName&gt;
+    &lt;mainClass&gt;com.foo.MyApplication&lt;/mainClass&gt;
+    &lt;internetEnable&gt;true&lt;/internetEnable&gt;
+    &lt;javaApplicationStub&gt;${basedir}/src/main/resources/JavaApplicationStub&lt;/javaApplicationStub&gt;
+    &lt;buildDirectory&gt;${project.build.directory}/MyApp.app&lt;/buildDirectory&gt;
+    &lt;diskImageFile&gt;${project.build.directory}/MyApp.dmg&lt;/diskImageFile&gt;
+    &lt;zipFile&gt;${project.build.directory}/MyApp.zip&lt;/zipFile&gt;
+  &lt;/configuration&gt;
+  &lt;executions&gt;
+    &lt;execution&gt;
+      &lt;phase&gt;package&lt;/phase&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;bundle&lt;/goal&gt;
+      &lt;/goals&gt;
+    &lt;/execution&gt;
+  &lt;/executions&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<h2>Conclusion</h2>
+
+<p>Générer un fichier exécutable pour MacOS n'est pas très compliqué. Cependant, afin de générer un fichier dmg, il faut absolument que la machine qui utilise le plugin maven tourne sous MacOS. Dans le cas contraire (un serveur d'intégration continue sous Linux par exemple), il faudra se contenter d'un fichier zip qui, une fois dézippé, pourra être ouvert comme une application normale.</p>
+]]></content>
+  </entry>
+  
+</feed>

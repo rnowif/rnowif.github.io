@@ -1,16 +1,1116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
-  <link href="http://rnowif.github.io/atom.xml" rel="self"/>
-  <link href="http://rnowif.github.io/"/>
-  <updated>2016-02-08T21:55:06+01:00</updated>
-  <id>http://rnowif.github.io/</id>
+  <title><![CDATA[Renaud Humbert-Labeaumaz]]></title>
+  <link href="https://rnowif.github.io/atom.xml" rel="self"/>
+  <link href="https://rnowif.github.io/"/>
+  <updated>2016-02-08T21:57:40+01:00</updated>
+  <id>https://rnowif.github.io/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
-    
+    <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
+    <email><![CDATA[renaud.humbert-labeaumaz@zenika.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Tell Don't Ask]]></title>
+    <link href="https://rnowif.github.io/blog/2015/07/28/tell-dont-ask/"/>
+    <updated>2015-07-28T21:57:56+02:00</updated>
+    <id>https://rnowif.github.io/blog/2015/07/28/tell-dont-ask</id>
+    <content type="html"><![CDATA[<p>Quand j'étais à l'école et que j'apprenais la programmation orientée objet (POO), on nous disait que les classes permettaient d'encapsuler des comportements et de cacher leur implémentation au reste du monde. Ainsi, le code qui appelle une méthode attend d'elle qu'elle se comporte comme elle a été spécifiée, quelle que soit son implémentation.</p>
+
+<!-- more -->
+
+
+<p>Prenons l'exemple d'un panier, dont le coût total doit être calculé selon certaines règles (somme de tous les articles, ajout éventuel de taxes, charges, etc.). En POO, on pourrait s'attendre à ce que la classe <code>Basket</code> ait une méthode <code>calculateTotalCost</code> qui va calculer ce coût. Après tout, le code appelant ne veut pas savoir comment calculer un coût, il veut juste le récupérer.</p>
+
+<p>Pourtant, lors de mes premiers mois dans le monde du travail, je suis tombé sur ce genre ce code, au détour d'une méthode de la <em>couche service</em> (je vous fais grâce de la classe <code>Basket</code>)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">int</span> <span class="nf">calculateTotalCost</span><span class="o">(</span><span class="n">Basket</span> <span class="n">basket</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="kt">int</span> <span class="n">totalCost</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="k">for</span> <span class="o">(</span><span class="n">Article</span> <span class="n">article</span> <span class="o">:</span> <span class="n">basket</span><span class="o">.</span><span class="na">getArticles</span><span class="o">())</span> <span class="o">{</span>
+</span><span class='line'>      <span class="n">totalCost</span> <span class="o">+=</span> <span class="n">article</span><span class="o">.</span><span class="na">getUnitPrice</span><span class="o">()</span> <span class="o">*</span> <span class="n">article</span><span class="o">.</span><span class="na">getQuantity</span><span class="o">();</span>
+</span><span class='line'>   <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">totalCost</span> <span class="o">=</span> <span class="n">totalCost</span> <span class="o">+</span> <span class="n">TAX_RATE</span> <span class="o">*</span> <span class="n">totalCost</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">basket</span><span class="o">.</span><span class="na">setTotalCost</span><span class="o">(</span><span class="n">totalCost</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="k">return</span> <span class="n">totalCost</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Pourquoi en est-on arrivé là ?</p>
+
+<ul>
+<li>A cause de Java qui encourage les <em>getters</em> et <em>setters</em> sur les beans ?</li>
+<li>A cause des librairies comme <a href="https://projectlombok.org/">lombok</a>, qui automatisent la création de ces accesseurs ?</li>
+<li>A cause de l'architecture en couches qui a été usée et abusée ?</li>
+<li>A cause de l'héritage des langages procéduraux comme le C, et la fainéantise des développeurs pour changer de paradigme ?</li>
+<li>Ou peut-être n'y a-t-il pas de problème et qu'il s'agit d'une bonne manière de coder ?</li>
+</ul>
+
+
+<p>Selon moi, il ne s'agit pas d'une manière correcte de coder ce genre de fonctionnalités et c'est pourquoi j'ai décidé d'écrire cet article.</p>
+
+<h2>Le principe <em>Tell don&rsquo;t ask</em></h2>
+
+<p>Ce principe stipule qu'au lieu de demander (<em>ask</em>) à un objet des informations pour les exploiter, il vaut mieux dire (<em>tell</em>) à cet objet ce que l'on veut faire et il s'en chargera lui même.</p>
+
+<p>Selon ce principe, la classe <code>Basket</code> utilisée ci-dessus devient</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Basket</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Article</span><span class="o">&gt;</span> <span class="n">articles</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="c1">// ...</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="kd">public</span> <span class="kt">int</span> <span class="nf">calculateTotalCost</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>      
+</span><span class='line'>      <span class="kt">int</span> <span class="n">totalCost</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">for</span> <span class="o">(</span><span class="n">Article</span> <span class="n">article</span> <span class="o">:</span> <span class="n">articles</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>          <span class="n">totalCost</span> <span class="o">+=</span> <span class="n">article</span><span class="o">.</span><span class="na">priceWithoutTaxes</span><span class="o">();</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">return</span> <span class="n">totalCost</span> <span class="o">+</span> <span class="n">TAX_RATE</span> <span class="o">*</span> <span class="n">totalCost</span><span class="o">;</span>
+</span><span class='line'>   <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>et le service devient</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">int</span> <span class="nf">calculateTotalCost</span><span class="o">(</span><span class="n">Basket</span> <span class="n">basket</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>   <span class="k">return</span> <span class="n">basket</span><span class="o">.</span><span class="na">calculateTotalCost</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Plusieurs remarques peuvent être faites à la lecture de ce nouveau code :</p>
+
+<ul>
+<li>Il n'y a plus d'accesseurs dans la classe <code>Basket</code>. Ses champs sont encapsulés et non exposés aux quatres vents : l'objet redevient responsable de son état.</li>
+<li>Le comportement est rapproché des données qu'il va utiliser. Ainsi, il est bien plus simple de comprendre le code (et donc de le maintenir) car les données traitées sont proches de leur traitement et elle ne sont plus utilisées ailleurs.</li>
+<li>La <a href="https://fr.wikipedia.org/wiki/Loi_de_D%C3%A9m%C3%A9ter">Loi de Demeter</a> est respectée. Ainsi, un changement dans une méthode de calcul de prix n'affectera personne d'autre que la classe dont le prix doit être calculé.</li>
+<li>La question quant à l'utilité du service est bel et bien posée. Il ne s'agit plus que d'un passe-plat totalement inutile à part à pourrir la base de code.</li>
+</ul>
+
+
+<h2>De l'utilité des services et des couches</h2>
+
+<p>En suivant ce genre de principes, il devient évident que le <em>service</em>, ce fameux <a href="https://fr.wikipedia.org/wiki/God_object">God Object</a> qui faisait la pluie et le beau temps dans le code, est réduit à peau de chagrin. Il est même possible de s'en passer très souvent.</p>
+
+<p>Cependant, il reste indispensable dans le cas où les objets doivent collaborer entre eux. Globalement, si je devais indiquer la <em>règle</em> que j'essaie de suivre au quotidien, je dirais ceci :</p>
+
+<ul>
+<li>Si l'objet dispose de toutes les informations pour effectuer un traitement, il doit le faire.</li>
+<li>Si le traitement porte sur plusieurs objets différents, une classe externe (typiquement un service) peut s'en occuper.</li>
+</ul>
+
+
+<h2>Restons pragmatiques</h2>
+
+<p>Comme toujours, les principes se confrontent à la réalité et ils ne gagnent pas toujours. Il faut parfois savoir faire des petites entorses à la règle et ne pas être dogmatique sur ce genre de sujets. Qui sait, les bonnes pratiques d'aujourd'hui seront peut-être les anti-patterns de demain.</p>
+
+<p>Cependant, après quelques temps de pratique, je pense qu'il est possible d'appliquer le principe de <em>Tell Don&rsquo;t Ask</em> au quotidien. Il est même possible de commencer dès aujourd'hui et sans devoir refactoriser l'intégralité du code source existant.</p>
+
+<p>Pensez à ça lors de vos prochains développement et n'hésitez pas à en parler sur <a href="https://twitter.com/RnowIf">Twitter (@RnowIf)</a>, dans un commentaire sur cette page ou bien lors d'un <a href="http://www.meetup.com/fr/Software-Craftsmanship-Lyon/">Meetup Craftsman</a> à Lyon ou ailleurs.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Multiples Vues JSON Avec @JsonView]]></title>
+    <link href="https://rnowif.github.io/blog/2015/04/14/multiples-vues-json-avec-at-jsonview/"/>
+    <updated>2015-04-14T22:05:31+02:00</updated>
+    <id>https://rnowif.github.io/blog/2015/04/14/multiples-vues-json-avec-at-jsonview</id>
+    <content type="html"><![CDATA[<p>Le format <a href="http://fr.wikipedia.org/wiki/JavaScript_Object_Notation">Json</a> est de plus en plus utilisé aujourd'hui notamment dans les API de type REST qui offrent des services et retournent leurs résultats sous ce format. Afin d'éviter d'avoir à écrire la transformation en Json manuellement, il existe de nombreuses librairies permettant de faire cette transformation de manière automatique.</p>
+
+<p>Dans cet article, nous allons voir comment utiliser la librairie <a href="http://jackson.codehaus.org/">Jackson</a> et notamment l'annotation <code>@JsonView</code> pour configurer plusieurs transformations pour un même objet. Nous allons également voir succintement comment intégrer cette annotation avec le framework <a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html">Spring MVC</a>.</p>
+
+<!-- more -->
+
+
+<h2>Convertir un objet en Json avec Jackson</h2>
+
+<p>Le code suivant permet d'utiliser Jackson pour convertir un objet Java en Json de manière automatique.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">toJson</span><span class="o">(</span><span class="n">Foo</span> <span class="n">foo</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">ObjectMapper</span> <span class="n">mapper</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ObjectMapper</span><span class="o">();</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">mapper</span><span class="o">.</span><span class="na">writeValueAsString</span><span class="o">(</span><span class="n">foo</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Introduction à @JsonView</h2>
+
+<p>Lorsque Jackson convertit l'objet en Json, il prend en compte tous les champs de cet objet. Or, dans la vie courante, il est rarement pertinent de récupérer tous les champs dans le Json final (par exemple, le mot de passe d'un utilisateur) et il est souvent intéressant d'avoir deux sorties différentes en fonction du contexte (par exemple, un Json résumé et un détaillé avec plus de champs).</p>
+
+<p>L'annotation <code>@JsonView</code> permet de définir des vues et associer chaque champ à une ou plusieurs vues. Ainsi, au moment de la conversion, on indique à Jackson quelle vue utiliser et seuls les champs associés à cette vue seront pris en compte.</p>
+
+<h3>Mise en place des vues</h3>
+
+<p>La vue Json doit être une classe, ainsi elle peut bénéficier de l'héritage. Si la vue A hérite de la vue B, tous les champs associés à la vue B seront pris en compte lorsqu'on va exporter la vue A.</p>
+
+<p>Les vues peuvent être définies de la façon suivante.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JsonViews</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">PublicView</span> <span class="o">{</span> <span class="o">};</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">InternalOnlyView</span> <span class="kd">extends</span> <span class="n">PublicView</span> <span class="o">{</span> <span class="o">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Il n'y a pas besoin de mettre quoi que ce soit dans les classes, une simple déclaration suffit. C'est pourquoi il est plus simple de les regrouper dans une classe. On remarque ici l'héritage qui permet d'indiquer que tout ce qui est public sera visible également dans la vue interne.</p>
+
+<h3>Association d'une vue à un champ</h3>
+
+<p>Pour associer une vue à un champ, il faut l'annoter avec <code>@JsonView</code> avec la vue en paramètre.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nd">@JsonView</span><span class="o">(</span><span class="n">JsonViews</span><span class="o">.</span><span class="na">PublicView</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'>  <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nd">@JsonView</span><span class="o">(</span><span class="n">JsonViews</span><span class="o">.</span><span class="na">InternalOnlyView</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'>  <span class="kd">private</span> <span class="n">String</span> <span class="n">password</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ensuite, pour indiquer à Jackson d'exporter seulement cette vue, il faut lui passer en paramètre au moment de la conversion.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">toJsonPublic</span><span class="o">(</span><span class="n">Foo</span> <span class="n">foo</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">ObjectMapper</span> <span class="n">mapper</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ObjectMapper</span><span class="o">();</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">mapper</span>
+</span><span class='line'>      <span class="o">.</span><span class="na">writerWithView</span><span class="o">(</span><span class="n">JsonViews</span><span class="o">.</span><span class="na">PublicView</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'>      <span class="o">.</span><span class="na">writeValueAsString</span><span class="o">(</span><span class="n">foo</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>NB : Il est possible de définir plusieurs vues pour un champ en les mettant entre crochets <code>@JsonView({View1.class, View2.class})</code>. Ainsi, ce champ sera pris en compte dans chacune des vues</em></p>
+
+<h2>Intégration avec Spring MVC</h2>
+
+<p>Dans un controller Spring MVC, il n'est pas utile d'utiliser le code de conversion écrit précédemment. En effet, Jackson est intégré avec Spring MVC. Il suffit d'annoter la méthode du controller avec <code>@JsonView</code> pour lui indiquer la vue à utiliser.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@RestController</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooController</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nd">@JsonView</span><span class="o">(</span><span class="n">JsonViews</span><span class="o">.</span><span class="na">PublicView</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'>  <span class="nd">@RequestMapping</span> <span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/public/foo&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="n">Foo</span> <span class="nf">getFoo</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="k">new</span> <span class="nf">Foo</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">,</span> <span class="s">&quot;password&quot;</span><span class="o">);</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Un appel à <code>/public/foo</code> va automatiquement retourner un objet Json qui représente la vue publique de l'objet instancié dans la méthode.</p>
+
+<h2>Conclusion</h2>
+
+<p><code>@JsonView</code> est un outil très simple et très puissant qui permet d'avoir plusieurs représentations du même objet sans avoir à écrire de code autre que quelques annotations. De plus, son intégration avec Spring MVC le rend très peu intrusif et ne pollue pas le code avec des opérations de conversion.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Eviter Les Classes Utilitaires Et Les Appels Statiques]]></title>
+    <link href="https://rnowif.github.io/blog/2015/03/30/eviter-les-classes-utilitaires-et-les-appels-statiques/"/>
+    <updated>2015-03-30T22:14:16+02:00</updated>
+    <id>https://rnowif.github.io/blog/2015/03/30/eviter-les-classes-utilitaires-et-les-appels-statiques</id>
+    <content type="html"><![CDATA[<p>De manière générale, les appels statiques sont des mauvaises pratiques car ils induisent notamment un fort couplage entre les classes et rendent les méthodes appelantes difficiles à tester. Cependant, il existe un cas d'utilisation qui utilise abondamment des appels statiques : il s'agit des classes utilitaires.</p>
+
+<p>Cet article a pour objectif de voir comment et quand se passer des appels statiques aux classes utilitaires.</p>
+
+<!-- more -->
+
+
+<h2>De l'utilisation des classes utilitaires</h2>
+
+<p>Les classes utilitaires sont utilisées absolument partout dans les programmes Java. Que ce soit les classes du JDK telles que <code>Math</code> ou <code>Arrays</code> ou bien celles de librairies externes comme <code>CollectionUtils</code> ou <code>FileUtils</code>, vous en avez forcément déjà utilisé.
+Comme leur nom l'indique, ces classes sont très utiles pour effectuer des opérations courantes et sans état.</p>
+
+<h2>Cas d'utilisation</h2>
+
+<p>Pour illustrer mes propos, je vais prendre un cas d'utilisation assez classique : calculer le hash d'un mot de passe avant insertion en base de données. Ce cas d'utilisation semble être éligible à l'utilisation d'une classe utilitaire.</p>
+
+<h3>Utilisation d'une méthode statique</h3>
+
+<h4>Implémentation</h4>
+
+<p>En suivant la logique des classes utilitaires, voici une implémentation possible de ce comportement.</p>
+
+<p>Nous allons créer une classe utilitaire nommée <code>SecurityUtils</code> qui dispose d'une méthode statique <code>sha256</code> qui hash un texte en clair.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SecurityUtils</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">sha256</span><span class="o">(</span><span class="n">String</span> <span class="n">plainText</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>     <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">MessageDigest</span> <span class="n">md</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">md</span> <span class="o">=</span> <span class="n">MessageDigest</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="s">&quot;SHA-256&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">md</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">plainText</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(</span><span class="s">&quot;iso-8859-1&quot;</span><span class="o">),</span> <span class="mi">0</span><span class="o">,</span> <span class="n">plainText</span><span class="o">.</span><span class="na">length</span><span class="o">());</span>
+</span><span class='line'>        <span class="kt">byte</span><span class="o">[]</span> <span class="n">shaHash</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="na">digest</span><span class="o">();</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nf">toHexadecimal</span><span class="o">(</span><span class="n">shaHash</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>     <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">UnsupportedEncodingException</span> <span class="o">|</span> <span class="n">NoSuchAlgorithmException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">logger</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+</span><span class='line'>     <span class="o">}</span>
+</span><span class='line'>   <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ensuite, la classe du service qui va appeler cette méthode</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserService</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="kd">public</span> <span class="n">User</span> <span class="nf">save</span><span class="o">(</span><span class="n">User</span> <span class="n">user</span><span class="o">,</span> <span class="n">String</span> <span class="n">plainPassword</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">user</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="n">SecurityUtils</span><span class="o">.</span><span class="na">sha256</span><span class="o">(</span><span class="n">plainPassword</span><span class="o">));</span>
+</span><span class='line'>      <span class="n">repository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">return</span> <span class="n">user</span><span class="o">;</span>
+</span><span class='line'>   <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ce code semble correct et est très courant dans les programmes Java. Cependant, il me pose un problème conséquent. En effet, comment tester la méthode <code>save</code> de manière unitaire ?</p>
+
+<h4>Tests</h4>
+
+<p>Tester unitairement une méthode qui effectue des appels statiques est compliqué. Un test unitaire compliqué est souvent un symptôme d'un code trop couplé et mal conçu.</p>
+
+<p>Voici une implémentation naïve du test unitaire de la méthode <code>save</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserServiceTest</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="nd">@Test</span>
+</span><span class='line'>   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">should_hash_password_when_save</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">User</span> <span class="n">user</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">UserService</span><span class="o">().</span><span class="na">save</span><span class="o">(</span><span class="k">new</span> <span class="nf">User</span><span class="o">(),</span> <span class="s">&quot;pass_word&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">assertThat</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getPassword</span><span class="o">).</span><span class="na">isEqualTo</span><span class="o">(</span><span class="n">SecurityUtils</span><span class="o">.</span><span class="na">sha256</span><span class="o">(</span><span class="s">&quot;pass_word&quot;</span><span class="o">));</span>
+</span><span class='line'>   <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ce test a le mérite de ne pas dépendre de l'implémentation de <code>sha256</code>. Cependant, si celle-ci lance une exception, ou bien retourne toujours une chaine vide par exemple, le test peut générer des faux négatifs ou des faux positifs sans que l'on sache si cela provient du service ou de la classe utilitaire.</p>
+
+<p>Il est bien évidemment possible de mocker des méthodes statiques avec des librairies comme <a href="https://code.google.com/p/powermock/">PowerMock</a> mais je préfère éviter d'utiliser ce genre de raccourci. C'est pourquoi je préfère me passer de méthodes statiques et utiliser des méthodes d'instances à la place.</p>
+
+<h3>Utilisation d'une méthode d'instance</h3>
+
+<h4>Implémentation</h4>
+
+<p>Pour le même cas d'utilisation, voici l'implémentation que j'utiliserais.</p>
+
+<p>Tout d'abord, je définis une interface qui sera le contrat de ma classe utilitaire.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">SecurityProvider</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="kd">public</span> <span class="n">String</span> <span class="nf">sha256</span><span class="o">(</span><span class="n">String</span> <span class="n">plainText</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ensuite, il faut implémenter cette interface.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SecurityProviderImpl</span> <span class="kd">implements</span> <span class="n">SecurityProvider</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="kd">public</span> <span class="n">String</span> <span class="nf">sha256</span><span class="o">(</span><span class="n">String</span> <span class="n">plainText</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>     <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">MessageDigest</span> <span class="n">md</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">md</span> <span class="o">=</span> <span class="n">MessageDigest</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="s">&quot;SHA-256&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">md</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">plainText</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(</span><span class="s">&quot;iso-8859-1&quot;</span><span class="o">),</span> <span class="mi">0</span><span class="o">,</span> <span class="n">plainText</span><span class="o">.</span><span class="na">length</span><span class="o">());</span>
+</span><span class='line'>        <span class="kt">byte</span><span class="o">[]</span> <span class="n">shaHash</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="na">digest</span><span class="o">();</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nf">toHexadecimal</span><span class="o">(</span><span class="n">shaHash</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>     <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">UnsupportedEncodingException</span> <span class="o">|</span> <span class="n">NoSuchAlgorithmException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">logger</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+</span><span class='line'>     <span class="o">}</span>
+</span><span class='line'>   <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Finalement, pour utiliser cette classe, il faut l'injecter dans le service. L'injection peut se faire à la main, via Spring ou JEE mais cela pourrait être l'objet d'un autre article donc je ne rentrerai pas dans les détails.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserService</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="kd">private</span> <span class="kd">final</span> <span class="n">SecurityProvider</span> <span class="n">securityProvider</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="kd">public</span> <span class="nf">UserService</span><span class="o">(</span><span class="n">SecurityProvider</span> <span class="n">securityProvider</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="o">.</span><span class="na">securityProvider</span> <span class="o">=</span> <span class="n">securityProvider</span><span class="o">;</span>
+</span><span class='line'>   <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="kd">public</span> <span class="n">User</span> <span class="nf">save</span><span class="o">(</span><span class="n">User</span> <span class="n">user</span><span class="o">,</span> <span class="n">String</span> <span class="n">plainPassword</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">user</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="n">securityProvider</span><span class="o">.</span><span class="na">sha256</span><span class="o">(</span><span class="n">plainPassword</span><span class="o">));</span>
+</span><span class='line'>      <span class="n">repository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">return</span> <span class="n">user</span><span class="o">;</span>
+</span><span class='line'>   <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Tests</h4>
+
+<p>Cette implémentation est beaucoup plus simple à tester unitairement. En effet, il suffit de mocker l'interface pour vérifier le bon comportement du service. Ce mock peut être fait manuellement ou à l'aide d'un framework comme <a href="http://mockito.org/">Mockito</a>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserServiceTest</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="nd">@Test</span>
+</span><span class='line'>   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">should_hash_password_when_save</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">SecurityProvider</span> <span class="n">securityProvider</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">SecurityProvider</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>         <span class="nd">@Override</span>
+</span><span class='line'>         <span class="kd">public</span> <span class="n">String</span> <span class="nf">sha256</span><span class="o">(</span><span class="n">String</span> <span class="n">plainText</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="s">&quot;Hashed :&quot;</span> <span class="o">+</span> <span class="n">plainText</span><span class="o">;</span>
+</span><span class='line'>         <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">User</span> <span class="n">user</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">UserService</span><span class="o">(</span><span class="n">securityProvider</span><span class="o">).</span><span class="na">save</span><span class="o">(</span><span class="k">new</span> <span class="nf">User</span><span class="o">(),</span> <span class="s">&quot;pass_word&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">assertThat</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getPassword</span><span class="o">).</span><span class="na">isEqualTo</span><span class="o">(</span><span class="s">&quot;Hashed :pass_word&quot;</span><span class="o">);</span>
+</span><span class='line'>   <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ce test est à 100% découplé de l'implémentation réelle de la méthode <code>sha256</code> et permet de tester de manière réellement unitaire la méthode <code>save</code> du service.</p>
+
+<h2>Bonnes pratiques et pragmatisme</h2>
+
+<p>L'utilisation des classes utilitaires et des méthodes statiques est globalement à proscrire car cela rend le code fortement couplé et difficile à tester. Cependant, un développeur se doit d'être pragmatique.
+En effet, créer une interface, une implémentation et une injection pour chaque appel à une méthode utilitaire peut sembler un peu trop long et verbeux.</p>
+
+<p>Je pense qu'il s'agit de trouver le bon compromis entre une utilisation sage des méthodes statiques et les bonnes pratiques de programmation. Par exemple, il n'est pas utile de mettre en place ce pattern pour des calculs simples comme une valeur absolue, un test sur la présence ou non d'élément dans une liste ou le calcul d'un minimum entre deux nombres. Par contre, quand il s'agit de traitements plus lourds comme des calculs complexes ou la manipulation d'un fichier, ce travail supplémentaire peut porter ses fruits et doit être mis en place.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Distribuer Son Application Java Sur Mac OSX Grâce à Maven]]></title>
+    <link href="https://rnowif.github.io/blog/2015/03/20/distribuer-son-application-java-sur-mac-osx-grace-a-maven/"/>
+    <updated>2015-03-20T21:21:43+01:00</updated>
+    <id>https://rnowif.github.io/blog/2015/03/20/distribuer-son-application-java-sur-mac-osx-grace-a-maven</id>
+    <content type="html"><![CDATA[<p>Dans un article précédent, nous avons vu comment distribuer son application Java sur Windows grâce à Maven. Cet article vise à faire la même chose sur MacOSX.
+Nous n'allons donc pas revenir sur l'alternative qui vise à distribuer directement le jar et passer directement à la partie qui nous intéresse, à savoir distribuer un exécutable Mac OSX.</p>
+
+<!-- more -->
+
+
+<h2>Distribuer son application sur Mac OSX</h2>
+
+<p>Sous Mac OSX, l'installation d'une application se fait via un fichier dmg. Le plugin <a href="http://mojo.codehaus.org/osxappbundle-maven-plugin/">osxappbundle</a> permet de générer automatiquement ce fichier.</p>
+
+<h3>Générer le fichier dmg sous Mac</h3>
+
+<p>L'utilisation de ce plugin est cependant différente selon qu'il est exécuté sous Mac ou sous un autre OS. En effet, le fichier dmg ne peut être généré <em>que sous Mac</em>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;groupId&gt;</span>org.codehaus.mojo<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;artifactId&gt;</span>osxappbundle-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0-alpha-1<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;bundleName&gt;</span>MyApp<span class="nt">&lt;/bundleName&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;mainClass&gt;</span>com.foo.MyApplication<span class="nt">&lt;/mainClass&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;internetEnable&gt;</span>true<span class="nt">&lt;/internetEnable&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;diskImageFile&gt;</span>${project.build.directory}/MyApp.dmg<span class="nt">&lt;/diskImageFile&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;executions&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;execution&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;phase&gt;</span>package<span class="nt">&lt;/phase&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;goals&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;goal&gt;</span>bundle<span class="nt">&lt;/goal&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/goals&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/execution&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/executions&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Générer le fichier app sous Windows ou Linux</h3>
+
+<p>Sous un autre OS, il n'est pas possible de générer le fichier dmg. Le plugin va seulement générer un fichier zip qui, une fois dézippé, va se transformer en application Mac (format app).
+Ce fichier app pourra être exécuté en double cliquant dessus simplement.</p>
+
+<p>Pour fonctionner, le plugin a besoin du fichier <code>JavaApplicationStub</code> qui se trouve dans le dossier <code>/System/Library/Frameworks/JavaVM.framework/Resources/MacOS</code> de MacOS. Dans l'exemple ci-dessous, ce fichier a été déposé dans le dossier <code>src/main/resources</code> du projet.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;groupId&gt;</span>org.codehaus.mojo<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;artifactId&gt;</span>osxappbundle-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0-alpha-1<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;bundleName&gt;</span>MyApp<span class="nt">&lt;/bundleName&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;mainClass&gt;</span>com.foo.MyApplication<span class="nt">&lt;/mainClass&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;internetEnable&gt;</span>true<span class="nt">&lt;/internetEnable&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;javaApplicationStub&gt;</span>${basedir}/src/main/resources/JavaApplicationStub<span class="nt">&lt;/javaApplicationStub&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;buildDirectory&gt;</span>${project.build.directory}/MyApp.app<span class="nt">&lt;/buildDirectory&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;diskImageFile&gt;</span>${project.build.directory}/MyApp.dmg<span class="nt">&lt;/diskImageFile&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;zipFile&gt;</span>${project.build.directory}/MyApp.zip<span class="nt">&lt;/zipFile&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;executions&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;execution&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;phase&gt;</span>package<span class="nt">&lt;/phase&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;goals&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;goal&gt;</span>bundle<span class="nt">&lt;/goal&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/goals&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/execution&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/executions&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Conclusion</h2>
+
+<p>Générer un fichier exécutable pour MacOS n'est pas très compliqué. Cependant, afin de générer un fichier dmg, il faut absolument que la machine qui utilise le plugin maven tourne sous MacOS. Dans le cas contraire (un serveur d'intégration continue sous Linux par exemple), il faudra se contenter d'un fichier zip qui, une fois dézippé, pourra être ouvert comme une application normale.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Distribuer Son Application Java Sur Windows Grâce à Maven]]></title>
+    <link href="https://rnowif.github.io/blog/2015/03/19/distribuer-son-application-java-sur-windows-grace-a-maven/"/>
+    <updated>2015-03-19T21:25:16+01:00</updated>
+    <id>https://rnowif.github.io/blog/2015/03/19/distribuer-son-application-java-sur-windows-grace-a-maven</id>
+    <content type="html"><![CDATA[<p>Vous avez développé une application java qui va révolutionner le monde. Bravo ! Maintenant, il vous faut la distribuer au monde entier afin que chacun puisse en profiter. Cet article a pour but de montrer comment le faire grâce à l'outil <a href="http://maven.apache.org/">Maven</a>. Il ne s'agit pas d'un article sur Maven en lui-même ni sur la mise en place d'un projet avec Maven.</p>
+
+<!-- more -->
+
+
+<h2>Distribuer directement l'archive jar</h2>
+
+<p>Lorsque l'on cherche à distribuer une application, le premier réflexe est de générer une archive jar. Voici une façon de générer un jar autoporteur avec Maven. Celui-ci va contenir toutes les dépendances que votre application pourrait avoir besoin.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;artifactId&gt;</span>maven-assembly-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;executions&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;execution&gt;</span>
+</span><span class='line'>         <span class="nt">&lt;id&gt;</span>application-assembly<span class="nt">&lt;/id&gt;</span>
+</span><span class='line'>         <span class="nt">&lt;phase&gt;</span>package<span class="nt">&lt;/phase&gt;</span>
+</span><span class='line'>         <span class="nt">&lt;goals&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;goal&gt;</span>single<span class="nt">&lt;/goal&gt;</span>
+</span><span class='line'>         <span class="nt">&lt;/goals&gt;</span>
+</span><span class='line'>         <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;descriptorRefs&gt;</span>
+</span><span class='line'>               <span class="nt">&lt;descriptorRef&gt;</span>jar-with-dependencies<span class="nt">&lt;/descriptorRef&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/descriptorRefs&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;archive&gt;</span>
+</span><span class='line'>               <span class="nt">&lt;index&gt;</span>true<span class="nt">&lt;/index&gt;</span>
+</span><span class='line'>               <span class="nt">&lt;manifest&gt;</span>
+</span><span class='line'>                  <span class="nt">&lt;addClasspath&gt;</span>true<span class="nt">&lt;/addClasspath&gt;</span>
+</span><span class='line'>                  <span class="nt">&lt;addDefaultImplementationEntries&gt;</span>true<span class="nt">&lt;/addDefaultImplementationEntries&gt;</span>
+</span><span class='line'>                  <span class="nt">&lt;mainClass&gt;</span>com.foo.MyApplication<span class="nt">&lt;/mainClass&gt;</span>
+</span><span class='line'>               <span class="nt">&lt;/manifest&gt;</span>
+</span><span class='line'>               <span class="nt">&lt;manifestEntries&gt;</span>
+</span><span class='line'>                  <span class="nt">&lt;Application-Name&gt;</span>${project.name}<span class="nt">&lt;/Application-Name&gt;</span>
+</span><span class='line'>                  <span class="nt">&lt;Permissions&gt;</span>all-permissions<span class="nt">&lt;/Permissions&gt;</span>
+</span><span class='line'>               <span class="nt">&lt;/manifestEntries&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/archive&gt;</span>
+</span><span class='line'>         <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/execution&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;/executions&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>L’utilisateur devra alors récupérer le fichier <code>MyApplication-jar-with-dependencies.jar</code> et l’exécuter en lancant la commande suivante :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>java -jar MyApplication-jar-with-dependencies.jar
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Pas très pratique n’est-ce pas ? Dans la suite de l’article, nous verrons comment distribuer ce jar sous un format plus courant pour les utilisateurs.</p>
+
+<h2>Distribuer son application sur Windows</h2>
+
+<h3>Fichier exécutable</h3>
+
+<p>L’utilisateur lambda de Windows est habitué à manipuler des fichiers exécutables *.exe où il n’a qu’à double-cliquer pour lancer. Maven est capable de générer cet exécutable grâce au plugin <a href="https://github.com/lukaszlenart/launch4j-maven-plugin">launch4j</a>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;groupId&gt;</span>com.akathist.maven.plugins.launch4j<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;artifactId&gt;</span>launch4j-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;executions&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;execution&gt;</span>
+</span><span class='line'>         <span class="nt">&lt;id&gt;</span>l4j-clui<span class="nt">&lt;/id&gt;</span>
+</span><span class='line'>         <span class="nt">&lt;phase&gt;</span>package<span class="nt">&lt;/phase&gt;</span>
+</span><span class='line'>         <span class="nt">&lt;goals&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;goal&gt;</span>launch4j<span class="nt">&lt;/goal&gt;</span>
+</span><span class='line'>         <span class="nt">&lt;/goals&gt;</span>
+</span><span class='line'>         <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;dontWrapJar&gt;</span>false<span class="nt">&lt;/dontWrapJar&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;headerType&gt;</span>gui<span class="nt">&lt;/headerType&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;outfile&gt;</span>${project.build.directory}/MyApp.exe<span class="nt">&lt;/outfile&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;jar&gt;</span>${project.build.directory}/MyApplication-jar-with-dependencies.jar<span class="nt">&lt;/jar&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;jre&gt;</span>
+</span><span class='line'>               <span class="nt">&lt;minVersion&gt;</span>1.6.0<span class="nt">&lt;/minVersion&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/jre&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;versionInfo&gt;</span>
+</span><span class='line'>               <span class="nt">&lt;fileVersion&gt;</span>1.0.0.0<span class="nt">&lt;/fileVersion&gt;</span>
+</span><span class='line'>               <span class="nt">&lt;txtFileVersion&gt;</span>${project.version}<span class="nt">&lt;/txtFileVersion&gt;</span>
+</span><span class='line'>               <span class="nt">&lt;fileDescription&gt;</span>Description de l&#39;application<span class="nt">&lt;/fileDescription&gt;</span>
+</span><span class='line'>               <span class="nt">&lt;copyright&gt;</span>Copyright FooCompany 2015<span class="nt">&lt;/copyright&gt;</span>
+</span><span class='line'>               <span class="nt">&lt;productVersion&gt;</span>1.0.0.0<span class="nt">&lt;/productVersion&gt;</span>
+</span><span class='line'>               <span class="nt">&lt;txtProductVersion&gt;</span>${project.version}<span class="nt">&lt;/txtProductVersion&gt;</span>
+</span><span class='line'>               <span class="nt">&lt;companyName&gt;</span>FooCompany<span class="nt">&lt;/companyName&gt;</span>
+</span><span class='line'>               <span class="nt">&lt;productName&gt;</span>Nom de l&#39;application<span class="nt">&lt;/productName&gt;</span>
+</span><span class='line'>               <span class="nt">&lt;internalName&gt;</span>Nom de l&#39;application<span class="nt">&lt;/internalName&gt;</span>
+</span><span class='line'>               <span class="nt">&lt;originalFilename&gt;</span>MyApp.exe<span class="nt">&lt;/originalFilename&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/versionInfo&gt;</span>
+</span><span class='line'>         <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/execution&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;/executions&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Lors de la phase de package, Maven va alors générer le fichier <code>MyApp.exe</code> qui n’est rien d’autre qu’un wrapper autour du fichier jar autoporteur. Il suffira alors de double cliquer dessus pour l’exécuter. Cependant, ce n’est pas toujours suffisant d’avoir un exécutable seul pour lancer l’application. Vous pourriez avoir envie de mettre des raccourcis sur le bureau, dans le menu Démarrer, avoir une jolie icône, etc. Nous allons donc voir comment réaliser toutes ces choses à l’aide d’un installateur.</p>
+
+<h3>Installateur</h3>
+
+<p>Pour que Maven génère l’installateur, il est possible d’utiliser le plugin <a href="http://mojo.codehaus.org/nsis-maven-plugin/">NSIS</a>.</p>
+
+<p>Afin de faire fonctionner ce plugin, il faut plusieurs choses :</p>
+
+<ul>
+<li>Installer NSIS sur la machine qui va builder l’application</li>
+<li>Modifier le <code>pom.xml</code> pour dire à Maven d’exécuter NSIS</li>
+<li>Configurer NSIS pour générer correctement l’installateur</li>
+</ul>
+
+
+<h4>Installer NSIS</h4>
+
+<p>NSIS peut être téléchargé depuis le site de l’éditeur : <a href="http://nsis.sourceforge.net/Main_Page">http://nsis.sourceforge.net/Main_Page</a></p>
+
+<h4>Modifier le pom.xml</h4>
+
+<p>La partie à écrire dans le <code>pom.xml</code> est assez brève. Il suffit en fait d’indiquer à Maven les goals du plugin à appeler ainsi que le nom final de l’installateur.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;groupId&gt;</span>org.codehaus.mojo<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;artifactId&gt;</span>nsis-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;version&gt;</span>1.0-alpha-1<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;executions&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;execution&gt;</span>
+</span><span class='line'>         <span class="nt">&lt;goals&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;goal&gt;</span>generate-headerfile<span class="nt">&lt;/goal&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;goal&gt;</span>make<span class="nt">&lt;/goal&gt;</span>
+</span><span class='line'>         <span class="nt">&lt;/goals&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/execution&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;/executions&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;outputFile&gt;</span>MyApp-setup.exe<span class="nt">&lt;/outputFile&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Le goal <code>generate-headfile</code> du plugin va générer un fichier <code>project.nsh</code> qui va définir des constantes telles que <code>PROJECT_NAME</code> ou <code>PROJECT_VERSION</code>. Le goal <code>make</code> va ensuite récupérer le fichier de configuration de NSIS pour générer l’installateur proprement dit.</p>
+
+<h4>Créer le fichier de configuration NSIS</h4>
+
+<p>Ce fichier, appelé <code>setup.nsi</code> doit se trouver à la racine du projet, à coté du <code>pom.xml</code>. Il contient toutes les actions à faire au moment de l’installation. Le langage utilisé est un langage de script rudimentaire permettant d’effectuer des actions simples comme copier un fichier, créer un raccourci, créer un dossier, etc.</p>
+
+<p>Voici un exemple simple de setup.nsi qui va s’installer dans les programmes, créer des raccourcis dans le menu démarrer et sur le bureau. Il va également copier un fichier *.ico (qui doit se trouver à la racine du projet également) et l’utiliser comme icône de l’application. Finalement, il va créer un exécutable qui va permettre de désinstaller l’application (suppression de tous les dossiers et icônes créés précédemment).</p>
+
+<p><em>NB : Les constantes définies dans le project.nsh sont utilisables dans le setup.nsi</em></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>; Installer for MyApp
+</span><span class='line'>;======================================================
+</span><span class='line'>; Includes
+</span><span class='line'>  !include MUI.nsh
+</span><span class='line'>  !include Sections.nsh
+</span><span class='line'>  !include target\project.nsh
+</span><span class='line'>;======================================================
+</span><span class='line'>; Installer Information
+</span><span class='line'>  Name &quot;${PROJECT_NAME}&quot;
+</span><span class='line'>
+</span><span class='line'>  SetCompressor /SOLID lzma
+</span><span class='line'>  XPStyle on
+</span><span class='line'>  CRCCheck on
+</span><span class='line'>  InstallDir &quot;C:\Program Files\FooCompany\&quot;
+</span><span class='line'>  AutoCloseWindow false
+</span><span class='line'>  ShowInstDetails show
+</span><span class='line'>  Icon &quot;${NSISDIR}\Contrib\Graphics\Icons\orange-install.ico&quot;
+</span><span class='line'>
+</span><span class='line'>;======================================================
+</span><span class='line'>; Version Tab information for Setup.exe properties
+</span><span class='line'>
+</span><span class='line'>  VIProductVersion 2015.02.15.0
+</span><span class='line'>  VIAddVersionKey ProductName &quot;${PROJECT_NAME}&quot;
+</span><span class='line'>  VIAddVersionKey ProductVersion &quot;${PROJECT_VERSION}&quot;
+</span><span class='line'>  VIAddVersionKey CompanyName &quot;${PROJECT_ORGANIZATION_NAME}&quot;
+</span><span class='line'>  VIAddVersionKey FileVersion &quot;${PROJECT_VERSION}&quot;
+</span><span class='line'>  VIAddVersionKey FileDescription &quot;&quot;
+</span><span class='line'>  VIAddVersionKey LegalCopyright &quot;&quot;
+</span><span class='line'>
+</span><span class='line'>;======================================================
+</span><span class='line'>; Modern Interface Configuration
+</span><span class='line'>
+</span><span class='line'>  !define MUI_HEADERIMAGE
+</span><span class='line'>  !define MUI_ABORTWARNING
+</span><span class='line'>  !define MUI_COMPONENTSPAGE_SMALLDESC
+</span><span class='line'>  !define MUI_HEADERIMAGE_BITMAP_NOSTRETCH
+</span><span class='line'>  !define MUI_FINISHPAGE
+</span><span class='line'>  !define MUI_FINISHPAGE_TEXT &quot;Thank you for installing ${PROJECT_NAME}.&quot;
+</span><span class='line'>  !define MUI_ICON &quot;${NSISDIR}\Contrib\Graphics\Icons\orange-install.ico&quot;
+</span><span class='line'>
+</span><span class='line'>;======================================================
+</span><span class='line'>; Modern Interface Pages
+</span><span class='line'>
+</span><span class='line'>  !define MUI_DIRECTORYPAGE_VERIFYONLEAVE
+</span><span class='line'>  !insertmacro MUI_PAGE_DIRECTORY
+</span><span class='line'>  !insertmacro MUI_PAGE_COMPONENTS
+</span><span class='line'>  !insertmacro MUI_PAGE_INSTFILES
+</span><span class='line'>  !insertmacro MUI_PAGE_FINISH
+</span><span class='line'>
+</span><span class='line'>;======================================================
+</span><span class='line'>; Languages
+</span><span class='line'>
+</span><span class='line'>  !insertmacro MUI_LANGUAGE &quot;English&quot;
+</span><span class='line'>
+</span><span class='line'>;======================================================
+</span><span class='line'>; Installer Sections
+</span><span class='line'>
+</span><span class='line'>Section &quot;MyApp&quot;
+</span><span class='line'>   SetOutPath $INSTDIR
+</span><span class='line'>   SetOverwrite on
+</span><span class='line'>
+</span><span class='line'>   File target\MyApp.exe
+</span><span class='line'>   File MyApp.ico
+</span><span class='line'>
+</span><span class='line'>   CreateShortCut &quot;$DESKTOP\MyApp.lnk&quot; &quot;$INSTDIR\MyApp.exe&quot; &quot;&quot; &quot;$INSTDIR\MyApp.ico&quot; 0
+</span><span class='line'>
+</span><span class='line'>   CreateDirectory &quot;$SMPROGRAMS\FooCompany&quot;
+</span><span class='line'>   CreateShortcut &quot;$SMPROGRAMS\FooCompany\MyApp.lnk&quot; &quot;$INSTDIR\MyApp.exe&quot; &quot;&quot; &quot;$INSTDIR\MyApp.ico&quot; 0
+</span><span class='line'>   CreateShortCut &quot;$SMPROGRAMS\FooCompany\Uninstall.lnk&quot; &quot;$INSTDIR\Uninstall.exe&quot; &quot;&quot; &quot;$INSTDIR\Uninstall.exe&quot; 0
+</span><span class='line'>
+</span><span class='line'>   writeUninstaller &quot;$INSTDIR\MyApp_uninstall.exe&quot;
+</span><span class='line'>SectionEnd
+</span><span class='line'>
+</span><span class='line'>Section &quot;uninstall&quot;
+</span><span class='line'>   ;Delete Files
+</span><span class='line'>   RMDir /r &quot;$INSTDIR\*.*&quot;
+</span><span class='line'>  
+</span><span class='line'>   ;Remove the installation directory
+</span><span class='line'>   RMDir &quot;$INSTDIR&quot;
+</span><span class='line'>  
+</span><span class='line'>   ;Delete Start Menu Shortcuts
+</span><span class='line'>   Delete &quot;$DESKTOP\MyApp.lnk&quot;
+</span><span class='line'>   Delete &quot;$SMPROGRAMS\FooCompany\*.*&quot;
+</span><span class='line'>   RmDir  &quot;$SMPROGRAMS\FooCompany&quot;
+</span><span class='line'>SectionEnd
+</span><span class='line'>
+</span><span class='line'>Function .onInit
+</span><span class='line'>   InitPluginsDir
+</span><span class='line'>FunctionEnd
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Pour plus de possibilités, vous pouvez consulter la <a href="http://nsis.sourceforge.net/Docs/">documentation</a>.</p>
+
+<h2>Conclusion</h2>
+
+<p>Cet article a permis de voir qu’à l’aide de quelques plugins Maven, il est relativement simple de générer un installateur Windows qui va installer votre application java sur un poste Windows. Il est important de noter que cet installateur est généré même si le build est lancé sous Linux. Ainsi, un serveur d’intégration continue pourra automatiquement générer l’installateur à la seule condition que NSIS soit installé sur la machine.</p>
+
+<p>Dans un prochain article, nous verrons comment générer un fichier exécutable pour distribuer votre application sous Mac OS X.</p>
+
+<p>Et-vous, avez-vous déjà essayé de générer automatiquement des installateurs pour Windows ? Comment avez-vous fait ? N’hésitez pas à déposer un commentaire pour en discuter.</p>
+]]></content>
+  </entry>
   
 </feed>

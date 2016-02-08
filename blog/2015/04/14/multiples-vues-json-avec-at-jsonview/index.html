@@ -1,0 +1,356 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Multiples Vues JSON Avec @JsonView - Renaud Humbert-Labeaumaz</title>
+  <meta name="author" content="Renaud Humbert-Labeaumaz">
+
+  
+  <meta name="description" content="Le format Json est de plus en plus utilisé aujourd'hui notamment dans les API de type REST qui offrent des services et retournent leurs résultats &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="https://rnowif.github.io/blog/2015/04/14/multiples-vues-json-avec-at-jsonview/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Renaud Humbert-Labeaumaz" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Renaud Humbert-Labeaumaz</a></h1>
+  
+    <h2>Java developer.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="rnowif.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Multiples Vues JSON Avec @JsonView</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-04-14T22:05:31+02:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:05 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Le format <a href="http://fr.wikipedia.org/wiki/JavaScript_Object_Notation">Json</a> est de plus en plus utilisé aujourd'hui notamment dans les API de type REST qui offrent des services et retournent leurs résultats sous ce format. Afin d'éviter d'avoir à écrire la transformation en Json manuellement, il existe de nombreuses librairies permettant de faire cette transformation de manière automatique.</p>
+
+<p>Dans cet article, nous allons voir comment utiliser la librairie <a href="http://jackson.codehaus.org/">Jackson</a> et notamment l'annotation <code>@JsonView</code> pour configurer plusieurs transformations pour un même objet. Nous allons également voir succintement comment intégrer cette annotation avec le framework <a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html">Spring MVC</a>.</p>
+
+<!-- more -->
+
+
+<h2>Convertir un objet en Json avec Jackson</h2>
+
+<p>Le code suivant permet d'utiliser Jackson pour convertir un objet Java en Json de manière automatique.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">toJson</span><span class="o">(</span><span class="n">Foo</span> <span class="n">foo</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">ObjectMapper</span> <span class="n">mapper</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ObjectMapper</span><span class="o">();</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">mapper</span><span class="o">.</span><span class="na">writeValueAsString</span><span class="o">(</span><span class="n">foo</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Introduction à @JsonView</h2>
+
+<p>Lorsque Jackson convertit l'objet en Json, il prend en compte tous les champs de cet objet. Or, dans la vie courante, il est rarement pertinent de récupérer tous les champs dans le Json final (par exemple, le mot de passe d'un utilisateur) et il est souvent intéressant d'avoir deux sorties différentes en fonction du contexte (par exemple, un Json résumé et un détaillé avec plus de champs).</p>
+
+<p>L'annotation <code>@JsonView</code> permet de définir des vues et associer chaque champ à une ou plusieurs vues. Ainsi, au moment de la conversion, on indique à Jackson quelle vue utiliser et seuls les champs associés à cette vue seront pris en compte.</p>
+
+<h3>Mise en place des vues</h3>
+
+<p>La vue Json doit être une classe, ainsi elle peut bénéficier de l'héritage. Si la vue A hérite de la vue B, tous les champs associés à la vue B seront pris en compte lorsqu'on va exporter la vue A.</p>
+
+<p>Les vues peuvent être définies de la façon suivante.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JsonViews</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">PublicView</span> <span class="o">{</span> <span class="o">};</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">InternalOnlyView</span> <span class="kd">extends</span> <span class="n">PublicView</span> <span class="o">{</span> <span class="o">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Il n'y a pas besoin de mettre quoi que ce soit dans les classes, une simple déclaration suffit. C'est pourquoi il est plus simple de les regrouper dans une classe. On remarque ici l'héritage qui permet d'indiquer que tout ce qui est public sera visible également dans la vue interne.</p>
+
+<h3>Association d'une vue à un champ</h3>
+
+<p>Pour associer une vue à un champ, il faut l'annoter avec <code>@JsonView</code> avec la vue en paramètre.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nd">@JsonView</span><span class="o">(</span><span class="n">JsonViews</span><span class="o">.</span><span class="na">PublicView</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'>  <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nd">@JsonView</span><span class="o">(</span><span class="n">JsonViews</span><span class="o">.</span><span class="na">InternalOnlyView</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'>  <span class="kd">private</span> <span class="n">String</span> <span class="n">password</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ensuite, pour indiquer à Jackson d'exporter seulement cette vue, il faut lui passer en paramètre au moment de la conversion.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">toJsonPublic</span><span class="o">(</span><span class="n">Foo</span> <span class="n">foo</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">ObjectMapper</span> <span class="n">mapper</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ObjectMapper</span><span class="o">();</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">mapper</span>
+</span><span class='line'>      <span class="o">.</span><span class="na">writerWithView</span><span class="o">(</span><span class="n">JsonViews</span><span class="o">.</span><span class="na">PublicView</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'>      <span class="o">.</span><span class="na">writeValueAsString</span><span class="o">(</span><span class="n">foo</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>NB : Il est possible de définir plusieurs vues pour un champ en les mettant entre crochets <code>@JsonView({View1.class, View2.class})</code>. Ainsi, ce champ sera pris en compte dans chacune des vues</em></p>
+
+<h2>Intégration avec Spring MVC</h2>
+
+<p>Dans un controller Spring MVC, il n'est pas utile d'utiliser le code de conversion écrit précédemment. En effet, Jackson est intégré avec Spring MVC. Il suffit d'annoter la méthode du controller avec <code>@JsonView</code> pour lui indiquer la vue à utiliser.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@RestController</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooController</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nd">@JsonView</span><span class="o">(</span><span class="n">JsonViews</span><span class="o">.</span><span class="na">PublicView</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'>  <span class="nd">@RequestMapping</span> <span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/public/foo&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="n">Foo</span> <span class="nf">getFoo</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="k">new</span> <span class="nf">Foo</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">,</span> <span class="s">&quot;password&quot;</span><span class="o">);</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Un appel à <code>/public/foo</code> va automatiquement retourner un objet Json qui représente la vue publique de l'objet instancié dans la méthode.</p>
+
+<h2>Conclusion</h2>
+
+<p><code>@JsonView</code> est un outil très simple et très puissant qui permet d'avoir plusieurs représentations du même objet sans avoir à écrire de code autre que quelques annotations. De plus, son intégration avec Spring MVC le rend très peu intrusif et ne pollue pas le code avec des opérations de conversion.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Renaud Humbert-Labeaumaz</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-04-14T22:05:31+02:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>10:05 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/java/'>java</a>, <a class='category' href='/blog/categories/json/'>json</a>, <a class='category' href='/blog/categories/spring/'>spring</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="https://rnowif.github.io/blog/2015/04/14/multiples-vues-json-avec-at-jsonview/" data-via="rnowif" data-counturl="https://rnowif.github.io/blog/2015/04/14/multiples-vues-json-avec-at-jsonview/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/03/30/eviter-les-classes-utilitaires-et-les-appels-statiques/" title="Previous Post: Eviter les classes utilitaires et les appels statiques">&laquo; Eviter les classes utilitaires et les appels statiques</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/07/28/tell-dont-ask/" title="Next Post: Tell don't ask">Tell don't ask &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/07/28/tell-dont-ask/">Tell Don't Ask</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/04/14/multiples-vues-json-avec-at-jsonview/">Multiples Vues JSON Avec @JsonView</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/30/eviter-les-classes-utilitaires-et-les-appels-statiques/">Eviter Les Classes Utilitaires Et Les Appels Statiques</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/20/distribuer-son-application-java-sur-mac-osx-grace-a-maven/">Distribuer Son Application Java Sur Mac OSX Grâce à Maven</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/19/distribuer-son-application-java-sur-windows-grace-a-maven/">Distribuer Son Application Java Sur Windows Grâce à Maven</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/rnowif">@rnowif</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'rnowif',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Renaud Humbert-Labeaumaz -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

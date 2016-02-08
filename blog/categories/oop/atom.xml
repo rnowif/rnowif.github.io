@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Oop | Renaud Humbert-Labeaumaz]]></title>
+  <link href="https://rnowif.github.io/blog/categories/oop/atom.xml" rel="self"/>
+  <link href="https://rnowif.github.io/"/>
+  <updated>2016-02-08T21:57:40+01:00</updated>
+  <id>https://rnowif.github.io/</id>
+  <author>
+    <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
+    <email><![CDATA[renaud.humbert-labeaumaz@zenika.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Tell Don't Ask]]></title>
+    <link href="https://rnowif.github.io/blog/2015/07/28/tell-dont-ask/"/>
+    <updated>2015-07-28T21:57:56+02:00</updated>
+    <id>https://rnowif.github.io/blog/2015/07/28/tell-dont-ask</id>
+    <content type="html"><![CDATA[<p>Quand j'étais à l'école et que j'apprenais la programmation orientée objet (POO), on nous disait que les classes permettaient d'encapsuler des comportements et de cacher leur implémentation au reste du monde. Ainsi, le code qui appelle une méthode attend d'elle qu'elle se comporte comme elle a été spécifiée, quelle que soit son implémentation.</p>
+
+<!-- more -->
+
+
+<p>Prenons l'exemple d'un panier, dont le coût total doit être calculé selon certaines règles (somme de tous les articles, ajout éventuel de taxes, charges, etc.). En POO, on pourrait s'attendre à ce que la classe <code>Basket</code> ait une méthode <code>calculateTotalCost</code> qui va calculer ce coût. Après tout, le code appelant ne veut pas savoir comment calculer un coût, il veut juste le récupérer.</p>
+
+<p>Pourtant, lors de mes premiers mois dans le monde du travail, je suis tombé sur ce genre ce code, au détour d'une méthode de la <em>couche service</em> (je vous fais grâce de la classe <code>Basket</code>)</p>
+
+<pre><code class="java">public int calculateTotalCost(Basket basket) {
+
+   int totalCost = 0;
+
+   for (Article article : basket.getArticles()) {
+      totalCost += article.getUnitPrice() * article.getQuantity();
+   }
+
+   totalCost = totalCost + TAX_RATE * totalCost;
+
+   basket.setTotalCost(totalCost);
+
+   return totalCost;
+}
+</code></pre>
+
+<p>Pourquoi en est-on arrivé là ?</p>
+
+<ul>
+<li>A cause de Java qui encourage les <em>getters</em> et <em>setters</em> sur les beans ?</li>
+<li>A cause des librairies comme <a href="https://projectlombok.org/">lombok</a>, qui automatisent la création de ces accesseurs ?</li>
+<li>A cause de l'architecture en couches qui a été usée et abusée ?</li>
+<li>A cause de l'héritage des langages procéduraux comme le C, et la fainéantise des développeurs pour changer de paradigme ?</li>
+<li>Ou peut-être n'y a-t-il pas de problème et qu'il s'agit d'une bonne manière de coder ?</li>
+</ul>
+
+
+<p>Selon moi, il ne s'agit pas d'une manière correcte de coder ce genre de fonctionnalités et c'est pourquoi j'ai décidé d'écrire cet article.</p>
+
+<h2>Le principe <em>Tell don&rsquo;t ask</em></h2>
+
+<p>Ce principe stipule qu'au lieu de demander (<em>ask</em>) à un objet des informations pour les exploiter, il vaut mieux dire (<em>tell</em>) à cet objet ce que l'on veut faire et il s'en chargera lui même.</p>
+
+<p>Selon ce principe, la classe <code>Basket</code> utilisée ci-dessus devient
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Basket</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>   <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Article</span><span class="o">&gt;</span> <span class="n">articles</span><span class="o">;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>   <span class="c1">// &amp;hellip;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>   <span class="kd">public</span> <span class="kt">int</span> <span class="nf">calculateTotalCost</span><span class="o">()</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>  <span class="kt">int</span> <span class="n">totalCost</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">for</span> <span class="o">(</span><span class="n">Article</span> <span class="n">article</span> <span class="o">:</span> <span class="n">articles</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">totalCost</span> <span class="o">+=</span> <span class="n">article</span><span class="o">.</span><span class="na">priceWithoutTaxes</span><span class="o">();</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="n">totalCost</span> <span class="o">+</span> <span class="n">TAX_RATE</span> <span class="o">*</span> <span class="n">totalCost</span><span class="o">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>   <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>et le service devient</p>
+
+<pre><code class="java">public int calculateTotalCost(Basket basket) {
+   return basket.calculateTotalCost();
+}
+</code></pre>
+
+<p>Plusieurs remarques peuvent être faites à la lecture de ce nouveau code :</p>
+
+<ul>
+<li>Il n'y a plus d'accesseurs dans la classe <code>Basket</code>. Ses champs sont encapsulés et non exposés aux quatres vents : l'objet redevient responsable de son état.</li>
+<li>Le comportement est rapproché des données qu'il va utiliser. Ainsi, il est bien plus simple de comprendre le code (et donc de le maintenir) car les données traitées sont proches de leur traitement et elle ne sont plus utilisées ailleurs.</li>
+<li>La <a href="https://fr.wikipedia.org/wiki/Loi_de_D%C3%A9m%C3%A9ter">Loi de Demeter</a> est respectée. Ainsi, un changement dans une méthode de calcul de prix n'affectera personne d'autre que la classe dont le prix doit être calculé.</li>
+<li>La question quant à l'utilité du service est bel et bien posée. Il ne s'agit plus que d'un passe-plat totalement inutile à part à pourrir la base de code.</li>
+</ul>
+
+
+<h2>De l'utilité des services et des couches</h2>
+
+<p>En suivant ce genre de principes, il devient évident que le <em>service</em>, ce fameux <a href="https://fr.wikipedia.org/wiki/God_object">God Object</a> qui faisait la pluie et le beau temps dans le code, est réduit à peau de chagrin. Il est même possible de s'en passer très souvent.</p>
+
+<p>Cependant, il reste indispensable dans le cas où les objets doivent collaborer entre eux. Globalement, si je devais indiquer la <em>règle</em> que j'essaie de suivre au quotidien, je dirais ceci :</p>
+
+<ul>
+<li>Si l'objet dispose de toutes les informations pour effectuer un traitement, il doit le faire.</li>
+<li>Si le traitement porte sur plusieurs objets différents, une classe externe (typiquement un service) peut s'en occuper.</li>
+</ul>
+
+
+<h2>Restons pragmatiques</h2>
+
+<p>Comme toujours, les principes se confrontent à la réalité et ils ne gagnent pas toujours. Il faut parfois savoir faire des petites entorses à la règle et ne pas être dogmatique sur ce genre de sujets. Qui sait, les bonnes pratiques d'aujourd'hui seront peut-être les anti-patterns de demain.</p>
+
+<p>Cependant, après quelques temps de pratique, je pense qu'il est possible d'appliquer le principe de <em>Tell Don&rsquo;t Ask</em> au quotidien. Il est même possible de commencer dès aujourd'hui et sans devoir refactoriser l'intégralité du code source existant.</p>
+
+<p>Pensez à ça lors de vos prochains développement et n'hésitez pas à en parler sur <a href="https://twitter.com/RnowIf">Twitter (@RnowIf)</a>, dans un commentaire sur cette page ou bien lors d'un <a href="http://www.meetup.com/fr/Software-Craftsmanship-Lyon/">Meetup Craftsman</a> à Lyon ou ailleurs.</p>
+]]></content>
+  </entry>
+  
+</feed>

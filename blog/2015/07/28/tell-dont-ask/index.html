@@ -1,0 +1,367 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Tell Don't Ask - Renaud Humbert-Labeaumaz</title>
+  <meta name="author" content="Renaud Humbert-Labeaumaz">
+
+  
+  <meta name="description" content="Quand j'étais à l'école et que j'apprenais la programmation orientée objet (POO), on nous disait que les classes permettaient d'encapsuler des &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="https://rnowif.github.io/blog/2015/07/28/tell-dont-ask/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Renaud Humbert-Labeaumaz" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Renaud Humbert-Labeaumaz</a></h1>
+  
+    <h2>Java developer.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="rnowif.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Tell Don't Ask</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-07-28T21:57:56+02:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:57 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Quand j'étais à l'école et que j'apprenais la programmation orientée objet (POO), on nous disait que les classes permettaient d'encapsuler des comportements et de cacher leur implémentation au reste du monde. Ainsi, le code qui appelle une méthode attend d'elle qu'elle se comporte comme elle a été spécifiée, quelle que soit son implémentation.</p>
+
+<!-- more -->
+
+
+<p>Prenons l'exemple d'un panier, dont le coût total doit être calculé selon certaines règles (somme de tous les articles, ajout éventuel de taxes, charges, etc.). En POO, on pourrait s'attendre à ce que la classe <code>Basket</code> ait une méthode <code>calculateTotalCost</code> qui va calculer ce coût. Après tout, le code appelant ne veut pas savoir comment calculer un coût, il veut juste le récupérer.</p>
+
+<p>Pourtant, lors de mes premiers mois dans le monde du travail, je suis tombé sur ce genre ce code, au détour d'une méthode de la <em>couche service</em> (je vous fais grâce de la classe <code>Basket</code>)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">int</span> <span class="nf">calculateTotalCost</span><span class="o">(</span><span class="n">Basket</span> <span class="n">basket</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="kt">int</span> <span class="n">totalCost</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="k">for</span> <span class="o">(</span><span class="n">Article</span> <span class="n">article</span> <span class="o">:</span> <span class="n">basket</span><span class="o">.</span><span class="na">getArticles</span><span class="o">())</span> <span class="o">{</span>
+</span><span class='line'>      <span class="n">totalCost</span> <span class="o">+=</span> <span class="n">article</span><span class="o">.</span><span class="na">getUnitPrice</span><span class="o">()</span> <span class="o">*</span> <span class="n">article</span><span class="o">.</span><span class="na">getQuantity</span><span class="o">();</span>
+</span><span class='line'>   <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">totalCost</span> <span class="o">=</span> <span class="n">totalCost</span> <span class="o">+</span> <span class="n">TAX_RATE</span> <span class="o">*</span> <span class="n">totalCost</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="n">basket</span><span class="o">.</span><span class="na">setTotalCost</span><span class="o">(</span><span class="n">totalCost</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="k">return</span> <span class="n">totalCost</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Pourquoi en est-on arrivé là ?</p>
+
+<ul>
+<li>A cause de Java qui encourage les <em>getters</em> et <em>setters</em> sur les beans ?</li>
+<li>A cause des librairies comme <a href="https://projectlombok.org/">lombok</a>, qui automatisent la création de ces accesseurs ?</li>
+<li>A cause de l'architecture en couches qui a été usée et abusée ?</li>
+<li>A cause de l'héritage des langages procéduraux comme le C, et la fainéantise des développeurs pour changer de paradigme ?</li>
+<li>Ou peut-être n'y a-t-il pas de problème et qu'il s'agit d'une bonne manière de coder ?</li>
+</ul>
+
+
+<p>Selon moi, il ne s'agit pas d'une manière correcte de coder ce genre de fonctionnalités et c'est pourquoi j'ai décidé d'écrire cet article.</p>
+
+<h2>Le principe <em>Tell don&rsquo;t ask</em></h2>
+
+<p>Ce principe stipule qu'au lieu de demander (<em>ask</em>) à un objet des informations pour les exploiter, il vaut mieux dire (<em>tell</em>) à cet objet ce que l'on veut faire et il s'en chargera lui même.</p>
+
+<p>Selon ce principe, la classe <code>Basket</code> utilisée ci-dessus devient</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Basket</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Article</span><span class="o">&gt;</span> <span class="n">articles</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="c1">// ...</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="kd">public</span> <span class="kt">int</span> <span class="nf">calculateTotalCost</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>      
+</span><span class='line'>      <span class="kt">int</span> <span class="n">totalCost</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">for</span> <span class="o">(</span><span class="n">Article</span> <span class="n">article</span> <span class="o">:</span> <span class="n">articles</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>          <span class="n">totalCost</span> <span class="o">+=</span> <span class="n">article</span><span class="o">.</span><span class="na">priceWithoutTaxes</span><span class="o">();</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">return</span> <span class="n">totalCost</span> <span class="o">+</span> <span class="n">TAX_RATE</span> <span class="o">*</span> <span class="n">totalCost</span><span class="o">;</span>
+</span><span class='line'>   <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>et le service devient</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">int</span> <span class="nf">calculateTotalCost</span><span class="o">(</span><span class="n">Basket</span> <span class="n">basket</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>   <span class="k">return</span> <span class="n">basket</span><span class="o">.</span><span class="na">calculateTotalCost</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Plusieurs remarques peuvent être faites à la lecture de ce nouveau code :</p>
+
+<ul>
+<li>Il n'y a plus d'accesseurs dans la classe <code>Basket</code>. Ses champs sont encapsulés et non exposés aux quatres vents : l'objet redevient responsable de son état.</li>
+<li>Le comportement est rapproché des données qu'il va utiliser. Ainsi, il est bien plus simple de comprendre le code (et donc de le maintenir) car les données traitées sont proches de leur traitement et elle ne sont plus utilisées ailleurs.</li>
+<li>La <a href="https://fr.wikipedia.org/wiki/Loi_de_D%C3%A9m%C3%A9ter">Loi de Demeter</a> est respectée. Ainsi, un changement dans une méthode de calcul de prix n'affectera personne d'autre que la classe dont le prix doit être calculé.</li>
+<li>La question quant à l'utilité du service est bel et bien posée. Il ne s'agit plus que d'un passe-plat totalement inutile à part à pourrir la base de code.</li>
+</ul>
+
+
+<h2>De l'utilité des services et des couches</h2>
+
+<p>En suivant ce genre de principes, il devient évident que le <em>service</em>, ce fameux <a href="https://fr.wikipedia.org/wiki/God_object">God Object</a> qui faisait la pluie et le beau temps dans le code, est réduit à peau de chagrin. Il est même possible de s'en passer très souvent.</p>
+
+<p>Cependant, il reste indispensable dans le cas où les objets doivent collaborer entre eux. Globalement, si je devais indiquer la <em>règle</em> que j'essaie de suivre au quotidien, je dirais ceci :</p>
+
+<ul>
+<li>Si l'objet dispose de toutes les informations pour effectuer un traitement, il doit le faire.</li>
+<li>Si le traitement porte sur plusieurs objets différents, une classe externe (typiquement un service) peut s'en occuper.</li>
+</ul>
+
+
+<h2>Restons pragmatiques</h2>
+
+<p>Comme toujours, les principes se confrontent à la réalité et ils ne gagnent pas toujours. Il faut parfois savoir faire des petites entorses à la règle et ne pas être dogmatique sur ce genre de sujets. Qui sait, les bonnes pratiques d'aujourd'hui seront peut-être les anti-patterns de demain.</p>
+
+<p>Cependant, après quelques temps de pratique, je pense qu'il est possible d'appliquer le principe de <em>Tell Don&rsquo;t Ask</em> au quotidien. Il est même possible de commencer dès aujourd'hui et sans devoir refactoriser l'intégralité du code source existant.</p>
+
+<p>Pensez à ça lors de vos prochains développement et n'hésitez pas à en parler sur <a href="https://twitter.com/RnowIf">Twitter (@RnowIf)</a>, dans un commentaire sur cette page ou bien lors d'un <a href="http://www.meetup.com/fr/Software-Craftsmanship-Lyon/">Meetup Craftsman</a> à Lyon ou ailleurs.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Renaud Humbert-Labeaumaz</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-07-28T21:57:56+02:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:57 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/craftsmanship/'>craftsmanship</a>, <a class='category' href='/blog/categories/oop/'>oop</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="https://rnowif.github.io/blog/2015/07/28/tell-dont-ask/" data-via="rnowif" data-counturl="https://rnowif.github.io/blog/2015/07/28/tell-dont-ask/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/04/14/multiples-vues-json-avec-at-jsonview/" title="Previous Post: Multiples vues JSON avec @JsonView">&laquo; Multiples vues JSON avec @JsonView</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/07/28/tell-dont-ask/">Tell Don't Ask</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/04/14/multiples-vues-json-avec-at-jsonview/">Multiples Vues JSON Avec @JsonView</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/30/eviter-les-classes-utilitaires-et-les-appels-statiques/">Eviter Les Classes Utilitaires Et Les Appels Statiques</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/20/distribuer-son-application-java-sur-mac-osx-grace-a-maven/">Distribuer Son Application Java Sur Mac OSX Grâce à Maven</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/19/distribuer-son-application-java-sur-windows-grace-a-maven/">Distribuer Son Application Java Sur Windows Grâce à Maven</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/rnowif">@rnowif</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'rnowif',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Renaud Humbert-Labeaumaz -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
