@@ -1,0 +1,277 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Refactorer, C'est Comme Dormir - Renaud Humbert-Labeaumaz</title>
+  <meta name="author" content="Renaud Humbert-Labeaumaz">
+
+  
+  <meta name="description" content="Robert est un développeur. On a demandé à Robert d'ajouter une nouvelle fonctionnalité à l'application. Robert aimerait bien en profiter pour &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="https://rnowif.github.io/blog/2016/01/31/refactorer-c-est-comme-dormir/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Renaud Humbert-Labeaumaz" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Renaud Humbert-Labeaumaz</a></h1>
+  
+    <h2>Java developer.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="rnowif.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Refactorer, C'est Comme Dormir</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-01-31T19:16:09+01:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2016</span></span> <span class='time'>7:16 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Robert est un développeur. On a demandé à Robert d'ajouter une nouvelle fonctionnalité à l'application. Robert aimerait bien en profiter pour refactorer un peu le code car il ne respecte pas les bonnes pratiques qu'il a pu voir lors du dernier meetup Software Craftsmanship. On dit alors à Robert qu'il ne peut pas refactorer car, en ce moment, il n'y a pas le temps pour ça et qu'il doit produire. Robert se dit qu'il n'y a de toutes façons jamais le temps&hellip;</p>
+
+<p>Cette histoire vous semble familière ? En effet, le refactoring est souvent perçu comme n'apportant aucune valeur. D'autres choses dans la vie peuvent sembler n'apporter aucune valeur. Il y en a notamment une qui prend près du tiers de la vie d'une personne pendant laquelle cette personne ne fait littéralement rien : <em>dormir</em> !</p>
+
+<!-- more -->
+
+
+<p>Le nombre de choses que l'on pourrait faire si l'on ne dormait pas ! Cependant, au bout de quelques jours, voire quelques heures, des événements désagréables finiraient par survenir. Sans sommeil, la moindre des tâches peut devenir très longue à effectuer et des erreurs étranges peuvent arriver (comme verser du jus d'orange dans son bol de céréales). Après un certain temps, le sommeil prend le dessus de manière incontrôlée, ce qui peut conduire à des accidents (à cause d'une somnolence au volant par exemple).</p>
+
+<p>De manière similaire, repousser le refactoring nuit au projet. Les développements peuvent prendre beaucoup plus de temps que nécessaire et des bugs peuvent survenir sur des fonctionnalités très éloignées de celles qui sont modifiées. De plus, il arrive un moment où le refactoring s'impose : le code ne peut plus être modifié sans risquer d'importantes régressions. Ceci peut se produire à un moment critique du projet et donc le mettre en péril. A ce moment là, la sentence tant redoutée peut tomber : « il faut tout réécrire ».</p>
+
+<p>De manière globale, refactorer régulièrement est nécessaire à la bonne santé du projet, tout comme dormir chaque nuit l'est pour la notre. Dans la suite de cet article, nous allons définir ce que signifie refactorer dans ce contexte, quand est-il bon de le faire, comment bien le préparer et que faire si le temps manque.</p>
+
+<h2>Que signifie refactorer ?</h2>
+
+<p>Selon Michael Feathers, le refactoring est l'acte d'améliorer le <em>design</em> du code sans changer son comportement.</p>
+
+<p>Il ne s'agit pas forcément de changer toute une hiérarchie de classes ou de mettre en place un <em>design pattern</em> très complexe mais cela peut être aussi simple que de renommer une variable, une méthode, une classe, d'extraire une méthode privée dans une classe externe, de regrouper les attributs d'une méthode dans un objet, etc.</p>
+
+<p>De plus, nous considérons aussi qu'ajouter des tests à du code existant est du refactoring. En effet, un code testable est un premier pas vers un meilleur <em>design</em>.</p>
+
+<h2>Quand faut-il refactorer ?</h2>
+
+<p>L'idée n'est pas d'essayer de corriger l'intégralité du système à chaque fois. Ceci serait contre productif et impossible à mettre en place. De plus, il serait très difficilement justifiable de provoquer des régressions dans une partie du code très éloignée de celle qui est censée être modifiée.</p>
+
+<p>Le refactoring est très efficace lorsqu'il est ciblé sur le code qui est concerné par le développement d'une fonctionnalité. De plus, il nous semble préférable de refactorer avant d'ajouter du nouveau code afin de démarrer sur des bases saines.</p>
+
+<h2>Comment le préparer ?</h2>
+
+<p>La première chose à faire avant de refactorer est de s'assurer qu'il y a des tests en place. Ces tests permettent de vérifier que le refactoring ne génère pas de régression. Si ces tests ne sont pas déjà en place, il faut les ajouter avant de commencer.</p>
+
+<p>Il peut arriver qu'il soit impossible de tester une portion de code. Dans ce cas, il faut effectuer le refactoring minimum nécessaire à la mise en place des tests.</p>
+
+<h2>Que faire si le temps manque ?</h2>
+
+<p>Si, comme Robert, le temps vous manque, il faut faire preuve de pragmatisme. Il peut être intéressant d'effectuer de petits refactoing à chaque développement. Cela permet d'améliorer le <em>design</em> sans consommer trop de temps et de préparer le terrain pour de plus gros refactoring.</p>
+
+<h2>Conclusion</h2>
+
+<p>Le refactoring est essentiel dans un projet et doit être effectué régulièrement. Il permet d'assurer que les nouvelles fonctionnalités pourront être développées dans un temps raisonnable et de limiter les régressions en améliorant le <em>design</em>. Par ailleurs, il permet aussi aux développeurs de (re)prendre du plaisir à faire évoluer le produit.</p>
+
+<p>Nous aimerions conclure avec la règle du boy scout qui indique que l'on doit toujours laisser le code dans un meilleur état que lorsqu'on l'a trouvé. L'application de cette règle conduit à l'amélioration de la qualité globale du code et à l'inversion de la dette technique.</p>
+
+<hr />
+
+<p><em>Cet article a été écrit en collaboration avec Nadia Humbert-Labeaumaz (<a href="https://www.twitter.com/nphumbert">@nphumbert</a>)</em></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Renaud Humbert-Labeaumaz</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-01-31T19:16:09+01:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2016</span></span> <span class='time'>7:16 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/craftsmanship/'>craftsmanship</a>, <a class='category' href='/blog/categories/refactoring/'>refactoring</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="https://rnowif.github.io/blog/2016/01/31/refactorer-c-est-comme-dormir/" data-via="rnowif" data-counturl="https://rnowif.github.io/blog/2016/01/31/refactorer-c-est-comme-dormir/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/07/28/tell-dont-ask/" title="Previous Post: Tell don't ask">&laquo; Tell don't ask</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/01/31/refactorer-c-est-comme-dormir/">Refactorer, C'est Comme Dormir</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/28/tell-dont-ask/">Tell Don't Ask</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/04/14/multiples-vues-json-avec-at-jsonview/">Multiples Vues JSON Avec @JsonView</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/30/eviter-les-classes-utilitaires-et-les-appels-statiques/">Eviter Les Classes Utilitaires Et Les Appels Statiques</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/20/distribuer-son-application-java-sur-mac-osx-grace-a-maven/">Distribuer Son Application Java Sur Mac OSX Grâce à Maven</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/rnowif">@rnowif</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'rnowif',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Renaud Humbert-Labeaumaz -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
