@@ -19,7 +19,7 @@ Je préfère donc utiliser une vraie base de données et faire des assertions di
 
 De plus, il est plus simple de monter une base de données embarquée que de capturer la requête. En effet, il serait nécessaire de connaître l'implémentation utilisée pour accéder à la base de données et ceci est un signe que nos tests sont trop couplés à notre implémentation. Ils tomberaient donc en échec si l'on venait à en changer (passage de requêtes JDBC à un ORM, ou l'inverse par exemple).
 
-L'exemple suivant utiliser les classes `EmbeddedDatabaseBuilder` et `JdbcTemplate` de Spring pour créer et accéder à une base de données embarquée.
+L'exemple suivant utilise les classes `EmbeddedDatabaseBuilder` et `JdbcTemplate` de Spring pour créer et accéder à une base de données embarquée.
 
 ```java
 public class UserRepositoryTest {
