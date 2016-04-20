@@ -156,6 +156,8 @@ public class FileStoreTest {
 }
 ```
 
+Cette technique a pour inconvénient de supprimer le dossier temporaire après chaque test. Ainsi, si le test est en échec il ne sera pas forcément aisé de comprendre pourquoi car le dossier aura disparu. Si ce besoin se fait sentir, il peut être plus pertinent de créer un dossier temporaire à la main dans une méthode de setup (annotée `@Before`) au lieu d'utiliser la `@Rule`.
+
 ## Mail
 
 De nombreuses applications envoient des mails. Les stratégies généralement utilisées pour les tester se divisent en deux catégories :
