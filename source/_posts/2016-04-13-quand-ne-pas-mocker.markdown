@@ -210,4 +210,5 @@ public class MailSenderTest {
 ## Conclusion
 
 Cette liste n'est bien sûr pas exhaustive est peut être complétée à l'infini. 
-Cependant, une tendance émerge. En effet, on se rend compte que les zones où le _mock_ peut être compliqué, voire contre productif, se situent au niveau des interfaces avec le monde extérieur. Il n'est pas toujours important de tester la manière dont le code va communiquer avec l'extérieur, ni même le format exact des données envoyées. La plupart du temps, il est seulement important de savoir si le système avec lequel le code interagit a correctement compris le message ou non.
+Cependant, une tendance émerge. En effet, on se rend compte que les zones où le _mock_ peut être compliqué, voire contre productif, se situent au niveau des interfaces avec le monde extérieur. Il n'est pas toujours important de tester la manière dont le code va communiquer avec l'extérieur, ni même le format exact des données envoyées. 
+La plupart du temps, il est seulement important de savoir si le système avec lequel le code interagit a correctement compris le message ou non. Dans les autres cas (vérification de protocole, optimisations de requêtes, etc.), il est plus pertinent d'utiliser des _mocks_ pour analyser le contenu exact de ce qui est envoyé.
