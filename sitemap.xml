@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>https://rnowif.github.io/blog/2016/04/13/quand-ne-pas-mocker/</loc>
+<lastmod>2016-04-13T20:55:56+02:00</lastmod>
+</url>
+<url>
 <loc>https://rnowif.github.io/blog/2016/01/31/refactorer-c-est-comme-dormir/</loc>
 <lastmod>2016-01-31T19:16:09+01:00</lastmod>
 </url>
@@ -56,5 +60,8 @@
 </url>
 <url>
 <loc>https://rnowif.github.io/blog/categories/refactoring/</loc>
+</url>
+<url>
+<loc>https://rnowif.github.io/blog/categories/test/</loc>
 </url>
 </urlset>

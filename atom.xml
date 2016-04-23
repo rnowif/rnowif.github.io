@@ -4,7 +4,7 @@
   <title><![CDATA[Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2016-02-11T08:38:54+01:00</updated>
+  <updated>2016-04-23T16:21:50+02:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -12,6 +12,353 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Quand Ne Pas Mocker]]></title>
+    <link href="https://rnowif.github.io/blog/2016/04/13/quand-ne-pas-mocker/"/>
+    <updated>2016-04-13T20:55:56+02:00</updated>
+    <id>https://rnowif.github.io/blog/2016/04/13/quand-ne-pas-mocker</id>
+    <content type="html"><![CDATA[<p>En tant que <em>Test Driven Developer</em> et plutôt adepte de l'école de TDD de Londres, j'ai tendance à utiliser un nombre assez important de <em>mocks</em> quand je teste mon code. Cependant, il y a des cas où je trouve plus utile de ne <strong>pas</strong> en utiliser.</p>
+
+<p>L'objectif de cet article est de décrire ces cas ainsi que la façon de tester le code sans utiliser de <em>mocks</em>.</p>
+
+<!-- more -->
+
+
+<h2>Bases de données</h2>
+
+<p>Quand je traite directement avec une base de données, la seule chose qui m'importe est si le code interagit correctement avec elle ou non. A part quelques cas particuliers d'optimisation ou de protection contre les injections SQL, la requête elle-même n'a que très peu d'importance.<br/>
+Je préfère donc utiliser une vraie base de données et faire des assertions directement dessus plutôt que de vérifier la requête générée.</p>
+
+<p>De plus, il est plus simple de monter une base de données embarquée que de capturer la requête. En effet, il serait nécessaire de connaître l'implémentation utilisée pour accéder à la base de données et ceci est un signe que nos tests sont trop couplés à notre implémentation. Ils tomberaient donc en échec si l'on venait à en changer (passage de requêtes JDBC à un ORM, ou l'inverse par exemple).</p>
+
+<p>L'exemple suivant utilise les classes <code>EmbeddedDatabaseBuilder</code> et <code>JdbcTemplate</code> de Spring pour créer et accéder à une base de données embarquée.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserRepositoryTest</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Test</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">should_save_user_to_database</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">DataSource</span> <span class="n">ds</span> <span class="o">=</span> <span class="n">dataSource</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">JdbcUserRepository</span> <span class="n">userRepository</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">JdbcUserRepository</span><span class="o">(</span><span class="n">ds</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">userRepository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="k">new</span> <span class="nf">User</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">,</span> <span class="s">&quot;Doe&quot;</span><span class="o">));</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">count</span><span class="o">(</span><span class="n">ds</span><span class="o">,</span> <span class="s">&quot;John&quot;</span><span class="o">,</span> <span class="s">&quot;Doe&quot;</span><span class="o">)).</span><span class="na">isEqualTo</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">int</span> <span class="nf">count</span><span class="o">(</span><span class="n">DataSource</span> <span class="n">ds</span><span class="o">,</span> <span class="n">String</span> <span class="n">firstName</span><span class="o">,</span> <span class="n">String</span> <span class="n">lastName</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nf">JdbcTemplate</span><span class="o">(</span><span class="n">ds</span><span class="o">).</span><span class="na">queryForObject</span><span class="o">(</span>
+</span><span class='line'>                <span class="s">&quot;select count(*) from user where first_name = ? and last_name = ?&quot;</span><span class="o">,</span>
+</span><span class='line'>                <span class="n">Integer</span><span class="o">.</span><span class="na">class</span><span class="o">,</span>
+</span><span class='line'>                <span class="n">firstName</span><span class="o">,</span> <span class="n">lastName</span>
+</span><span class='line'>        <span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">DataSource</span> <span class="nf">dataSource</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nf">EmbeddedDatabaseBuilder</span><span class="o">()</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">setType</span><span class="o">(</span><span class="n">EmbeddedDatabaseType</span><span class="o">.</span><span class="na">HSQL</span><span class="o">)</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">addScript</span><span class="o">(</span><span class="s">&quot;db/sql/create-db.sql&quot;</span><span class="o">)</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ce test ne tombera jamais en échec tant que le <em>comportement</em> de la classe ne change pas, même si son implémentation change totalement.</p>
+
+<h2>Réseau</h2>
+
+<p>Le code qui communique à travers le réseau peut être difficile à tester en isolation. Selon moi, ceci n'est surtout pas forcément utile. En effet, le but principal est de vérifier le bon transfert d'informations à travers le réseau, quelle que soit la librairie utilisée pour effectuer ce transfert.</p>
+
+<p>Dans ce genre de cas, je prends souvent le parti de créer un faux serveur qui sera lancé durant mes tests afin de communiquer avec le code à tester.</p>
+
+<p>L'exemple suivant décrit le test d'un client TCP qui va communiquer avec un serveur qui se contente de renvoyer ce qu'on lui envoie. Le faux serveur est représenté par la classe <code>FakeEchoServer</code> :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FakeEchoServer</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">port</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">volatile</span> <span class="kt">boolean</span> <span class="n">running</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">FakeEchoServer</span><span class="o">(</span><span class="kt">int</span> <span class="n">port</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">port</span> <span class="o">=</span> <span class="n">port</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">ServerSocket</span> <span class="n">serverSocket</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ServerSocket</span><span class="o">(</span><span class="n">port</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">running</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">new</span> <span class="nf">Thread</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">while</span> <span class="o">(</span><span class="n">running</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>                    <span class="n">Socket</span> <span class="n">socket</span> <span class="o">=</span> <span class="n">serverSocket</span><span class="o">.</span><span class="na">accept</span><span class="o">();</span>
+</span><span class='line'>                    <span class="k">try</span> <span class="o">(</span><span class="n">DataInputStream</span> <span class="n">reader</span> <span class="o">=</span> <span class="n">getReader</span><span class="o">(</span><span class="n">socket</span><span class="o">);</span> <span class="n">DataOutputStream</span> <span class="n">writer</span> <span class="o">=</span> <span class="n">getWriter</span><span class="o">(</span><span class="n">socket</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>                        <span class="n">writer</span><span class="o">.</span><span class="na">writeUTF</span><span class="o">(</span><span class="n">reader</span><span class="o">.</span><span class="na">readUTF</span><span class="o">());</span>
+</span><span class='line'>                        <span class="n">writer</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+</span><span class='line'>                    <span class="o">}</span>
+</span><span class='line'>                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                    <span class="k">throw</span> <span class="k">new</span> <span class="nf">RuntimeException</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+</span><span class='line'>                <span class="o">}</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}).</span><span class="na">start</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">DataOutputStream</span> <span class="nf">getWriter</span><span class="o">(</span><span class="n">Socket</span> <span class="n">socket</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nf">DataOutputStream</span><span class="o">(</span><span class="n">socket</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">());</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">DataInputStream</span> <span class="nf">getReader</span><span class="o">(</span><span class="n">Socket</span> <span class="n">socket</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nf">DataInputStream</span><span class="o">(</span><span class="n">socket</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">());</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">stop</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">running</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Le test, quant à lui, va instancier ce faux serveur et appeler la méthode à tester du client.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">EchoClientTest</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">PORT</span> <span class="o">=</span> <span class="mi">9999</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Test</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">should_send_message_and_get_response</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">FakeEchoServer</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">FakeEchoServer</span><span class="o">(</span><span class="n">PORT</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">server</span><span class="o">.</span><span class="na">run</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">String</span> <span class="n">echoResult</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">EchoClient</span><span class="o">(</span><span class="s">&quot;localhost&quot;</span><span class="o">,</span> <span class="n">PORT</span><span class="o">).</span><span class="na">sendAndReceive</span><span class="o">(</span><span class="s">&quot;Hello&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">echoResult</span><span class="o">).</span><span class="na">isEqualTo</span><span class="o">(</span><span class="s">&quot;Hello&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">server</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Le faux serveur devra évoluer au fur et à mesure que le <em>comportement</em> du client changera mais ne sera pas modifié par un changement de librairie ou de façon d'utiliser le réseau.</p>
+
+<h2>Système de fichiers</h2>
+
+<p>Lorsque l'on doit interagir avec un système de fichiers, on le fait souvent via des appels statiques à des classes comme <code>FileUtils</code> de <code>commons-io</code> ou <code>Files</code> du JDK ou bien des appels à <code>new File()</code>. Quoi qu'il en soit, il est difficile de <em>mocker</em> ce genre d'appels pour faire des assertions pertinentes.</p>
+
+<p>Une solution pourrait être de ne pas <em>mocker</em> du tout et de récupérer le fichier manipulé directement depuis le système de fichiers mais il faudrait alors penser à bien nettoyer le disque avant chaque test et faire aussi attention aux droits dans le dossier à utiliser.</p>
+
+<p>Fort heureusement, JUnit propose une <code>Rule</code> dédiée à ce genre de cas. Il s'agit de <code>TemporaryFolder</code> qui va créer un dossier temporaire dans lequel il sera possible de travailler. A la fin du test, ce dossier sera supprimé.</p>
+
+<p>Le test d'une classe manipulant des fichiers se présente alors sous la forme suivante :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FileStoreTest</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Rule</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">TemporaryFolder</span> <span class="n">temporaryFolder</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">TemporaryFolder</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Test</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">should_store_file_in_the_user_folder</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">URISyntaxException</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">File</span> <span class="n">rootFolder</span> <span class="o">=</span> <span class="n">temporaryFolder</span><span class="o">.</span><span class="na">newFolder</span><span class="o">();</span>
+</span><span class='line'>        <span class="kt">byte</span><span class="o">[]</span> <span class="n">content</span> <span class="o">=</span> <span class="n">Files</span><span class="o">.</span><span class="na">readAllBytes</span><span class="o">(</span><span class="n">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">ClassLoader</span><span class="o">.</span><span class="na">getSystemResource</span><span class="o">(</span><span class="s">&quot;files/avatar.png&quot;</span><span class="o">).</span><span class="na">toURI</span><span class="o">()));</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">new</span> <span class="nf">FileStore</span><span class="o">(</span><span class="n">rootFolder</span><span class="o">).</span><span class="na">store</span><span class="o">(</span><span class="k">new</span> <span class="nf">UserFile</span><span class="o">(</span><span class="s">&quot;avatar.png&quot;</span><span class="o">,</span> <span class="n">content</span><span class="o">,</span> <span class="s">&quot;john&quot;</span><span class="o">));</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">File</span> <span class="n">expectedFile</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">File</span><span class="o">(</span><span class="n">rootFolder</span><span class="o">,</span> <span class="s">&quot;john/files/avatar.png&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">expectedFile</span><span class="o">).</span><span class="na">exists</span><span class="o">().</span><span class="na">hasBinaryContent</span><span class="o">(</span><span class="n">content</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Cette technique a pour inconvénient de supprimer le dossier temporaire après chaque test. Ainsi, si le test est en échec il ne sera pas forcément aisé de comprendre pourquoi car le dossier aura disparu. Si ce besoin se fait sentir, il peut être plus pertinent de créer un dossier temporaire à la main dans une méthode de setup (annotée <code>@Before</code>) au lieu d'utiliser la <code>@Rule</code>.</p>
+
+<h2>Mail</h2>
+
+<p>De nombreuses applications envoient des mails. Les stratégies généralement utilisées pour les tester se divisent en deux catégories :</p>
+
+<ul>
+<li><em>Mocker</em> la classe responsable de l'envoi des mails.</li>
+<li>Utiliser une adresse mail &ldquo;poubelle&rdquo; qui va recevoir tous les mails et les vérifier manuellement.</li>
+</ul>
+
+
+<p>Aucune de ces deux méthodes n'est optimale car dans le premier cas, on ne sait pas ce qui est réellement envoyé par mail et cela rend le test très couplé à l'implémentation et dans le deuxième cas, le test n'est que très difficilement automatisable.</p>
+
+<p>La solution optimale serait de pouvoir instancier un vrai serveur SMTP et de pouvoir récupérer les mails qu'il a reçu. C'est ce que propose la librairie <a href="https://github.com/voodoodyne/subethasmtp">SubEtha SMTP</a>.</p>
+
+<p>Le test d'une classe permettant d'envoyer des mails va donc ressembler à ceci (on utilise également la classe <code>JavaMailSender</code> de Spring pour envoyer les mails) :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MailSenderTest</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">SMTP_PORT</span> <span class="o">=</span> <span class="mi">5555</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Test</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">should_send_mail_to_customer_address</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">MessagingException</span><span class="o">,</span> <span class="n">IOException</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Wiser</span> <span class="n">wiser</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Wiser</span><span class="o">(</span><span class="n">SMTP_PORT</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">wiser</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">new</span> <span class="nf">MailSender</span><span class="o">(</span><span class="n">getJavaMailSender</span><span class="o">(),</span> <span class="s">&quot;contact@acme.org&quot;</span><span class="o">).</span><span class="na">send</span><span class="o">(</span>
+</span><span class='line'>                <span class="k">new</span> <span class="nf">CustomerMail</span><span class="o">(</span><span class="s">&quot;john@acme.org&quot;</span><span class="o">,</span> <span class="s">&quot;Hey you!&quot;</span><span class="o">,</span> <span class="s">&quot;How are you?&quot;</span><span class="o">)</span>
+</span><span class='line'>        <span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">WiserMessage</span><span class="o">&gt;</span> <span class="n">messages</span> <span class="o">=</span> <span class="n">wiser</span><span class="o">.</span><span class="na">getMessages</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">messages</span><span class="o">).</span><span class="na">hasSize</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">MimeMessage</span> <span class="n">mimeMessage</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="na">getMimeMessage</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">mimeMessage</span><span class="o">.</span><span class="na">getSubject</span><span class="o">()).</span><span class="na">isEqualTo</span><span class="o">(</span><span class="s">&quot;Hey you!&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">mimeMessage</span><span class="o">.</span><span class="na">getFrom</span><span class="o">()[</span><span class="mi">0</span><span class="o">].</span><span class="na">toString</span><span class="o">()).</span><span class="na">isEqualTo</span><span class="o">(</span><span class="s">&quot;contact@acme.org&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">mimeMessage</span><span class="o">.</span><span class="na">getRecipients</span><span class="o">(</span><span class="n">Message</span><span class="o">.</span><span class="na">RecipientType</span><span class="o">.</span><span class="na">TO</span><span class="o">)[</span><span class="mi">0</span><span class="o">].</span><span class="na">toString</span><span class="o">()).</span><span class="na">isEqualTo</span><span class="o">(</span><span class="s">&quot;john@acme.org&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">assertThat</span><span class="o">(</span><span class="n">mimeMessage</span><span class="o">.</span><span class="na">getContent</span><span class="o">().</span><span class="na">toString</span><span class="o">()).</span><span class="na">isEqualTo</span><span class="o">(</span><span class="s">&quot;How are you?\r\n&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">wiser</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">JavaMailSender</span> <span class="nf">getJavaMailSender</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">JavaMailSenderImpl</span> <span class="n">javaMailSender</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">JavaMailSenderImpl</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">javaMailSender</span><span class="o">.</span><span class="na">setHost</span><span class="o">(</span><span class="s">&quot;localhost&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">javaMailSender</span><span class="o">.</span><span class="na">setPort</span><span class="o">(</span><span class="n">SMTP_PORT</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">javaMailSender</span><span class="o">.</span><span class="na">setProtocol</span><span class="o">(</span><span class="s">&quot;smtp&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">javaMailSender</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Conclusion</h2>
+
+<p>Cette liste n'est bien sûr pas exhaustive est peut être complétée à l'infini.
+Cependant, une tendance émerge. En effet, on se rend compte que les zones où le <em>mock</em> peut être compliqué, voire contre productif, se situent au niveau des interfaces avec le monde extérieur. Il n'est pas toujours important de tester la manière dont le code va communiquer avec l'extérieur, ni même le format exact des données envoyées. La plupart du temps, il est seulement important de savoir si le système avec lequel le code interagit a correctement compris le message ou non.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Refactorer, C'est Comme Dormir]]></title>
