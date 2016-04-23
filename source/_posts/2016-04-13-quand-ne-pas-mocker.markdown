@@ -64,7 +64,7 @@ L'exemple suivant décrit le test d'un client TCP qui va communiquer avec un ser
 ```java
 public class FakeEchoServer {
     private final int port;
-    private boolean running;
+    private volatile boolean running;
 
     public FakeEchoServer(int port) {
         this.port = port;
