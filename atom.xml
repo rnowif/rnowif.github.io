@@ -4,7 +4,7 @@
   <title><![CDATA[Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2016-04-23T16:23:58+02:00</updated>
+  <updated>2016-07-30T14:11:52+02:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -12,6 +12,122 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Quoi De Neuf Dans Spring 5]]></title>
+    <link href="https://rnowif.github.io/blog/2016/07/30/quoi-de-neuf-dans-spring-5/"/>
+    <updated>2016-07-30T14:05:38+02:00</updated>
+    <id>https://rnowif.github.io/blog/2016/07/30/quoi-de-neuf-dans-spring-5</id>
+    <content type="html"><![CDATA[<p>Juergen Hoeller a annoncé hier <a href="https://spring.io/blog/2016/07/28/spring-framework-5-0-m1-released">la sortie de Spring 5.0 M1</a>. Cette nouvelle version majeure de Spring arrive avec son lot de nouveautés.
+L'objectif de cet article est de découvrir ces nouveautés et ce qu'elles peuvent apporter aux développeurs Spring. Les nouveautés décrites dans cet article sont déjà disponibles dans la version 5.0.M1.</p>
+
+<!-- more -->
+
+
+<h2>Modification des prérequis</h2>
+
+<p>Spring 5 étant une version majeure, l'équipe s'est permise de modifier les pré-requis et d'abandonner le support pour des librairies obsolètes. A noter que la version 4.3 est supportée jusqu'en 2020 environ pour ceux qui ne pourraient pas mettre à jour leur application.</p>
+
+<h3>Java 8 et Java 9</h3>
+
+<p>Le changement principal au niveau des prérequis est la réécriture partielle de Spring en Java 8. De fait, il n'est pas possible d'utiliser Spring 5 avec une version antérieure de Java. Ce changement a ravi les développeurs Spring, comme on peut s'en douter (Spring 4.3 était en effet développé pour être compatible avec Java 6 !).</p>
+
+<blockquote class="twitter-tweet" data-partner="tweetdeck"><p lang="en" dir="ltr">Current status: working in the <a href="https://twitter.com/springframework">@springframework</a> codebase with Java8 - I so much feel like a kid in a candy store right now!</p>&mdash; Stéphane Nicoll (@snicoll) <a href="https://twitter.com/snicoll/status/750332049492500480">July 5, 2016</a></blockquote>
+
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>Le passage à Java 8 a permis d'ajouter des méthodes par défaut à certaines interfaces centrales de Spring. Par exemple, l'interface <code>BeanPostProcessor</code>, qui permet de pouvoir modifier un bean après son instanciation, voit ses deux méthodes retourner le bean initial par défaut. Il est ainsi possible d'implémenter seulement <code>postProcessBeforeInitialization</code>, qui modifie le bean avant l'appel de la méthode <code>@PostConstruct</code>, ou bien seulement <code>postProcessAfterInitialization</code>, qui modifie le bean après l’appel de la méthode <code>@PostConstruct</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">BeanPostProcessor</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">default</span> <span class="n">Object</span> <span class="nf">postProcessBeforeInitialization</span><span class="o">(</span><span class="n">Object</span> <span class="n">bean</span><span class="o">,</span> <span class="n">String</span> <span class="n">beanName</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">BeansException</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">bean</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="k">default</span> <span class="n">Object</span> <span class="nf">postProcessAfterInitialization</span><span class="o">(</span><span class="n">Object</span> <span class="n">bean</span><span class="o">,</span> <span class="n">String</span> <span class="n">beanName</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">BeansException</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">bean</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>De plus, Java 8 a aussi introduit les lambdas, qui sont désormais utilisées dans les API Spring, comme par exemple le message d'erreur des méthodes de la classe <code>org.springframework.util.Assert</code> qui peut être évalué de manière <em>lazy</em> grâce à un <code>Supplier</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Assert</span><span class="o">.</span><span class="na">isTrue</span><span class="o">(</span><span class="n">contextPath</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">&quot;/&quot;</span><span class="o">),</span> <span class="o">()</span> <span class="o">-&gt;</span> <span class="s">&quot;contextPath &#39;&quot;</span> <span class="o">+</span> <span class="n">contextPath</span> <span class="o">+</span> <span class="s">&quot;&#39; must start with &#39;/&#39;.&quot;</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Pour le moment, Java 8 est utilisé avec parcimonie mais nul doute que son usage va se généraliser dans les mois à venir pour améliorer l'expérience développeur des utilisateurs de Spring.</p>
+
+<h4>Java 7</h4>
+
+<p>Comme dit ci-dessus, Spring était compatible avec Java 6 jusqu'à la version 4, le passage à Java 8 a donc également permis de mettre à jour la base de code pour utiliser les fonctionnalités Java 7 (qui sont principalement des sucres syntaxiques) comme par exemple l'opérateur diamant, le <em>multicatch</em>, le <em>try-with-resources</em> ou l'utilisation de <code>StandardCharsets</code> au lieu de <code>String</code> pour définir les encodages.</p>
+
+<h4>Java 9</h4>
+
+<p>Finalement, Spring 5 continue de suivre les avancées de Java 9 pour rester le plus à jour possible dans son support. Par exemple, en Java 9, la méthode <code>Class.newInstance()</code> est dépréciée au profit de <code>Constructor.newInstance()</code> qui retourne une exception <code>InvocationTargetException</code> au lieu de propager l'exception utilisateur. Les classes Spring qui doivent instancier des beans arbitraires devront donc utiliser la nouvelle façon de faire.</p>
+
+<h3>JPA 2.1 et Hibernate 5</h3>
+
+<p>JPA 2.1 a presque 4 ans. Spring 5 essaie d'éviter les compromis avec la compatibilité et a donc établi JPA 2.1 comme prérequis. De fait, Hibernate 5 est obligatoire.</p>
+
+<h3>Abandon du support</h3>
+
+<p>Dans la même logique d'alléger le support pour des librairies obsolètes ou pas à jour, Spring 5 abandonne le support pour de nombreuses librairies dont PortletMVC, JDO, Guava caching, JasperReports, OpenJPA, Tiles 2, XMLBeans, Velocity.</p>
+
+<h2>Programmation réactive</h2>
+
+<p>La programmation réactive a le vent en poupe en ce moment et Spring 5 n'échappe pas à la règle. Le projet Spring Reactive a été mergé dans Spring Framework et permet désormais d'utiliser ses capacités dans Spring. De fait, Spring 5 permet désormais de sérialiser et désérialiser en XML (JAXB) et en Json (Jackson) de manière réactive et fournit un framework web et un <code>WebClient</code> réactifs.</p>
+
+<p>Le framework Spring Web Reactive et le bien connu Spring Web MVC ne partagent pas de code car le paradigme de programmation est fondamentalement différent. Cependant, l'API est très proche, pour une plus grande cohérence et une prise en main plus rapide pour les utilisateurs de ce framework.</p>
+
+<p>Voici par exemple à quoi ressemble un controller qui stream des données depuis un serveur de manière non bloquante et réactive.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&quot;/accounts/{id}/alerts&quot;</span><span class="o">)</span>
+</span><span class='line'><span class="kd">public</span> <span class="n">Flux</span><span class="o">&lt;</span><span class="n">Alert</span><span class="o">&gt;</span> <span class="nf">getAccountAlerts</span><span class="o">(</span><span class="nd">@PathVariable</span> <span class="n">Long</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">repository</span><span class="o">.</span><span class="na">getAccount</span><span class="o">(</span><span class="n">id</span><span class="o">)</span>
+</span><span class='line'>      <span class="o">.</span><span class="na">flatMap</span><span class="o">(</span><span class="n">account</span> <span class="o">-&gt;</span>
+</span><span class='line'>          <span class="k">this</span><span class="o">.</span><span class="na">webClient</span>
+</span><span class='line'>              <span class="o">.</span><span class="na">perform</span><span class="o">(</span><span class="n">get</span><span class="o">(</span><span class="s">&quot;/alerts/{key}&quot;</span><span class="o">,</span> <span class="n">account</span><span class="o">.</span><span class="na">getKey</span><span class="o">()))</span>
+</span><span class='line'>              <span class="o">.</span><span class="na">extract</span><span class="o">(</span><span class="n">bodyStream</span><span class="o">(</span><span class="n">Alert</span><span class="o">.</span><span class="na">class</span><span class="o">)));</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Pour en savoir plus sur la programmation réactive avec Spring, se référer aux billets de blog <a href="https://spring.io/blog/2016/07/28/reactive-programming-with-spring-5-0-m1">Reactive Programming with Spring 5.0 M1</a> et <a href="https://spring.io/blog/2016/04/19/understanding-reactive-types">Understanding Reactive types</a>.</p>
+
+<p>Pour information, un starter <em>Reactive Web</em> a été ajouté au <a href="http://start.spring.io">starter Spring Boot</a> en version 1.4+ de Spring Boot. Plus d'informations <a href="https://github.com/bclozel/spring-boot-web-reactive">ici</a>.</p>
+
+<h2>Tests</h2>
+
+<p>Finalement, Spring 5 a ajouté le support de JUnit 5, notamment grâce à l'ajout d'une <a href="http://junit.org/junit5/docs/current/user-guide/#extensions">extension</a> Spring, à utiliser avec <code>@ExtendWith(SpringExtension.class)</code> ou alors <code>@SpringJUnitConfig</code> qui combine <code>@ExtendWith(SpringExtension.class)</code> et <code>@ContextConfiguration</code>.</p>
+
+<h2>Conclusion</h2>
+
+<p>Spring 5 est une version majeure de Spring et l'équipe de développement en a profité pour faire un grand ménage dans les dépendances et les librairies supportées. Cette version permet de profiter pleinement des nouvelles fonctionnalités de Java sans la frustration parfois apportée par la rétro-compatibilité. De plus, la fusion de Spring Reactive dans le framework offre aux développeurs un outil extrêmement puissant pour tirer bénéfice de la programmation réactive avec Spring.</p>
+
+<p>Pour information, la version RELEASE est prévue pour mars 2017.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Quand Ne Pas Mocker]]></title>
