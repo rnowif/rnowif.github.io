@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>https://rnowif.github.io/blog/2016/11/02/ecrire-des-tests-plus-robustes-au-changement/</loc>
+<lastmod>2016-11-02T17:31:42+01:00</lastmod>
+</url>
+<url>
 <loc>https://rnowif.github.io/blog/2016/10/26/timelion/</loc>
 <lastmod>2016-10-26T22:26:16+02:00</lastmod>
 </url>
@@ -83,5 +87,14 @@
 </url>
 <url>
 <loc>https://rnowif.github.io/blog/categories/elastic/</loc>
+</url>
+<url>
+<loc>https://rnowif.github.io/blog/categories/tdd/</loc>
+</url>
+<url>
+<loc>https://rnowif.github.io/blog/categories/tests/</loc>
+</url>
+<url>
+<loc>https://rnowif.github.io/blog/categories/softwarecraftsmanship/</loc>
 </url>
 </urlset>

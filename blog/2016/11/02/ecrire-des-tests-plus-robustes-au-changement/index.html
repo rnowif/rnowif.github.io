@@ -1,0 +1,454 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Ecrire Des Tests Plus Robustes Au Changement - Renaud Humbert-Labeaumaz</title>
+  <meta name="author" content="Renaud Humbert-Labeaumaz">
+
+  
+  <meta name="description" content="Un des principaux freins à l'écriture de tests est quand ceux-ci doivent être mis à jour à chaque fois qu'une classe ou qu'une méthode est modifiée. &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="https://rnowif.github.io/blog/2016/11/02/ecrire-des-tests-plus-robustes-au-changement/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Renaud Humbert-Labeaumaz" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Renaud Humbert-Labeaumaz</a></h1>
+  
+    <h2>Java developer.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="rnowif.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Ecrire Des Tests Plus Robustes Au Changement</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-11-02T17:31:42+01:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2016</span></span> <span class='time'>5:31 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Un des principaux freins à l'écriture de tests est quand ceux-ci doivent être mis à jour à chaque fois qu'une classe ou qu'une méthode est modifiée. Parfois, les tests à mettre à jour n'ont rien à voir avec la classe ou la méthode modifiée, mais comme ils s'en servent, ils s'en retrouvent affectés eux aussi. Ce problème survient quand le test est trop couplé à l'implémentation.
+Dans cet article, nous allons voir comment découpler les tests des classes qu'ils utilisent et ainsi les rendre plus robustes.</p>
+
+<!-- more -->
+
+
+<h2>Méthode 0 : La méthode naïve</h2>
+
+<p>Soit une classe qui doit tester si une personne a accès à une ressource ou non. L'API de la classe <code>Person</code> est maintenue par une autre équipe et est donc hors de contrôle.
+La façon la plus naïve d'écrire le test pourrait être la suivante :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Test</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">should_deny_access_when_underaged</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">Person</span> <span class="n">kid</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Person</span><span class="o">();</span>
+</span><span class='line'>  <span class="n">kid</span><span class="o">.</span><span class="na">setAge</span><span class="o">(</span><span class="mi">17</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">AuthorizationPolicy</span> <span class="n">policy</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">AuthorizationPolicy</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">Authorization</span> <span class="n">authorization</span> <span class="o">=</span> <span class="n">policy</span><span class="o">.</span><span class="na">authorize</span><span class="o">(</span><span class="n">kid</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">assertThat</span><span class="o">(</span><span class="n">authorization</span><span class="o">,</span> <span class="n">is</span><span class="o">(</span><span class="n">Authorization</span><span class="o">.</span><span class="na">DENY</span><span class="o">));</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Si l'API de la classe <code>Person</code> évolue et prend l'âge directement en paramètre du constructeur, ce test ne compilera plus et devra être réécrit, ainsi que tous les autres tests qui instancient directement une <code>Person</code>.</p>
+
+<h2>Méthode 1 : Utilisation d'une méthode de création</h2>
+
+<p>La première solution serait d'utiliser une méthode de création partagée par tous les tests de la classe :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Test</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">should_deny_access_when_underaged</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">Person</span> <span class="n">kid</span> <span class="o">=</span> <span class="n">newPerson</span><span class="o">(</span><span class="mi">17</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">AuthorizationPolicy</span> <span class="n">policy</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">AuthorizationPolicy</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">Authorization</span> <span class="n">authorization</span> <span class="o">=</span> <span class="n">policy</span><span class="o">.</span><span class="na">authorize</span><span class="o">(</span><span class="n">kid</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">assertThat</span><span class="o">(</span><span class="n">authorization</span><span class="o">,</span> <span class="n">is</span><span class="o">(</span><span class="n">Authorization</span><span class="o">.</span><span class="na">DENY</span><span class="o">));</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">private</span> <span class="n">Person</span> <span class="nf">newPerson</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Person</span><span class="o">();</span>
+</span><span class='line'>  <span class="n">person</span><span class="o">.</span><span class="na">setAge</span><span class="o">(</span><span class="mi">17</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">person</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ici, si l'API de <code>Person</code> change, seule la méthode est affectée. Tous les tests passeront sans difficulté une fois cette méthode modifiée.</p>
+
+<p>Maintenant, la politique d'autorisation évolue pour refuser les mineurs, mais également les garçons (même majeurs). Le test devient alors :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Test</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">should_deny_access_when_underaged</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">Person</span> <span class="n">kid</span> <span class="o">=</span> <span class="n">newPerson</span><span class="o">(</span><span class="mi">17</span><span class="o">,</span> <span class="n">Gender</span><span class="o">.</span><span class="na">FEMALE</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">AuthorizationPolicy</span> <span class="n">policy</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">AuthorizationPolicy</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">Authorization</span> <span class="n">authorization</span> <span class="o">=</span> <span class="n">policy</span><span class="o">.</span><span class="na">authorize</span><span class="o">(</span><span class="n">kid</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">assertThat</span><span class="o">(</span><span class="n">authorization</span><span class="o">,</span> <span class="n">is</span><span class="o">(</span><span class="n">Authorization</span><span class="o">.</span><span class="na">DENY</span><span class="o">));</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nd">@Test</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">should_deny_access_when_male_and_overaged</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">Person</span> <span class="n">maleAdult</span> <span class="o">=</span> <span class="n">newPerson</span><span class="o">(</span><span class="mi">18</span><span class="o">,</span> <span class="n">Gender</span><span class="o">.</span><span class="na">MALE</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">AuthorizationPolicy</span> <span class="n">policy</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">AuthorizationPolicy</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">Authorization</span> <span class="n">authorization</span> <span class="o">=</span> <span class="n">policy</span><span class="o">.</span><span class="na">authorize</span><span class="o">(</span><span class="n">maleAdult</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">assertThat</span><span class="o">(</span><span class="n">authorization</span><span class="o">,</span> <span class="n">is</span><span class="o">(</span><span class="n">Authorization</span><span class="o">.</span><span class="na">DENY</span><span class="o">));</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">private</span> <span class="n">Person</span> <span class="nf">newPerson</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">,</span> <span class="n">Gender</span> <span class="n">gender</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Person</span><span class="o">();</span>
+</span><span class='line'>  <span class="n">person</span><span class="o">.</span><span class="na">setAge</span><span class="o">(</span><span class="n">age</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">person</span><span class="o">.</span><span class="na">setGender</span><span class="o">(</span><span class="n">gender</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">person</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>On remarque que le premier test a été modifié, bien que le sexe de la personne ne soit pas pertinent dans ce cas. Le code du premier test est donc moins expressif sur la règle métier testée. Si on augmente le nombre de paramètres dans la méthode <code>newPerson</code> l'expressivité et la robustesse des tests décroit de plus en plus. De plus, la méthode <code>newPerson</code> n'est pas directement réutilisable dans les autres classes de test.</p>
+
+<h1>Méthode 2 : Utilisation d'un builder</h1>
+
+<p>Cette méthode consiste à utiliser un <code>Builder</code> pour permettre de construire une instance de <code>Person</code> personnalisable à la demande.</p>
+
+<p>Il suffit de créer une classe <code>PersonBuilder</code> :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">PersonBuilder</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+</span><span class='line'>  <span class="kd">private</span> <span class="n">Gender</span> <span class="n">gender</span> <span class="o">=</span> <span class="n">Gender</span><span class="o">.</span><span class="na">FEMALE</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="n">PersonBuilder</span> <span class="nf">aPerson</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">new</span> <span class="nf">PersonBuilder</span><span class="o">();</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">public</span> <span class="n">PersonBuilder</span> <span class="nf">withAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">public</span> <span class="n">PersonBuilder</span> <span class="nf">withGender</span><span class="o">(</span><span class="n">Gender</span> <span class="n">gender</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">gender</span> <span class="o">=</span> <span class="n">gender</span><span class="o">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">public</span> <span class="n">Person</span> <span class="nf">build</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Person</span><span class="o">();</span>
+</span><span class='line'>    <span class="n">person</span><span class="o">.</span><span class="na">setAge</span><span class="o">(</span><span class="n">age</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">person</span><span class="o">.</span><span class="na">setGender</span><span class="o">(</span><span class="n">gender</span><span class="o">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">person</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Les tests deviennent alors :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Test</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">should_deny_access_when_underaged</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">Person</span> <span class="n">kid</span> <span class="o">=</span> <span class="n">aPerson</span><span class="o">().</span><span class="na">withAge</span><span class="o">(</span><span class="mi">17</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+</span><span class='line'>  <span class="n">AuthorizationPolicy</span> <span class="n">policy</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">AuthorizationPolicy</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">Authorization</span> <span class="n">authorization</span> <span class="o">=</span> <span class="n">policy</span><span class="o">.</span><span class="na">authorize</span><span class="o">(</span><span class="n">kid</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">assertThat</span><span class="o">(</span><span class="n">authorization</span><span class="o">,</span> <span class="n">is</span><span class="o">(</span><span class="n">Authorization</span><span class="o">.</span><span class="na">DENY</span><span class="o">));</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nd">@Test</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">should_deny_access_when_male_and_overaged</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">Person</span> <span class="n">maleAdult</span> <span class="o">=</span> <span class="n">aPerson</span><span class="o">().</span><span class="na">withAge</span><span class="o">(</span><span class="mi">18</span><span class="o">).</span><span class="na">withGender</span><span class="o">(</span><span class="n">Gender</span><span class="o">.</span><span class="na">MALE</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+</span><span class='line'>  <span class="n">AuthorizationPolicy</span> <span class="n">policy</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">AuthorizationPolicy</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">Authorization</span> <span class="n">authorization</span> <span class="o">=</span> <span class="n">policy</span><span class="o">.</span><span class="na">authorize</span><span class="o">(</span><span class="n">maleAdult</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">assertThat</span><span class="o">(</span><span class="n">authorization</span><span class="o">,</span> <span class="n">is</span><span class="o">(</span><span class="n">Authorization</span><span class="o">.</span><span class="na">DENY</span><span class="o">));</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Désormais, les tests sont bien plus clairs sur leur intention car seuls les attributs nécessaires sont spécifiés. Les autres peuvent être <code>null</code> ou avoir des valeurs par défaut (ici, le sexe est féminin par défaut par exemple). De plus, la logique d'instanciation d'une <code>Person</code> est située à une seul endroit dans les tests et seul le builder serait affecté si l'API venait à changer.</p>
+
+<h2>Conclusion</h2>
+
+<p>Les méthodes décrites dans cet article permettent de découpler les tests des logiques d'instanciation des objets nécessaires. Elles sont particulièrement utiles lors de l'utilisation d'API tierces qui ne sont pas toujours très stables ni très bien conçues. Grâce à elles, les tests sont plus expressifs, plus robustes et plus concis.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Renaud Humbert-Labeaumaz</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-11-02T17:31:42+01:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2016</span></span> <span class='time'>5:31 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/softwarecraftsmanship/'>softwarecraftsmanship</a>, <a class='category' href='/blog/categories/tdd/'>tdd</a>, <a class='category' href='/blog/categories/tests/'>tests</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="https://rnowif.github.io/blog/2016/11/02/ecrire-des-tests-plus-robustes-au-changement/" data-via="rnowif" data-counturl="https://rnowif.github.io/blog/2016/11/02/ecrire-des-tests-plus-robustes-au-changement/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/10/26/timelion/" title="Previous Post: Timelion, le petit nouveau de Kibana 5">&laquo; Timelion, le petit nouveau de Kibana 5</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/11/02/ecrire-des-tests-plus-robustes-au-changement/">Ecrire Des Tests Plus Robustes Au Changement</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/10/26/timelion/">Timelion, Le Petit Nouveau De Kibana 5</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/30/quoi-de-neuf-dans-spring-5/">Quoi De Neuf Dans Spring 5</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/13/quand-ne-pas-mocker/">Quand Ne Pas Mocker</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/01/31/refactorer-c-est-comme-dormir/">Refactorer, C'est Comme Dormir</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  
+  <h1>GitHub</h1>
+  <a href="https://github.com/rnowif">@rnowif</a> on GitHub
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Renaud Humbert-Labeaumaz -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
