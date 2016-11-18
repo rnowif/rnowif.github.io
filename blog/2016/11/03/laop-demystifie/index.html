@@ -1,0 +1,615 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>L'AOP Démystifié - Renaud Humbert-Labeaumaz</title>
+  <meta name="author" content="Renaud Humbert-Labeaumaz">
+
+  
+  <meta name="description" content="L'Aspect Oriented Programming est un paradigme de programmation qui permet de traiter les préoccupations transverses (ou cross cutting concerns en &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="https://rnowif.github.io/blog/2016/11/03/laop-demystifie/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Renaud Humbert-Labeaumaz" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Renaud Humbert-Labeaumaz</a></h1>
+  
+    <h2>Java developer.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="rnowif.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">L'AOP Démystifié</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-11-03T07:55:27+01:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2016</span></span> <span class='time'>7:55 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>L'<em>Aspect Oriented Programming</em> est un paradigme de programmation qui permet de traiter les préoccupations transverses (ou <em>cross cutting concerns</em> en anglais) telles que le logging, le cache ou les transactions séparément du code métier.</p>
+
+<p>L'AOP repose la plupart du temps sur l'utilisation de librairies ou de frameworks qui rendent ce type de programmation assez obscur et parfois difficile à comprendre. L'objectif de cet article est d'expliquer comment cela fonctionne afin de le démystifier.</p>
+
+<!-- more -->
+
+
+<p>L'ensemble du code montré dans cet article est accessible sur ce repo <a href="https://github.com/rnowif/demo-aop">GitHub</a>.</p>
+
+<h2>Pourquoi l'AOP ?</h2>
+
+<p>Pour cet article, nous allons partir d'une classe qui implémente la suite de Fibonacci et dont on veut calculer le temps d'exécution.
+De manière naïve, il serait possible de calculer et logger ce temps d'exécution directement dans la méthode (<a href="https://github.com/rnowif/demo-aop/tree/63660763cdb1f1d97e3ba63e9c5a271a60d53a99">voir le commit</a>):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FibonacciCalculatorImpl</span> <span class="kd">implements</span> <span class="n">FibonacciCalculator</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Logger</span> <span class="n">LOG</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">FibonacciCalculatorImpl</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">calculate</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">StopWatch</span> <span class="n">watch</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">StopWatch</span><span class="o">(</span><span class="n">Clock</span><span class="o">.</span><span class="na">systemDefaultZone</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">watch</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">LOG</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;Start calculation for number {}&quot;</span><span class="o">,</span> <span class="n">n</span><span class="o">);</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">n</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">result</span> <span class="o">=</span> <span class="n">calculate</span><span class="o">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">calculate</span><span class="o">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="n">LOG</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;End calculation for number {} ({} ms)&quot;</span><span class="o">,</span> <span class="n">n</span><span class="o">,</span> <span class="n">watch</span><span class="o">.</span><span class="na">elapsed</span><span class="o">());</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ce code pose plusieurs problèmes : le <em>tangling</em> et le <em>scattering</em>.</p>
+
+<h3><em>Code tangling</em></h3>
+
+<p>Le <em>code tangling</em> signifie que le code contient différentes notions qui sont mélangées : la mesure du temps et le métier. On pourrait en imaginer d'autres comme la gestion des transactions, le cache ou le monitoring.</p>
+
+<p>Ceci est problématique car le code métier, qui apporte la vraie valeur, est noyé dans du code de &ldquo;plomberie&rdquo; qui peut finir par prendre beaucoup plus de place que le code initial !</p>
+
+<h3><em>Code scattering</em></h3>
+
+<p>Le <em>code scattering</em> signifie que le code non métier sera sans nul doute réécrit dans beaucoup de méthodes. On voit alors émerger un grand nombre de duplications de code, qui le rendent très difficile à maintenir.</p>
+
+<h2>Le pattern <em>Proxy</em></h2>
+
+<p>La première amélioration évidente qu'il est possible d'apporter est d'extraire la logique de calcul du temps dans une classe spécifique, qui va implémenter la même interface que <code>FibonacciCalculatorImpl</code> et déléguer l'appel de la méthode <code>calculate</code> à une instance de <code>FibonacciCalculatorImpl</code>. Il s'agit du pattern <em>Proxy</em> (<a href="https://github.com/rnowif/demo-aop/tree/a4d00f2b5b0a2cb28196a738ece906560546bda5">voir le commit</a>).</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TimedFibonacciCalculator</span> <span class="kd">implements</span> <span class="n">FibonacciCalculator</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Logger</span> <span class="n">LOG</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">FibonacciCalculatorImpl</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">FibonacciCalculator</span> <span class="n">calculator</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">TimedFibonacciCalculator</span><span class="o">(</span><span class="n">FibonacciCalculator</span> <span class="n">calculator</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">calculator</span> <span class="o">=</span> <span class="n">calculator</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">calculate</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">StopWatch</span> <span class="n">watch</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">StopWatch</span><span class="o">(</span><span class="n">Clock</span><span class="o">.</span><span class="na">systemDefaultZone</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">watch</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">LOG</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;Start calculation for number {}&quot;</span><span class="o">,</span> <span class="n">n</span><span class="o">);</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="o">.</span><span class="na">calculate</span><span class="o">(</span><span class="n">n</span><span class="o">);</span> <span class="c1">// Delegate calculation</span>
+</span><span class='line'>        <span class="n">LOG</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;End calculation for number {} ({} ms)&quot;</span><span class="o">,</span> <span class="n">n</span><span class="o">,</span> <span class="n">watch</span><span class="o">.</span><span class="na">elapsed</span><span class="o">());</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>L'utilisation de cette classe se fait comme suit :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">FibonacciCalculator</span> <span class="n">calculator</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">TimedFibonacciCalculator</span><span class="o">(</span><span class="k">new</span> <span class="nf">FibonacciCalculatorImpl</span><span class="o">());</span>
+</span><span class='line'><span class="n">LOG</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;10th fibonacci number : {}&quot;</span><span class="o">,</span> <span class="n">calculator</span><span class="o">.</span><span class="na">calculate</span><span class="o">(</span><span class="mi">10</span><span class="o">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>L'utilisation de ce pattern règle le problème du <em>code tangling</em> mais pas du tout celui du <em>code scattering</em>. En effet, cette classe <code>TimedFibonacciCalculator</code> n'est pas vraiment réutilisable car elle est fortement couplée à l'interface <code>FibonacciCalculator</code>.</p>
+
+<h2>Externalisation de la logique de chronométrage</h2>
+
+<p>Pour résoudre le <em>code scattering</em>, il faut extraire la logique de mesure du temps et lui permettre d'appeler n'importe quelle méthode (<a href="https://github.com/rnowif/demo-aop/tree/fb545b1a3af8e34b37e8f93f4abf97b57ae75f33">voir le commit</a>). On peut, pour cela, définir une interface fonctionnelle générique qui contient une méthode <code>invoke</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@FunctionalInterface</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">InvocationPoint</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">T</span> <span class="nf">invoke</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Cette interface pourra alors être injectée dans une classe réutilisable, permettant de mesurer le temps nécessaire à l'exécution de la méthode <code>invoke</code> :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TimedInvocation</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Logger</span> <span class="n">LOG</span> <span class="o">=</span> <span class="n">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">TimedInvocation</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">T</span> <span class="nf">invoke</span><span class="o">(</span><span class="n">InvocationPoint</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">invocationPoint</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">StopWatch</span> <span class="n">watch</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">StopWatch</span><span class="o">(</span><span class="n">Clock</span><span class="o">.</span><span class="na">systemDefaultZone</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">watch</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">LOG</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;Start calculation&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">T</span> <span class="n">result</span> <span class="o">=</span> <span class="n">invocationPoint</span><span class="o">.</span><span class="na">invoke</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">LOG</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;End calculation ({} ms)&quot;</span><span class="o">,</span> <span class="n">watch</span><span class="o">.</span><span class="na">elapsed</span><span class="o">());</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Le <em>proxy</em> ne sert donc plus que de passe-plat pour appeler cette classe (l'interface <code>InvocationPoint</code> peut aisément être implémentée par un lambda):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TimedFibonacciCalculator</span> <span class="kd">implements</span> <span class="n">FibonacciCalculator</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">FibonacciCalculator</span> <span class="n">calculator</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">TimedFibonacciCalculator</span><span class="o">(</span><span class="n">FibonacciCalculator</span> <span class="n">calculator</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">calculator</span> <span class="o">=</span> <span class="n">calculator</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">calculate</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nf">TimedInvocation</span><span class="o">().</span><span class="na">invoke</span><span class="o">(</span>
+</span><span class='line'>                <span class="o">()</span> <span class="o">-&gt;</span> <span class="n">calculator</span><span class="o">.</span><span class="na">calculate</span><span class="o">(</span><span class="n">n</span><span class="o">)</span>
+</span><span class='line'>        <span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>On remarque ici que le message de log est plus générique : il n'est plus possible de tracer l'index de la suite que l'on veut calculer. En effet, ce log est très générique et peut permettre de mesurer le temps d'exécution de n'importe quelle méthode.</p>
+
+<h2>Génération automatique de <em>proxy</em></h2>
+
+<p>Le <em>tangling</em> et le <em>scattering</em> sont éliminés mais il faut tout de même créer une classe de <em>proxy</em> pour chaque méthode que l'on souhaite chronométrer. Le mécanisme de <em>JDKProxy</em>, inclus directement dans le JDK, permet de créer des <em>proxys</em> dynamiques à partir d'une interface (<code>FibonacciCalculator</code>) et d'une implémentation de <code>InvocationHandler</code> (<a href="https://github.com/rnowif/demo-aop/tree/88dda77b942cc9370762d3e2efb79b6b9c0c6aeb">voir le commit</a>). Celle-ci contient une méthode <code>invoke(Object proxy, Method method, Object[] args): Object</code> qui prend en paramètre le proxy, la méthode qui a été apelée ainsi que ses arguments et doit retourner le résultat de l'appel de la méthode.</p>
+
+<p>Le plus simple des <code>InvocationHandler</code>, qui ne fait rien, peut s'écrire comme ceci :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleInvocationHandler</span> <span class="kd">implements</span> <span class="n">InvocationHandler</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Object</span> <span class="n">target</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">SimpleInvocationHandler</span><span class="o">(</span><span class="n">Object</span> <span class="n">target</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">invoke</span><span class="o">(</span><span class="n">Object</span> <span class="n">proxy</span><span class="o">,</span> <span class="n">Method</span> <span class="n">method</span><span class="o">,</span> <span class="n">Object</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Throwable</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>La création du proxy se fait ainsi :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">FibonacciCalculator</span> <span class="n">calculator</span> <span class="o">=</span> <span class="o">(</span><span class="n">FibonacciCalculator</span><span class="o">)</span> <span class="n">Proxy</span><span class="o">.</span><span class="na">newProxyInstance</span><span class="o">(</span>
+</span><span class='line'>  <span class="n">FibonacciCalculator</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getClassLoader</span><span class="o">(),</span>
+</span><span class='line'>  <span class="k">new</span> <span class="n">Class</span><span class="o">[]</span> <span class="o">{</span><span class="n">FibonacciCalculator</span><span class="o">.</span><span class="na">class</span><span class="o">},</span>
+</span><span class='line'>  <span class="k">new</span> <span class="nf">SimpleInvocationHandler</span><span class="o">(</span><span class="k">new</span> <span class="nf">FibonacciCalculatorImpl</span><span class="o">())</span>
+</span><span class='line'><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Dans notre cas, le handler va devoir calculer le temps d'exécution de la méthode. Il s'écrit donc ainsi :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TimedInvocationHandler</span> <span class="kd">implements</span> <span class="n">InvocationHandler</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Object</span> <span class="n">target</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">TimedInvocationHandler</span><span class="o">(</span><span class="n">Object</span> <span class="n">target</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">invoke</span><span class="o">(</span><span class="n">Object</span> <span class="n">proxy</span><span class="o">,</span> <span class="n">Method</span> <span class="n">method</span><span class="o">,</span> <span class="n">Object</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Throwable</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nf">TimedInvocation</span><span class="o">().</span><span class="na">invoke</span><span class="o">(</span>
+</span><span class='line'>                <span class="o">()</span> <span class="o">-&gt;</span> <span class="n">method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="n">args</span><span class="o">)</span>
+</span><span class='line'>        <span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Activer ou désactiver la mesure du temps</h2>
+
+<p>Pour faire comme les pros (sic !), il est possible d'activer ou désactiver la mesure du temps sur une méthode en y ajoutant une annotation <code>@Timed</code> qui servira de marqueur.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FibonacciCalculatorImpl</span> <span class="kd">implements</span> <span class="n">FibonacciCalculator</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Timed</span>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">calculate</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">n</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">result</span> <span class="o">=</span> <span class="n">calculate</span><span class="o">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="n">calculate</span><span class="o">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Dans le handler, il suffit alors d'utiliser la reflection pour déterminer si la méthode est annotée ou non, et mesure le temps en conséquence :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TimedInvocationHandler</span> <span class="kd">implements</span> <span class="n">InvocationHandler</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Class</span><span class="o">&lt;</span><span class="n">Timed</span><span class="o">&gt;</span> <span class="n">ANNOTATION_CLASS</span> <span class="o">=</span> <span class="n">Timed</span><span class="o">.</span><span class="na">class</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Object</span> <span class="n">target</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">TimedInvocationHandler</span><span class="o">(</span><span class="n">Object</span> <span class="n">target</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">invoke</span><span class="o">(</span><span class="n">Object</span> <span class="n">proxy</span><span class="o">,</span> <span class="n">Method</span> <span class="n">method</span><span class="o">,</span> <span class="n">Object</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Throwable</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">isTimed</span><span class="o">(</span><span class="n">method</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">new</span> <span class="nf">TimedInvocation</span><span class="o">().</span><span class="na">invoke</span><span class="o">(</span>
+</span><span class='line'>                    <span class="o">()</span> <span class="o">-&gt;</span> <span class="n">method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="n">args</span><span class="o">)</span>
+</span><span class='line'>            <span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Method not annotated, just invoke target</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">isTimed</span><span class="o">(</span><span class="n">Method</span> <span class="n">method</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">NoSuchMethodException</span> <span class="o">{</span>
+</span><span class='line'>        <span class="c1">// Is timed if the interface method or the target method is annotated</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">method</span><span class="o">.</span><span class="na">getDeclaredAnnotation</span><span class="o">(</span><span class="n">ANNOTATION_CLASS</span><span class="o">)</span> <span class="o">!=</span> <span class="kc">null</span>
+</span><span class='line'>                <span class="o">||</span> <span class="n">target</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="n">method</span><span class="o">.</span><span class="na">getName</span><span class="o">(),</span> <span class="n">method</span><span class="o">.</span><span class="na">getParameterTypes</span><span class="o">()).</span><span class="na">getDeclaredAnnotation</span><span class="o">(</span><span class="n">ANNOTATION_CLASS</span><span class="o">)</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Pour rappel, une annotation n'est qu'un marqueur. La magie n'est pas dans l'annotation mais dans le code qui l'utilise !</p>
+
+<h2>Conclusion</h2>
+
+<h3>A propos de l'AOP</h3>
+
+<p>Cet article a, de manière assez rudimentaire, permis d'implémenter un mécanisme d'AOP sans avoir recours à aucun framework externe. Néanmoins, il permet de comprendre certains aspects et limitations de l'AOP :</p>
+
+<ul>
+<li>Pour utiliser l'AOP avec des interfaces, il est possible d'utiliser le mécanisme de <em>JDKProxy</em>, inclus directement dans le JDK.</li>
+<li>Pour utiliser l'AOP sans interface, le proxy dynamique doit étendre la classe à proxifier (il est possible d'utiliser une librairie comme <a href="https://github.com/cglib/cglib">CGLib</a> pour faire ça).</li>
+<li>L'AOP ne peut pas fonctionner sur des méthodes ou des classes privées ou finales. En effet, la méthode doit être définie dans une interface ou pouvoir être surchargée.</li>
+<li>Si la classe à proxifier appelle directement une méthode de sa propre classe, l'AOP ne s'applique pas. Ici, la méthode <code>calculate</code> est récursive. Cependant, la mesure du temps ne s'opère que si la méthode est appelée à travers le proxy. Donc, seul l'appel de la méthode par &ldquo;l'extérieur&rdquo; est chronométré.</li>
+</ul>
+
+
+<h3>AspectJ et Spring AOP</h3>
+
+<p><a href="http://www.eclipse.org/aspectj/">AspectJ</a> est un framework qui permet de définir de manière très précise les méthodes à proxifier pour y apporter du comportement. Il est également possible de ne définir du comportement qu'avant ou après l'exécution de la méthode. Cependant, le mécanisme sous-jacent est exactement le même que celui décrit dans cet article. Spring, quant à lui, utilise abondamment l'AOP grâce à AspectJ pour enrichir les beans avec du comportement transverse (avec les annotations <code>@Transactional</code>, <code>@Cacheable</code>, etc.). Il va parcourir l'ensemble des beans du contexte d'application et les remplacer par des <em>proxys</em> dynamiques. Ainsi, les beans que l'application manipule ne sont pas les implémentations brutes, mais des <em>proxys</em>.</p>
+
+<h3>Note finale</h3>
+
+<p>L'AOP n'est pas magique, ni très complexe. Cependant, il est très fortement utilisé dans les framework de type Spring. Une bonne compréhension de ses mécanismes et de son implémentation permet de faciliter grandement le dévelopement et le debug des applications d'entreprise.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Renaud Humbert-Labeaumaz</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-11-03T07:55:27+01:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2016</span></span> <span class='time'>7:55 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/aop/'>aop</a>, <a class='category' href='/blog/categories/design-pattern/'>design pattern</a>, <a class='category' href='/blog/categories/java/'>java</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="https://rnowif.github.io/blog/2016/11/03/laop-demystifie/" data-via="rnowif" data-counturl="https://rnowif.github.io/blog/2016/11/03/laop-demystifie/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/11/02/ecrire-des-tests-plus-robustes-au-changement/" title="Previous Post: Ecrire des tests plus robustes au changement">&laquo; Ecrire des tests plus robustes au changement</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/11/03/laop-demystifie/">L'AOP Démystifié</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/11/02/ecrire-des-tests-plus-robustes-au-changement/">Ecrire Des Tests Plus Robustes Au Changement</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/10/26/timelion/">Timelion, Le Petit Nouveau De Kibana 5</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/30/quoi-de-neuf-dans-spring-5/">Quoi De Neuf Dans Spring 5</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/04/13/quand-ne-pas-mocker/">Quand Ne Pas Mocker</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  
+  <h1>GitHub</h1>
+  <a href="https://github.com/rnowif">@rnowif</a> on GitHub
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Renaud Humbert-Labeaumaz -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
