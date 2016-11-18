@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Kibana | Renaud Humbert-Labeaumaz]]></title>
+  <title><![CDATA[Category: kibana | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/kibana/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2016-11-18T17:08:20+01:00</updated>
+  <updated>2016-11-18T17:19:14+01:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Timelion, Le Petit Nouveau De Kibana 5]]></title>
+    <title type="html"><![CDATA[Timelion, le petit nouveau de Kibana 5]]></title>
     <link href="https://rnowif.github.io/blog/2016/10/26/timelion/"/>
     <updated>2016-10-26T22:26:16+02:00</updated>
     <id>https://rnowif.github.io/blog/2016/10/26/timelion</id>

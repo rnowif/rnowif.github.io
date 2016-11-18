@@ -4,7 +4,7 @@
   <title><![CDATA[Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2016-11-18T17:08:20+01:00</updated>
+  <updated>2016-11-18T17:19:14+01:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Implémenter Un Mécanisme d’AOP, Sans Framework !]]></title>
+    <title type="html"><![CDATA[Implémenter un mécanisme d’AOP, sans framework !]]></title>
     <link href="https://rnowif.github.io/blog/2016/11/03/aop-sans-framework/"/>
     <updated>2016-11-03T07:55:27+01:00</updated>
     <id>https://rnowif.github.io/blog/2016/11/03/aop-sans-framework</id>
@@ -425,7 +425,7 @@ Par aileurs, l’AOP implémenté grâce à ce mécanisme ne peut pas fonctionne
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Ecrire Des Tests Plus Robustes Au Changement]]></title>
+    <title type="html"><![CDATA[Ecrire des tests plus robustes au changement]]></title>
     <link href="https://rnowif.github.io/blog/2016/11/02/ecrire-des-tests-plus-robustes-au-changement/"/>
     <updated>2016-11-02T17:31:42+01:00</updated>
     <id>https://rnowif.github.io/blog/2016/11/02/ecrire-des-tests-plus-robustes-au-changement</id>
@@ -678,7 +678,7 @@ La façon la plus naïve d'écrire le test pourrait être la suivante :</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Timelion, Le Petit Nouveau De Kibana 5]]></title>
+    <title type="html"><![CDATA[Timelion, le petit nouveau de Kibana 5]]></title>
     <link href="https://rnowif.github.io/blog/2016/10/26/timelion/"/>
     <updated>2016-10-26T22:26:16+02:00</updated>
     <id>https://rnowif.github.io/blog/2016/10/26/timelion</id>
@@ -768,7 +768,7 @@ La façon la plus naïve d'écrire le test pourrait être la suivante :</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Quoi De Neuf Dans Spring 5]]></title>
+    <title type="html"><![CDATA[Quoi de neuf dans Spring 5]]></title>
     <link href="https://rnowif.github.io/blog/2016/07/30/quoi-de-neuf-dans-spring-5/"/>
     <updated>2016-07-30T14:05:38+02:00</updated>
     <id>https://rnowif.github.io/blog/2016/07/30/quoi-de-neuf-dans-spring-5</id>
@@ -884,7 +884,7 @@ L'objectif de cet article est de découvrir ces nouveautés et ce qu'elles peuve
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Quand Ne Pas Mocker]]></title>
+    <title type="html"><![CDATA[Quand ne pas mocker]]></title>
     <link href="https://rnowif.github.io/blog/2016/04/13/quand-ne-pas-mocker/"/>
     <updated>2016-04-13T20:55:56+02:00</updated>
     <id>https://rnowif.github.io/blog/2016/04/13/quand-ne-pas-mocker</id>
@@ -1232,7 +1232,7 @@ La plupart du temps, il est seulement important de savoir si le système avec le
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Refactorer, C'est Comme Dormir]]></title>
+    <title type="html"><![CDATA[Refactorer, c'est comme dormir]]></title>
     <link href="https://rnowif.github.io/blog/2016/01/31/refactorer-c-est-comme-dormir/"/>
     <updated>2016-01-31T19:16:09+01:00</updated>
     <id>https://rnowif.github.io/blog/2016/01/31/refactorer-c-est-comme-dormir</id>
@@ -1286,7 +1286,7 @@ La plupart du temps, il est seulement important de savoir si le système avec le
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Tell Don't Ask]]></title>
+    <title type="html"><![CDATA[Tell don't ask]]></title>
     <link href="https://rnowif.github.io/blog/2015/07/28/tell-dont-ask/"/>
     <updated>2015-07-28T21:57:56+02:00</updated>
     <id>https://rnowif.github.io/blog/2015/07/28/tell-dont-ask</id>
@@ -1430,7 +1430,7 @@ La plupart du temps, il est seulement important de savoir si le système avec le
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Multiples Vues JSON Avec @JsonView]]></title>
+    <title type="html"><![CDATA[Multiples vues JSON avec @JsonView]]></title>
     <link href="https://rnowif.github.io/blog/2015/04/14/multiples-vues-json-avec-at-jsonview/"/>
     <updated>2015-04-14T22:05:31+02:00</updated>
     <id>https://rnowif.github.io/blog/2015/04/14/multiples-vues-json-avec-at-jsonview</id>
@@ -1561,7 +1561,7 @@ La plupart du temps, il est seulement important de savoir si le système avec le
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Eviter Les Classes Utilitaires Et Les Appels Statiques]]></title>
+    <title type="html"><![CDATA[Eviter les classes utilitaires et les appels statiques]]></title>
     <link href="https://rnowif.github.io/blog/2015/03/30/eviter-les-classes-utilitaires-et-les-appels-statiques/"/>
     <updated>2015-03-30T22:14:16+02:00</updated>
     <id>https://rnowif.github.io/blog/2015/03/30/eviter-les-classes-utilitaires-et-les-appels-statiques</id>
@@ -1844,7 +1844,7 @@ En effet, créer une interface, une implémentation et une injection pour chaque
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Distribuer Son Application Java Sur Mac OSX Grâce à Maven]]></title>
+    <title type="html"><![CDATA[Distribuer son application java sur Mac OSX grâce à Maven]]></title>
     <link href="https://rnowif.github.io/blog/2015/03/20/distribuer-son-application-java-sur-mac-osx-grace-a-maven/"/>
     <updated>2015-03-20T21:21:43+01:00</updated>
     <id>https://rnowif.github.io/blog/2015/03/20/distribuer-son-application-java-sur-mac-osx-grace-a-maven</id>
@@ -1964,7 +1964,7 @@ Ce fichier app pourra être exécuté en double cliquant dessus simplement.</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Distribuer Son Application Java Sur Windows Grâce à Maven]]></title>
+    <title type="html"><![CDATA[Distribuer son application java sur Windows grâce à Maven]]></title>
     <link href="https://rnowif.github.io/blog/2015/03/19/distribuer-son-application-java-sur-windows-grace-a-maven/"/>
     <updated>2015-03-19T21:25:16+01:00</updated>
     <id>https://rnowif.github.io/blog/2015/03/19/distribuer-son-application-java-sur-windows-grace-a-maven</id>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Java | Renaud Humbert-Labeaumaz]]></title>
+  <title><![CDATA[Category: java | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/java/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2016-11-18T17:08:20+01:00</updated>
+  <updated>2016-11-18T17:19:14+01:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Implémenter Un Mécanisme d’AOP, Sans Framework !]]></title>
+    <title type="html"><![CDATA[Implémenter un mécanisme d’AOP, sans framework !]]></title>
     <link href="https://rnowif.github.io/blog/2016/11/03/aop-sans-framework/"/>
     <updated>2016-11-03T07:55:27+01:00</updated>
     <id>https://rnowif.github.io/blog/2016/11/03/aop-sans-framework</id>
@@ -269,7 +269,7 @@ Par aileurs, l’AOP implémenté grâce à ce mécanisme ne peut pas fonctionne
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Quoi De Neuf Dans Spring 5]]></title>
+    <title type="html"><![CDATA[Quoi de neuf dans Spring 5]]></title>
     <link href="https://rnowif.github.io/blog/2016/07/30/quoi-de-neuf-dans-spring-5/"/>
     <updated>2016-07-30T14:05:38+02:00</updated>
     <id>https://rnowif.github.io/blog/2016/07/30/quoi-de-neuf-dans-spring-5</id>
@@ -364,7 +364,7 @@ public Flux&lt;Alert&gt; getAccountAlerts(@PathVariable Long id) {
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Multiples Vues JSON Avec @JsonView]]></title>
+    <title type="html"><![CDATA[Multiples vues JSON avec @JsonView]]></title>
     <link href="https://rnowif.github.io/blog/2015/04/14/multiples-vues-json-avec-at-jsonview/"/>
     <updated>2015-04-14T22:05:31+02:00</updated>
     <id>https://rnowif.github.io/blog/2015/04/14/multiples-vues-json-avec-at-jsonview</id>
@@ -457,7 +457,7 @@ public class FooController {
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Eviter Les Classes Utilitaires Et Les Appels Statiques]]></title>
+    <title type="html"><![CDATA[Eviter les classes utilitaires et les appels statiques]]></title>
     <link href="https://rnowif.github.io/blog/2015/03/30/eviter-les-classes-utilitaires-et-les-appels-statiques/"/>
     <updated>2015-03-30T22:14:16+02:00</updated>
     <id>https://rnowif.github.io/blog/2015/03/30/eviter-les-classes-utilitaires-et-les-appels-statiques</id>
@@ -637,7 +637,7 @@ En effet, créer une interface, une implémentation et une injection pour chaque
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Distribuer Son Application Java Sur Mac OSX Grâce à Maven]]></title>
+    <title type="html"><![CDATA[Distribuer son application java sur Mac OSX grâce à Maven]]></title>
     <link href="https://rnowif.github.io/blog/2015/03/20/distribuer-son-application-java-sur-mac-osx-grace-a-maven/"/>
     <updated>2015-03-20T21:21:43+01:00</updated>
     <id>https://rnowif.github.io/blog/2015/03/20/distribuer-son-application-java-sur-mac-osx-grace-a-maven</id>
