@@ -4,7 +4,7 @@
   <title><![CDATA[Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2016-11-18T17:03:49+01:00</updated>
+  <updated>2016-11-18T17:07:19+01:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[L'AOP Démystifié]]></title>
+    <title type="html"><![CDATA[Implémenter Un Mécanisme d’AOP, Sans Framework !]]></title>
     <link href="https://rnowif.github.io/blog/2016/11/03/laop-demystifie/"/>
     <updated>2016-11-03T07:55:27+01:00</updated>
     <id>https://rnowif.github.io/blog/2016/11/03/laop-demystifie</id>
@@ -407,19 +407,16 @@ De manière naïve, il serait possible de calculer et logger ce temps d'exécuti
 
 <h3>A propos de l'AOP</h3>
 
-<p>Cet article a, de manière assez rudimentaire, permis d'implémenter un mécanisme d'AOP sans avoir recours à aucun framework externe. Néanmoins, il permet de comprendre certains aspects et limitations de l'AOP :</p>
+<p>Cet article a, de manière assez rudimentaire, permis d’implémenter un mécanisme d’AOP sans avoir recours à aucun framework externe. Néanmoins, il permet de comprendre certains aspects et limitations de l’AOP.</p>
 
-<ul>
-<li>Pour utiliser l'AOP avec des interfaces, il est possible d'utiliser le mécanisme de <em>JDKProxy</em>, inclus directement dans le JDK.</li>
-<li>Pour utiliser l'AOP sans interface, le proxy dynamique doit étendre la classe à proxifier (il est possible d'utiliser une librairie comme <a href="https://github.com/cglib/cglib">CGLib</a> pour faire ça).</li>
-<li>L'AOP ne peut pas fonctionner sur des méthodes ou des classes privées ou finales. En effet, la méthode doit être définie dans une interface ou pouvoir être surchargée.</li>
-<li>Si la classe à proxifier appelle directement une méthode de sa propre classe, l'AOP ne s'applique pas. Ici, la méthode <code>calculate</code> est récursive. Cependant, la mesure du temps ne s'opère que si la méthode est appelée à travers le proxy. Donc, seul l'appel de la méthode par &ldquo;l'extérieur&rdquo; est chronométré.</li>
-</ul>
+<p>En effet, il est très simple de créer des proxys dynamiques avec JDKProxy lorsque la classe cible implémente une interface. Lorsque ce n’est pas le cas, le proxy doit étendre cette classe et surcharger la méthode à proxifier (il est possible d’utiliser une librairie comme <a href="https://github.com/cglib/cglib">CGLib</a> pour faire ça automatiquement).
+Par aileurs, l’AOP implémenté grâce à ce mécanisme ne peut pas fonctionner sur des méthodes ou des classes privées ou finales. En effet, la méthode doit être définie dans une interface ou pouvoir être surchargée. De plus, si la classe à proxifier appelle directement une méthode de sa propre classe, notre AOP ne s’applique pas. Ici, la méthode calculate est récursive. Cependant, la mesure du temps ne s’opère que si la méthode est appelée à travers le proxy. Donc, seul l’appel de la méthode par &ldquo;l’extérieur&rdquo; est chronométré.</p>
 
+<p>Certains autres mécanismes permettent de s’affranchir de ces contraintes en modifiant directement le code généré. Cette opération, appelée tissage, peut être effectuée à la compilation ou au runtime grâce à des librairies et instrumentations diverses.</p>
 
 <h3>AspectJ et Spring AOP</h3>
 
-<p><a href="http://www.eclipse.org/aspectj/">AspectJ</a> est un framework qui permet de définir de manière très précise les méthodes à proxifier pour y apporter du comportement. Il est également possible de ne définir du comportement qu'avant ou après l'exécution de la méthode. Cependant, le mécanisme sous-jacent est exactement le même que celui décrit dans cet article. Spring, quant à lui, utilise abondamment l'AOP grâce à AspectJ pour enrichir les beans avec du comportement transverse (avec les annotations <code>@Transactional</code>, <code>@Cacheable</code>, etc.). Il va parcourir l'ensemble des beans du contexte d'application et les remplacer par des <em>proxys</em> dynamiques. Ainsi, les beans que l'application manipule ne sont pas les implémentations brutes, mais des <em>proxys</em>.</p>
+<p><a href="http://www.eclipse.org/aspectj/">AspectJ</a> est un framework qui permet de faire de l’AOP grâce au tissage. Spring, quant à lui, utilise abondamment l’AOP grâce au mécanisme de proxy décrit dans cet article (avec les annotations <code>@Transactional</code>, <code>@Cacheable</code>, etc.). Il va parcourir l’ensemble des beans du contexte d’application et les remplacer par des <em>proxys</em> dynamiques. Ainsi, les beans que l’application manipule ne sont pas les implémentations brutes, mais des proxys (plus d’information sur les <em>proxys</em> AOP avec Spring <a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/html/aop.html#aop-understanding-aop-proxies">ici</a>). Spring permet également de faire de l’AspectJ.</p>
 
 <h3>Note finale</h3>
 
