@@ -4,7 +4,7 @@
   <title><![CDATA[Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2016-11-18T17:07:19+01:00</updated>
+  <updated>2016-11-18T17:08:20+01:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Implémenter Un Mécanisme d’AOP, Sans Framework !]]></title>
-    <link href="https://rnowif.github.io/blog/2016/11/03/laop-demystifie/"/>
+    <link href="https://rnowif.github.io/blog/2016/11/03/aop-sans-framework/"/>
     <updated>2016-11-03T07:55:27+01:00</updated>
-    <id>https://rnowif.github.io/blog/2016/11/03/laop-demystifie</id>
+    <id>https://rnowif.github.io/blog/2016/11/03/aop-sans-framework</id>
     <content type="html"><![CDATA[<p>L'<em>Aspect Oriented Programming</em> est un paradigme de programmation qui permet de traiter les préoccupations transverses (ou <em>cross cutting concerns</em> en anglais) telles que le logging, le cache ou les transactions séparément du code métier.</p>
 
 <p>L'AOP repose la plupart du temps sur l'utilisation de librairies ou de frameworks qui rendent ce type de programmation assez obscur et parfois difficile à comprendre. L'objectif de cet article est d'expliquer comment cela fonctionne afin de le démystifier.</p>
