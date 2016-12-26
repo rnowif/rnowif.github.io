@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2016-12-26T17:47:39+01:00</updated>
+  <updated>2016-12-26T17:54:56+01:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -18,7 +18,7 @@
     <link href="https://rnowif.github.io/blog/2016/12/26/pourquoi-utiliser-le-tdd-pour-apprendre-langage/"/>
     <updated>2016-12-26T17:44:15+01:00</updated>
     <id>https://rnowif.github.io/blog/2016/12/26/pourquoi-utiliser-le-tdd-pour-apprendre-langage</id>
-    <content type="html"><![CDATA[<p>Durant ma dernière mission, j'ai eu à écrire du code dans des langages que je ne connaissait pas du tout, ou très peu (Ruby, Perl, Python, Go). J'ai donc expérimenté une technique qui consiste à apprendre un langage par les tests. Cette technique se nomme le <em>Test Driven Learning</em>.</p>
+    <content type="html"><![CDATA[<p>Durant ma dernière mission, j'ai eu à écrire du code dans des langages que je ne connaissais pas du tout, ou très peu (Ruby, Perl, Python, Go). J'ai donc expérimenté une technique qui consiste à apprendre un langage par les tests. Cette technique se nomme le <em>Test Driven Learning</em>.</p>
 
 <p>L'objectif de cet article est de décrire pourquoi il peut être intéressant d'utiliser le TDD pour apprendre un nouveau langage de manière efficace.</p>
 
@@ -27,7 +27,7 @@
 
 <h2>Découverte du langage</h2>
 
-<p>Écrire un test est suffisamment complexe pour découvrir pas mal de spécificité du langage mais suffisamment simple pour ne pas avoir besoin de trop chercher.
+<p>Écrire un test est suffisamment complexe pour découvrir pas mal de spécificités du langage mais suffisamment simple pour ne pas avoir besoin de trop chercher.
 En effet, il faut bien créer un fichier, éventuellement une classe, instancier un objet, créer et appeler une fonction, définir une variable, etc. Cependant, il est très rapidement possible d'écrire un test sans avoir besoin de connaître le langage en détail : pas besoin de boucle, de structure conditionnelle ou bien d'héritage. De plus, exécuter un test est en général bien plus simple que de déployer le code (sur un serveur ou en local) pour le tester &ldquo;à la main&rdquo;.</p>
 
 <p>Par ailleurs, le fait de ne pas connaître le langage garantit que le test sera focalisé sur le comportement et donc totalement découplé de l'implémentation !</p>
@@ -60,7 +60,7 @@ end
 
 <p>J'ai très souvent entendu des gens dire qu'ils ne faisaient pas de TDD car ils ne maîtrisaient pas assez le langage. Je pense au contraire que le TDD est un excellent moyen pour apprendre un langage ou un paradigme. Il permet de s'assurer un harnais de sécurité et d'expérimenter sans aucun risque. Tous les avantages du TDD semblent exacerbés lorsque le langage cible est peu ou pas connu. En somme, je pense qu'avoir appris le Ruby par le TDD m'a permis d'être à la fois meilleur en Ruby <strong>et</strong> en TDD, tout en étant bien plus productif, malgré le gap technique.</p>
 
-<p>Si vous souhaitez aller plus loin dans le TDL, je vous conseille de lire l'<a href="https://ldez.github.io/blog/2015/12/04/test-driven-learning-go/">excellent article</a> de <a href="https://twitter.com/ludnadez">Ludovic Fernandez</a>, où il apprend le Go par les tests.</p>
+<p>Si vous souhaitez aller plus loin dans le TDL, je vous conseille de lire l'<a href="https://ldez.github.io/blog/2015/12/04/test-driven-learning-go/">article</a> de <a href="https://twitter.com/ludnadez">Ludovic Fernandez</a>, où il apprend le Go par les tests.</p>
 ]]></content>
   </entry>
   
