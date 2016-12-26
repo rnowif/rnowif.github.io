@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>https://rnowif.github.io/blog/2016/12/26/pourquoi-utiliser-le-tdd-pour-apprendre-langage/</loc>
+<lastmod>2016-12-26T17:44:15+01:00</lastmod>
+</url>
+<url>
 <loc>https://rnowif.github.io/blog/2016/11/03/aop-sans-framework/</loc>
 <lastmod>2016-11-03T07:55:27+01:00</lastmod>
 </url>
@@ -103,5 +107,11 @@
 </url>
 <url>
 <loc>https://rnowif.github.io/blog/categories/aop/</loc>
+</url>
+<url>
+<loc>https://rnowif.github.io/blog/categories/tdl/</loc>
+</url>
+<url>
+<loc>https://rnowif.github.io/blog/categories/ruby/</loc>
 </url>
 </urlset>
