@@ -13,13 +13,13 @@ description:
 # You can customize the format as defined in
 # http://www.ruby-doc.org/core-1.9.2/Time.html#method-i-strftime
 # Additionally, %o will give you the ordinal representation of the day
-date_format: "ordinal"
+date_format: "%a %e %b %Y, %l:%M %p"
 
 # RSS / Email (optional) subscription links (change if using something like Feedburner)
 subscribe_rss: /atom.xml
 subscribe_email:
 # RSS feeds can list your email address if you like
-email: renaud.humbert-labeaumaz@zenika.com
+email: rnow.if@gmail.com
 
 # ----------------------- #
 #    Jekyll & Plugins     #
@@ -91,7 +91,7 @@ delicious_user:
 delicious_count: 3
 
 # Disqus Comments
-disqus_short_name:
+disqus_short_name: rnowif
 disqus_show_comment_count: false
 
 # Google Analytics
