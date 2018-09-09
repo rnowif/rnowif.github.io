@@ -8,15 +8,21 @@
 {% if author %}
 
 <figure class="author-image">
-    <span class="img" href="/about" style="background-image: url(/images/avatar.jpg)"><span class="hidden">Picture</span></span>
+    <span class="img" href="/about" style="background-image: url(/images/renaud.png)"><span class="hidden">Picture</span></span>
 </figure>
 
 <section class="author">
     <h4><span class="byline author vcard" itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="fn" itemprop="name">{{ author }}</span></span></h4>
 
-    <div class="author-meta">
-        <span class="author-link icon-link"><i class="fa fa-link" aria-hidden="true"></i> <a href="{{site.url}}">{{site.url}}</a></span>
-    </div>
+    <a class="fa fa-link" href="{{site.url}}">
+        <span class="hidden">{{site.url}}</span>
+    </a>
+    <a class="fa fa-twitter" href="https://twitter.com/{{site.twitter_user}}">
+        <span class="hidden">{{site.twitter_user}}</span>
+    </a>
+    <a class="fa fa-github" href="https://github.com/{{site.github_user}}">
+        <span class="hidden">{{site.github_user}}</span>
+    </a>
 </section>
 
 <hr>
@@ -25,7 +31,7 @@
     {% unless page.sharing == false %}
     <h4>Share this post</h4>
     {% assign url = page.url|remove:'index.html' %}
-    <a class="fa fa-twitter" href="https://twitter.com/intent/tweet?url={{site.url}}{{url}};" 
+    <a class="fa fa-twitter" href="https://twitter.com/intent/tweet?url={{site.url}}{{url}};"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
         <span class="hidden">Twitter</span>
     </a>
