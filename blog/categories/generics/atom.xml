@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: generics | Renaud Humbert-Labeaumaz]]></title>
+  <link href="https://rnowif.github.io/blog/categories/generics/atom.xml" rel="self"/>
+  <link href="https://rnowif.github.io/"/>
+  <updated>2018-09-19T12:35:50+02:00</updated>
+  <id>https://rnowif.github.io/</id>
+  <author>
+    <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
+    <email><![CDATA[rnow.if@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Intersection Types in Java]]></title>
+    <link href="https://rnowif.github.io/blog/2018/09/19/intersection-types-in-java/"/>
+    <updated>2018-09-19T11:29:15+02:00</updated>
+    <id>https://rnowif.github.io/blog/2018/09/19/intersection-types-in-java</id>
+    <content type="html"><![CDATA[<p>This blog post aims to explain how we can use intersection types in Java when we expect an object that implements different interfaces.</p>
+
+<!-- more -->
+
+
+<h2>Interface Segregation Principle</h2>
+
+<p>The Interface Segregation Principle (ISP) stipulates that interfaces should contain the least amount of methods as possible. In other terms, a client of an interface should use all the methods of this interface.</p>
+
+<p>For instance, let&rsquo;s take this <code>File</code> interface:</p>
+
+<pre><code class="java">interface File {
+    Collection&lt;String&gt; readLines();
+    void write(String line);
+    void deleteFile();
+}
+
+class LocalFile implements File {
+    // ...
+}
+</code></pre>
+
+<p>As a client of this interface, it is highly unlikely that I need all methods. I may want to just read the file and, in that case, I certainely don&rsquo;t want to be able to delete it. If I just want to delete the file, I probably don&rsquo;t want to read all its lines.</p>
+
+<p>In order to avoid that, it is a good idea to split this interface in 3 seperate ones:</p>
+
+<pre><code class="java">interface FileReader {
+    Collection&lt;String&gt; readLines();
+}
+
+interface FileWriter {
+    void write(String line);
+}
+
+interface FileDestroyer {
+    void deleteFile();
+}
+
+class LocalFile implements FileReader, FileWriter, FileDestroyer {
+    // The concrete class can implement all 3 interfaces
+    // ...
+}
+</code></pre>
+
+<p>Now, a client can just require the interface it needs and ignore the rest.</p>
+
+<h2>Interface Combination</h2>
+
+<p>Writing tiny interfaces is good to enforce ISP and lower the coupling of the code. However, what happens when a client wants to read a file <em>and</em> write at the same time?</p>
+
+<p>The first two snippets won&rsquo;t compile because one of the interface is not implemented:</p>
+
+<pre><code class="java">void readAndWrite(FileReader reader) {
+    reader.readLines();
+    reader.write("Hello"); // That won't compile since reader does not implement FileWriter
+}
+
+void readAndWrite(FileWriter writer) {
+    reader.readLines(); // That won't compile since writer does not implement FileReader
+    reader.write("Hello");
+}
+</code></pre>
+
+<p>As an alternative, it is possible to pass an instance of <code>LocalFile</code> but it introduces a high coupling between the method and the LocalFile concrete class, defeating the whole purpose of interfaces entirely.</p>
+
+<pre><code class="java">void readAndWrite(LocalFile file) {
+    file.readLines();
+    file.write("Hello");
+    // That will compile but it is not recommended
+}
+</code></pre>
+
+<p>Since Java 1.5, and the introduction of generics, a feature, known as Intersection Types, allows to combine interfaces in this kind of situation.</p>
+
+<h2>Intersection Types to the Rescue</h2>
+
+<p>The following code uses intersection types to solve the issue of needing an object that implements several interfaces:</p>
+
+<pre><code class="java">&lt;T extends FileReader &amp; FileWriter&gt; void readAndWrite(T file) {
+    file.readLines();
+    file.write("Hello");    
+}
+</code></pre>
+
+<p>The <code>&amp;</code> symbol means that the method expects a type <code>T</code> that implements both the <code>FileReader</code> and <code>FileWriter</code> interfaces.</p>
+
+<h2>Conclusion</h2>
+
+<p>The intersection types is a feature that is not widely used in Java. However, it is very powerful as it allows to write very tiny interfaces and combine them on demand. From now on, there is no excuse to write big fat interfaces that have dozens of totally unrelated methods!</p>
+]]></content>
+  </entry>
+  
+</feed>

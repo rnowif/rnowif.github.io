@@ -4,7 +4,7 @@
   <title><![CDATA[Category: java | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/java/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-09-09T17:39:54+02:00</updated>
+  <updated>2018-09-19T12:35:50+02:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -12,6 +12,103 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Intersection Types in Java]]></title>
+    <link href="https://rnowif.github.io/blog/2018/09/19/intersection-types-in-java/"/>
+    <updated>2018-09-19T11:29:15+02:00</updated>
+    <id>https://rnowif.github.io/blog/2018/09/19/intersection-types-in-java</id>
+    <content type="html"><![CDATA[<p>This blog post aims to explain how we can use intersection types in Java when we expect an object that implements different interfaces.</p>
+
+<!-- more -->
+
+
+<h2>Interface Segregation Principle</h2>
+
+<p>The Interface Segregation Principle (ISP) stipulates that interfaces should contain the least amount of methods as possible. In other terms, a client of an interface should use all the methods of this interface.</p>
+
+<p>For instance, let&rsquo;s take this <code>File</code> interface:</p>
+
+<pre><code class="java">interface File {
+    Collection&lt;String&gt; readLines();
+    void write(String line);
+    void deleteFile();
+}
+
+class LocalFile implements File {
+    // ...
+}
+</code></pre>
+
+<p>As a client of this interface, it is highly unlikely that I need all methods. I may want to just read the file and, in that case, I certainely don&rsquo;t want to be able to delete it. If I just want to delete the file, I probably don&rsquo;t want to read all its lines.</p>
+
+<p>In order to avoid that, it is a good idea to split this interface in 3 seperate ones:</p>
+
+<pre><code class="java">interface FileReader {
+    Collection&lt;String&gt; readLines();
+}
+
+interface FileWriter {
+    void write(String line);
+}
+
+interface FileDestroyer {
+    void deleteFile();
+}
+
+class LocalFile implements FileReader, FileWriter, FileDestroyer {
+    // The concrete class can implement all 3 interfaces
+    // ...
+}
+</code></pre>
+
+<p>Now, a client can just require the interface it needs and ignore the rest.</p>
+
+<h2>Interface Combination</h2>
+
+<p>Writing tiny interfaces is good to enforce ISP and lower the coupling of the code. However, what happens when a client wants to read a file <em>and</em> write at the same time?</p>
+
+<p>The first two snippets won&rsquo;t compile because one of the interface is not implemented:</p>
+
+<pre><code class="java">void readAndWrite(FileReader reader) {
+    reader.readLines();
+    reader.write("Hello"); // That won't compile since reader does not implement FileWriter
+}
+
+void readAndWrite(FileWriter writer) {
+    reader.readLines(); // That won't compile since writer does not implement FileReader
+    reader.write("Hello");
+}
+</code></pre>
+
+<p>As an alternative, it is possible to pass an instance of <code>LocalFile</code> but it introduces a high coupling between the method and the LocalFile concrete class, defeating the whole purpose of interfaces entirely.</p>
+
+<pre><code class="java">void readAndWrite(LocalFile file) {
+    file.readLines();
+    file.write("Hello");
+    // That will compile but it is not recommended
+}
+</code></pre>
+
+<p>Since Java 1.5, and the introduction of generics, a feature, known as Intersection Types, allows to combine interfaces in this kind of situation.</p>
+
+<h2>Intersection Types to the Rescue</h2>
+
+<p>The following code uses intersection types to solve the issue of needing an object that implements several interfaces:</p>
+
+<pre><code class="java">&lt;T extends FileReader &amp; FileWriter&gt; void readAndWrite(T file) {
+    file.readLines();
+    file.write("Hello");    
+}
+</code></pre>
+
+<p>The <code>&amp;</code> symbol means that the method expects a type <code>T</code> that implements both the <code>FileReader</code> and <code>FileWriter</code> interfaces.</p>
+
+<h2>Conclusion</h2>
+
+<p>The intersection types is a feature that is not widely used in Java. However, it is very powerful as it allows to write very tiny interfaces and combine them on demand. From now on, there is no excuse to write big fat interfaces that have dozens of totally unrelated methods!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Testing Java Spring Boot Microservices]]></title>
@@ -892,261 +989,6 @@ Game aGame = new Game(
 <p>Of course, as it is always the case with refactoring, I could have done more. The main risk is that <em>more</em> does not always mean <em>better</em>. A refactoring session must have a purpose and it is very important to know when to stop. It could be when you can add your new feature or fix a bug seamlessly or simply because you don&rsquo;t have any more time allocated to this task.</p>
 
 <p>I hope that this post gave you some tools and methods to refactor your code without the fear of breaking something.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Implémenter un mécanisme d’AOP, sans framework !]]></title>
-    <link href="https://rnowif.github.io/blog/2016/11/03/aop-sans-framework/"/>
-    <updated>2016-11-03T07:55:27+01:00</updated>
-    <id>https://rnowif.github.io/blog/2016/11/03/aop-sans-framework</id>
-    <content type="html"><![CDATA[<p>L'<em>Aspect Oriented Programming</em> est un paradigme de programmation qui permet de traiter les préoccupations transverses (ou <em>cross cutting concerns</em> en anglais) telles que le logging, le cache ou les transactions séparément du code métier.</p>
-
-<p>L'AOP repose la plupart du temps sur l'utilisation de librairies ou de frameworks qui rendent ce type de programmation assez obscur et parfois difficile à comprendre. L'objectif de cet article est d'expliquer comment cela fonctionne afin de le démystifier.</p>
-
-<!-- more -->
-
-
-<p>L'ensemble du code montré dans cet article est accessible sur ce repo <a href="https://github.com/rnowif/demo-aop">GitHub</a>.</p>
-
-<h2>Pourquoi l'AOP ?</h2>
-
-<p>Pour cet article, nous allons partir d'une classe qui implémente la suite de Fibonacci et dont on veut calculer le temps d'exécution.
-De manière naïve, il serait possible de calculer et logger ce temps d'exécution directement dans la méthode (<a href="https://github.com/rnowif/demo-aop/tree/63660763cdb1f1d97e3ba63e9c5a271a60d53a99">voir le commit</a>):</p>
-
-<pre><code class="java">public class FibonacciCalculatorImpl implements FibonacciCalculator {
-
-    private static final Logger LOG = LoggerFactory.getLogger(FibonacciCalculatorImpl.class);
-
-    @Override
-    public int calculate(int n) {
-        StopWatch watch = new StopWatch(Clock.systemDefaultZone());
-        watch.start();
-        LOG.info("Start calculation for number {}", n);
-        int result = n;
-        if (n &gt; 1) {
-            result = calculate(n-1) + calculate(n-2);
-        }
-        LOG.info("End calculation for number {} ({} ms)", n, watch.elapsed());
-        return result;
-    }
-}
-</code></pre>
-
-<p>Ce code pose plusieurs problèmes : le <em>tangling</em> et le <em>scattering</em>.</p>
-
-<h3><em>Code tangling</em></h3>
-
-<p>Le <em>code tangling</em> signifie que le code contient différentes notions qui sont mélangées : la mesure du temps et le métier. On pourrait en imaginer d'autres comme la gestion des transactions, le cache ou le monitoring.</p>
-
-<p>Ceci est problématique car le code métier, qui apporte la vraie valeur, est noyé dans du code de &ldquo;plomberie&rdquo; qui peut finir par prendre beaucoup plus de place que le code initial !</p>
-
-<h3><em>Code scattering</em></h3>
-
-<p>Le <em>code scattering</em> signifie que le code non métier sera sans nul doute réécrit dans beaucoup de méthodes. On voit alors émerger un grand nombre de duplications de code, qui le rendent très difficile à maintenir.</p>
-
-<h2>Le pattern <em>Proxy</em></h2>
-
-<p>La première amélioration évidente qu'il est possible d'apporter est d'extraire la logique de calcul du temps dans une classe spécifique, qui va implémenter la même interface que <code>FibonacciCalculatorImpl</code> et déléguer l'appel de la méthode <code>calculate</code> à une instance de <code>FibonacciCalculatorImpl</code>. Il s'agit du pattern <em>Proxy</em> (<a href="https://github.com/rnowif/demo-aop/tree/a4d00f2b5b0a2cb28196a738ece906560546bda5">voir le commit</a>).</p>
-
-<pre><code class="java">public class TimedFibonacciCalculator implements FibonacciCalculator {
-
-    private static final Logger LOG = LoggerFactory.getLogger(FibonacciCalculatorImpl.class);
-
-    private final FibonacciCalculator calculator;
-
-    public TimedFibonacciCalculator(FibonacciCalculator calculator) {
-        this.calculator = calculator;
-    }
-
-    @Override
-    public int calculate(int n) {
-        StopWatch watch = new StopWatch(Clock.systemDefaultZone());
-        watch.start();
-        LOG.info("Start calculation for number {}", n);
-        int result = calculator.calculate(n); // Delegate calculation
-        LOG.info("End calculation for number {} ({} ms)", n, watch.elapsed());
-        return result;
-    }
-}
-</code></pre>
-
-<p>L'utilisation de cette classe se fait comme suit :</p>
-
-<pre><code class="java">FibonacciCalculator calculator = new TimedFibonacciCalculator(new FibonacciCalculatorImpl());
-LOG.info("10th fibonacci number : {}", calculator.calculate(10));
-</code></pre>
-
-<p>L'utilisation de ce pattern règle le problème du <em>code tangling</em> mais pas du tout celui du <em>code scattering</em>. En effet, cette classe <code>TimedFibonacciCalculator</code> n'est pas vraiment réutilisable car elle est fortement couplée à l'interface <code>FibonacciCalculator</code>.</p>
-
-<h2>Externalisation de la logique de chronométrage</h2>
-
-<p>Pour résoudre le <em>code scattering</em>, il faut extraire la logique de mesure du temps et lui permettre d'appeler n'importe quelle méthode (<a href="https://github.com/rnowif/demo-aop/tree/fb545b1a3af8e34b37e8f93f4abf97b57ae75f33">voir le commit</a>). On peut, pour cela, définir une interface fonctionnelle générique qui contient une méthode <code>invoke</code>.</p>
-
-<pre><code class="java">@FunctionalInterface
-public interface InvocationPoint&lt;T&gt; {
-
-    T invoke() throws Exception;
-}
-</code></pre>
-
-<p>Cette interface pourra alors être injectée dans une classe réutilisable, permettant de mesurer le temps nécessaire à l'exécution de la méthode <code>invoke</code> :</p>
-
-<pre><code class="java">public class TimedInvocation {
-
-    private static final Logger LOG = LoggerFactory.getLogger(TimedInvocation.class);
-
-    public &lt;T&gt; T invoke(InvocationPoint&lt;T&gt; invocationPoint) {
-        StopWatch watch = new StopWatch(Clock.systemDefaultZone());
-        watch.start();
-        LOG.info("Start calculation");
-        T result = invocationPoint.invoke();
-        LOG.info("End calculation ({} ms)", watch.elapsed());
-        return result;
-    }
-}
-</code></pre>
-
-<p>Le <em>proxy</em> ne sert donc plus que de passe-plat pour appeler cette classe (l'interface <code>InvocationPoint</code> peut aisément être implémentée par un lambda):</p>
-
-<pre><code class="java">public class TimedFibonacciCalculator implements FibonacciCalculator {
-
-    private final FibonacciCalculator calculator;
-
-    public TimedFibonacciCalculator(FibonacciCalculator calculator) {
-        this.calculator = calculator;
-    }
-
-    @Override
-    public int calculate(int n) {
-        return new TimedInvocation().invoke(
-                () -&gt; calculator.calculate(n)
-        );
-    }
-}
-</code></pre>
-
-<p>On remarque ici que le message de log est plus générique : il n'est plus possible de tracer l'index de la suite que l'on veut calculer. En effet, ce log est très générique et peut permettre de mesurer le temps d'exécution de n'importe quelle méthode.</p>
-
-<h2>Génération automatique de <em>proxy</em></h2>
-
-<p>Le <em>tangling</em> et le <em>scattering</em> sont éliminés mais il faut tout de même créer une classe de <em>proxy</em> pour chaque méthode que l'on souhaite chronométrer. Le mécanisme de <em>JDKProxy</em>, inclus directement dans le JDK, permet de créer des <em>proxys</em> dynamiques à partir d'une interface (<code>FibonacciCalculator</code>) et d'une implémentation de <code>InvocationHandler</code> (<a href="https://github.com/rnowif/demo-aop/tree/88dda77b942cc9370762d3e2efb79b6b9c0c6aeb">voir le commit</a>). Celle-ci contient une méthode <code>invoke(Object proxy, Method method, Object[] args): Object</code> qui prend en paramètre le proxy, la méthode qui a été apelée ainsi que ses arguments et doit retourner le résultat de l'appel de la méthode.</p>
-
-<p>Le plus simple des <code>InvocationHandler</code>, qui ne fait rien, peut s'écrire comme ceci :</p>
-
-<pre><code class="java">public class SimpleInvocationHandler implements InvocationHandler {
-
-    private final Object target;
-
-    public SimpleInvocationHandler(Object target) {
-        this.target = target;
-    }
-
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return method.invoke(target, args);
-    }
-}
-</code></pre>
-
-<p>La création du proxy se fait ainsi :</p>
-
-<pre><code class="java">FibonacciCalculator calculator = (FibonacciCalculator) Proxy.newProxyInstance(
-  FibonacciCalculator.class.getClassLoader(),
-  new Class[] {FibonacciCalculator.class},
-  new SimpleInvocationHandler(new FibonacciCalculatorImpl())
-);
-</code></pre>
-
-<p>Dans notre cas, le handler va devoir calculer le temps d'exécution de la méthode. Il s'écrit donc ainsi :</p>
-
-<pre><code class="java">public class TimedInvocationHandler implements InvocationHandler {
-
-    private final Object target;
-
-    public TimedInvocationHandler(Object target) {
-        this.target = target;
-    }
-
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return new TimedInvocation().invoke(
-                () -&gt; method.invoke(target, args)
-        );
-    }
-  }
-}
-</code></pre>
-
-<h2>Activer ou désactiver la mesure du temps</h2>
-
-<p>Pour faire comme les pros (sic !), il est possible d'activer ou désactiver la mesure du temps sur une méthode en y ajoutant une annotation <code>@Timed</code> qui servira de marqueur.</p>
-
-<pre><code class="java">public class FibonacciCalculatorImpl implements FibonacciCalculator {
-
-    @Timed
-    @Override
-    public int calculate(int n) {
-        int result = n;
-        if (n &gt; 1) {
-            result = calculate(n-1) + calculate(n-2);
-        }
-        return result;
-    }
-}
-</code></pre>
-
-<p>Dans le handler, il suffit alors d'utiliser la reflection pour déterminer si la méthode est annotée ou non, et mesure le temps en conséquence :</p>
-
-<pre><code class="java">public class TimedInvocationHandler implements InvocationHandler {
-    private static final Class&lt;Timed&gt; ANNOTATION_CLASS = Timed.class;
-
-    private final Object target;
-
-    public TimedInvocationHandler(Object target) {
-        this.target = target;
-    }
-
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (isTimed(method)) {
-            return new TimedInvocation().invoke(
-                    () -&gt; method.invoke(target, args)
-            );
-        }
-
-        // Method not annotated, just invoke target
-        return method.invoke(target, args);
-    }
-
-    private boolean isTimed(Method method) throws NoSuchMethodException {
-        // Is timed if the interface method or the target method is annotated
-        return method.getDeclaredAnnotation(ANNOTATION_CLASS) != null
-                || target.getClass().getDeclaredMethod(method.getName(), method.getParameterTypes()).getDeclaredAnnotation(ANNOTATION_CLASS) != null;
-    }
-}
-</code></pre>
-
-<p>Pour rappel, une annotation n'est qu'un marqueur. La magie n'est pas dans l'annotation mais dans le code qui l'utilise !</p>
-
-<h2>Conclusion</h2>
-
-<h3>A propos de l'AOP</h3>
-
-<p>Cet article a, de manière assez rudimentaire, permis d’implémenter un mécanisme d’AOP sans avoir recours à aucun framework externe. Néanmoins, il permet de comprendre certains aspects et limitations de l’AOP.</p>
-
-<p>En effet, il est très simple de créer des proxys dynamiques avec JDKProxy lorsque la classe cible implémente une interface. Lorsque ce n’est pas le cas, le proxy doit étendre cette classe et surcharger la méthode à proxifier (il est possible d’utiliser une librairie comme <a href="https://github.com/cglib/cglib">CGLib</a> pour faire ça automatiquement).
-Par aileurs, l’AOP implémenté grâce à ce mécanisme ne peut pas fonctionner sur des méthodes ou des classes privées ou finales. En effet, la méthode doit être définie dans une interface ou pouvoir être surchargée. De plus, si la classe à proxifier appelle directement une méthode de sa propre classe, notre AOP ne s’applique pas. Ici, la méthode calculate est récursive. Cependant, la mesure du temps ne s’opère que si la méthode est appelée à travers le proxy. Donc, seul l’appel de la méthode par &ldquo;l’extérieur&rdquo; est chronométré.</p>
-
-<p>Certains autres mécanismes permettent de s’affranchir de ces contraintes en modifiant directement le code généré. Cette opération, appelée tissage, peut être effectuée à la compilation ou au runtime grâce à des librairies et instrumentations diverses.</p>
-
-<h3>AspectJ et Spring AOP</h3>
-
-<p><a href="http://www.eclipse.org/aspectj/">AspectJ</a> est un framework qui permet de faire de l’AOP grâce au tissage. Spring, quant à lui, utilise abondamment l’AOP grâce au mécanisme de proxy décrit dans cet article (avec les annotations <code>@Transactional</code>, <code>@Cacheable</code>, etc.). Il va parcourir l’ensemble des beans du contexte d’application et les remplacer par des <em>proxys</em> dynamiques. Ainsi, les beans que l’application manipule ne sont pas les implémentations brutes, mais des proxys (plus d’information sur les <em>proxys</em> AOP avec Spring <a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/html/aop.html#aop-understanding-aop-proxies">ici</a>). Spring permet également de faire de l’AspectJ.</p>
-
-<h3>Note finale</h3>
-
-<p>L'AOP n'est pas magique, ni très complexe. Cependant, il est très fortement utilisé dans les framework de type Spring. Une bonne compréhension de ses mécanismes et de son implémentation permet de faciliter grandement le dévelopement et le debug des applications d'entreprise.</p>
 ]]></content>
   </entry>
   
