@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>https://rnowif.github.io/blog/2018/09/21/what-is-a-volatile-variable-in-java/</loc>
+<lastmod>2018-09-21T12:13:33+02:00</lastmod>
+</url>
+<url>
 <loc>https://rnowif.github.io/blog/2018/09/19/intersection-types-in-java/</loc>
 <lastmod>2018-09-19T11:29:15+02:00</lastmod>
 </url>
@@ -149,5 +153,11 @@
 </url>
 <url>
 <loc>https://rnowif.github.io/blog/categories/generics/</loc>
+</url>
+<url>
+<loc>https://rnowif.github.io/blog/categories/concurrency/</loc>
+</url>
+<url>
+<loc>https://rnowif.github.io/blog/categories/jvm/</loc>
 </url>
 </urlset>
