@@ -4,7 +4,7 @@
   <title><![CDATA[Category: tdd | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/tdd/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-09-24T19:59:42+02:00</updated>
+  <updated>2018-10-10T06:13:52+13:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Pourquoi utiliser le TDD est une bonne idée pour apprendre un nouveau langage]]></title>
-    <link href="https://rnowif.github.io/blog/2016/12/26/pourquoi-utiliser-le-tdd-pour-apprendre-langage/"/>
-    <updated>2016-12-26T17:44:15+01:00</updated>
-    <id>https://rnowif.github.io/blog/2016/12/26/pourquoi-utiliser-le-tdd-pour-apprendre-langage</id>
+    <link href="https://rnowif.github.io/blog/2016/12/27/pourquoi-utiliser-le-tdd-pour-apprendre-langage/"/>
+    <updated>2016-12-27T05:44:15+13:00</updated>
+    <id>https://rnowif.github.io/blog/2016/12/27/pourquoi-utiliser-le-tdd-pour-apprendre-langage</id>
     <content type="html"><![CDATA[<p>Durant ma dernière mission, j'ai eu à écrire du code dans des langages que je ne connaissais pas du tout, ou très peu (Ruby, Perl, Python, Go). J'ai donc expérimenté une technique qui consiste à apprendre un langage par les tests. Cette technique se nomme le <em>Test Driven Learning</em>.</p>
 
 <p>L'objectif de cet article est de décrire pourquoi il peut être intéressant d'utiliser le TDD pour apprendre un nouveau langage de manière efficace.</p>
@@ -66,9 +66,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Ecrire des tests plus robustes au changement]]></title>
-    <link href="https://rnowif.github.io/blog/2016/11/02/ecrire-des-tests-plus-robustes-au-changement/"/>
-    <updated>2016-11-02T17:31:42+01:00</updated>
-    <id>https://rnowif.github.io/blog/2016/11/02/ecrire-des-tests-plus-robustes-au-changement</id>
+    <link href="https://rnowif.github.io/blog/2016/11/03/ecrire-des-tests-plus-robustes-au-changement/"/>
+    <updated>2016-11-03T05:31:42+13:00</updated>
+    <id>https://rnowif.github.io/blog/2016/11/03/ecrire-des-tests-plus-robustes-au-changement</id>
     <content type="html"><![CDATA[<p>Un des principaux freins à l'écriture de tests est quand ceux-ci doivent être mis à jour à chaque fois qu'une classe ou qu'une méthode est modifiée. Parfois, les tests à mettre à jour n'ont rien à voir avec la classe ou la méthode modifiée, mais comme ils s'en servent, ils s'en retrouvent affectés eux aussi. Ce problème survient quand le test est trop couplé à l'implémentation.
 Dans cet article, nous allons voir comment découpler les tests des classes qu'ils utilisent et ainsi les rendre plus robustes.</p>
 

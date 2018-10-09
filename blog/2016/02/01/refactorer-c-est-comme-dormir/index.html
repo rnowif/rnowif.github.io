@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Refactorer, c'est comme dormir - Renaud Humbert-Labeaumaz</title>
+  <meta name="author" content="Renaud Humbert-Labeaumaz">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="https://rnowif.github.io/blog/2016/02/01/refactorer-c-est-comme-dormir/">
+  <link href="/favicon.png" type="image/png" rel="icon">
+  <link href="/atom.xml" rel="alternate" title="Renaud Humbert-Labeaumaz" type="application/atom+xml">
+
+  <!-- http://opengraphprotocol.org/ -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rnowif.github.io/blog/2016/02/01/refactorer-c-est-comme-dormir/">
+  <meta property="og:title" content="Refactorer, c'est comme dormir - Renaud Humbert-Labeaumaz">
+  
+
+  <script src="/javascripts/libs/jquery/jquery-2.1.3.min.js"></script>
+
+<link href="/assets/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="/assets/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+  
+  <link href="/stylesheets/screen.css" media="screen, projection, print" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+  <body   >
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="wrap">
+      
+        <header role="banner">
+          <nav class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" title="toggle navbar" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Renaud Humbert-Labeaumaz</a>
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li ><a href="/blog/archives">Archives</a></li>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="subscribe-rss" href="/atom.xml" title="subscribe via RSS">
+                        <span class="visible-xs">RSS</span>
+                        <img class="hidden-xs" src="/images/rss.png" alt="RSS">
+                    </a>
+                </li>
+                
+            </ul>
+            
+                <form class="navbar-form navbar-right" action="https://www.google.com/search" method="GET">
+                    <input type="hidden" name="sitesearch" value="rnowif.github.io">
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="q" placeholder="Search">
+                    </div>
+                </form>
+            
+        </div>
+    </div>
+</nav>
+
+
+        </header>
+      
+      <div id="main" role="main" class="container">
+        <div id="content">
+          <div class="row">
+  <div class="page-content" itemscope itemtype="http://schema.org/Blog">
+    <meta itemprop="name" content="Renaud Humbert-Labeaumaz" />
+    
+    <meta itemprop="url" content="https://rnowif.github.io" />
+    <article class="hentry" role="article" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+      
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2016-02-01T07:16:09+13:00"  data-updated="true" itemprop="datePublished dateCreated">Mon  1 Feb 2016,  7:16 AM</time>
+        
+      </p>
+    
+    
+    <h1 class="entry-title" itemprop="name headline">
+        Refactorer, c'est comme dormir
+        
+    </h1>
+    
+  </header>
+
+
+<div class="entry-content clearfix" itemprop="articleBody description"><p>Robert est un développeur. On a demandé à Robert d'ajouter une nouvelle fonctionnalité à l'application. Robert aimerait bien en profiter pour refactorer un peu le code car il ne respecte pas les bonnes pratiques qu'il a pu voir lors du dernier meetup Software Craftsmanship. On dit alors à Robert qu'il ne peut pas refactorer car, en ce moment, il n'y a pas le temps pour ça et qu'il doit produire. Robert se dit qu'il n'y a de toutes façons jamais le temps&hellip;</p>
+
+<p>Cette histoire vous semble familière ? En effet, le refactoring est souvent perçu comme n'apportant aucune valeur. D'autres choses dans la vie peuvent sembler n'apporter aucune valeur. Il y en a notamment une qui prend près du tiers de la vie d'une personne pendant laquelle cette personne ne fait littéralement rien : <em>dormir</em> !</p>
+
+<!-- more -->
+
+
+<p>Le nombre de choses que l'on pourrait faire si l'on ne dormait pas ! Cependant, au bout de quelques jours, voire quelques heures, des événements désagréables finiraient par survenir. Sans sommeil, la moindre des tâches peut devenir très longue à effectuer et des erreurs étranges peuvent arriver (comme verser du jus d'orange dans son bol de céréales). Après un certain temps, le sommeil prend le dessus de manière incontrôlée, ce qui peut conduire à des accidents (à cause d'une somnolence au volant par exemple).</p>
+
+<p>De manière similaire, repousser le refactoring nuit au projet. Les développements peuvent prendre beaucoup plus de temps que nécessaire et des bugs peuvent survenir sur des fonctionnalités très éloignées de celles qui sont modifiées. De plus, il arrive un moment où le refactoring s'impose : le code ne peut plus être modifié sans risquer d'importantes régressions. Ceci peut se produire à un moment critique du projet et donc le mettre en péril. A ce moment là, la sentence tant redoutée peut tomber : « il faut tout réécrire ».</p>
+
+<p>De manière globale, refactorer régulièrement est nécessaire à la bonne santé du projet, tout comme dormir chaque nuit l'est pour la notre. Dans la suite de cet article, nous allons définir ce que signifie refactorer dans ce contexte, quand est-il bon de le faire, comment bien le préparer et que faire si le temps manque.</p>
+
+<h2>Que signifie refactorer ?</h2>
+
+<p>Selon Michael Feathers, le refactoring est l'acte d'améliorer le <em>design</em> du code sans changer son comportement.</p>
+
+<p>Il ne s'agit pas forcément de changer toute une hiérarchie de classes ou de mettre en place un <em>design pattern</em> très complexe mais cela peut être aussi simple que de renommer une variable, une méthode, une classe, d'extraire une méthode privée dans une classe externe, de regrouper les attributs d'une méthode dans un objet, etc.</p>
+
+<p>De plus, nous considérons aussi qu'ajouter des tests à du code existant est du refactoring. En effet, un code testable est un premier pas vers un meilleur <em>design</em>.</p>
+
+<h2>Quand faut-il refactorer ?</h2>
+
+<p>L'idée n'est pas d'essayer de corriger l'intégralité du système à chaque fois. Ceci serait contre productif et impossible à mettre en place. De plus, il serait très difficilement justifiable de provoquer des régressions dans une partie du code très éloignée de celle qui est censée être modifiée.</p>
+
+<p>Le refactoring est très efficace lorsqu'il est ciblé sur le code qui est concerné par le développement d'une fonctionnalité. De plus, il nous semble préférable de refactorer avant d'ajouter du nouveau code afin de démarrer sur des bases saines.</p>
+
+<h2>Comment le préparer ?</h2>
+
+<p>La première chose à faire avant de refactorer est de s'assurer qu'il y a des tests en place. Ces tests permettent de vérifier que le refactoring ne génère pas de régression. Si ces tests ne sont pas déjà en place, il faut les ajouter avant de commencer.</p>
+
+<p>Il peut arriver qu'il soit impossible de tester une portion de code. Dans ce cas, il faut effectuer le refactoring minimum nécessaire à la mise en place des tests.</p>
+
+<h2>Que faire si le temps manque ?</h2>
+
+<p>Si, comme Robert, le temps vous manque, il faut faire preuve de pragmatisme. Il peut être intéressant d'effectuer de petits refactoing à chaque développement. Cela permet d'améliorer le <em>design</em> sans consommer trop de temps et de préparer le terrain pour de plus gros refactoring.</p>
+
+<h2>Conclusion</h2>
+
+<p>Le refactoring est essentiel dans un projet et doit être effectué régulièrement. Il permet d'assurer que les nouvelles fonctionnalités pourront être développées dans un temps raisonnable et de limiter les régressions en améliorant le <em>design</em>. Par ailleurs, il permet aussi aux développeurs de (re)prendre du plaisir à faire évoluer le produit.</p>
+
+<p>Nous aimerions conclure avec la règle du boy scout qui indique que l'on doit toujours laisser le code dans un meilleur état que lorsqu'on l'a trouvé. L'application de cette règle conduit à l'amélioration de la qualité globale du code et à l'inversion de la dette technique.</p>
+
+<hr />
+
+<p><em>Cet article a été écrit en collaboration avec Nadia Humbert-Labeaumaz (<a href="https://www.twitter.com/nphumbert">@nphumbert</a>)</em></p>
+</div>
+
+
+      <footer class="post-footer">
+        <p class="meta text-muted">
+          
+  
+
+
+
+<figure class="author-image">
+    <span class="img" href="/about" style="background-image: url(/images/renaud.png)"><span class="hidden">Picture</span></span>
+</figure>
+
+<section class="author">
+    <h4><span class="byline author vcard" itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="fn" itemprop="name">Renaud Humbert-Labeaumaz</span></span></h4>
+
+    <a class="fa fa-link" href="https://rnowif.github.io">
+        <span class="hidden">https://rnowif.github.io</span>
+    </a>
+    <a class="fa fa-twitter" href="https://twitter.com/rnowif">
+        <span class="hidden">rnowif</span>
+    </a>
+    <a class="fa fa-github" href="https://github.com/rnowif">
+        <span class="hidden">rnowif</span>
+    </a>
+</section>
+
+<hr>
+
+<section class="share">
+    
+    <h4>Share this post</h4>
+    
+    <a class="fa fa-twitter" href="https://twitter.com/intent/tweet?url=https://rnowif.github.io/blog/2016/02/01/refactorer-c-est-comme-dormir/;"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://rnowif.github.io/blog/2016/02/01/refactorer-c-est-comme-dormir/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="fa fa-google-plus" href="https://plus.google.com/share?url=https://rnowif.github.io/blog/2016/02/01/refactorer-c-est-comme-dormir/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+    
+</section>
+
+
+
+
+<!--
+<footer class="post-footer">
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/intent/tweet?text=Instant%20Movie%20Streamer%20v3%20Release&amp;url=http://iyask.me/instant-movie-streamer-v3-release/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://iyask.me/instant-movie-streamer-v3-release/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://iyask.me/instant-movie-streamer-v3-release/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+
+        </footer>
+
+
+-->
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2016-02-01T07:16:09+13:00"  data-updated="true" itemprop="datePublished dateCreated">Mon  1 Feb 2016,  7:16 AM</time>
+          <br>
+
+<span class="glyphicon glyphicon-tags"></span>&nbsp;
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/craftsmanship/'>craftsmanship</a>, <a class='category' href='/blog/categories/refactoring/'>refactoring</a>
+  
+</span>
+
+
+        </p>
+        
+          <div class="pager">
+            
+            
+              
+                <a href="/blog/2015/07/29/tell-dont-ask/" class="col-xs-12 col-md-4 btn btn-default" title="Previous Post: Tell don't ask"> 
+                  <div class="text-muted">
+                    <small>Previous Post</small>
+                  </div>
+                  <div class="pager-title">
+                    <h4>Tell don't ask</h4>
+                  </div>
+                </a>
+              
+            
+            
+            
+              
+              <a href="/blog/2016/04/14/quand-ne-pas-mocker/" class="col-xs-12 col-md-4 btn btn-default pull-right" title="Next Post: Quand ne pas mocker">
+                <div class="text-muted">
+                  <small>Next Post</small>
+                </div>
+                <div class="pager-title">
+                  <h4>Quand ne pas mocker</h4>
+                </div>
+              </a>
+              
+            
+            
+          </div>
+        
+      </footer>
+    </article>
+    
+      <section>
+        <h2>Comments</h2>
+        <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+      </section>
+    
+  </div>
+</div>
+
+        </div>
+      </div>
+    </div>
+    <footer role="contentinfo"><div class="container">
+    <p class="text-muted credits">
+  Copyright &copy; 2018 - Renaud Humbert-Labeaumaz<br>
+  <small>
+      <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>,
+      <span class="credit">customized with <a href="https://github.com/bhrigu123/abacus">abacus theme</a></span>.
+  </small>
+</p>
+
+</div>
+</footer>
+    
+
+<script type="text/javascript">
+      var disqus_shortname = 'rnowif';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'https://rnowif.github.io/blog/2016/02/01/refactorer-c-est-comme-dormir/';
+        var disqus_url = 'https://rnowif.github.io/blog/2016/02/01/refactorer-c-est-comme-dormir/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+<script src="/assets/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/javascripts/modernizr.js"></script>
+
+
+  </body>
+</html>

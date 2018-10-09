@@ -4,7 +4,7 @@
   <title><![CDATA[Category: oop | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/oop/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-09-24T19:59:42+02:00</updated>
+  <updated>2018-10-10T06:13:52+13:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Tell don't ask]]></title>
-    <link href="https://rnowif.github.io/blog/2015/07/28/tell-dont-ask/"/>
-    <updated>2015-07-28T21:57:56+02:00</updated>
-    <id>https://rnowif.github.io/blog/2015/07/28/tell-dont-ask</id>
+    <link href="https://rnowif.github.io/blog/2015/07/29/tell-dont-ask/"/>
+    <updated>2015-07-29T07:57:56+12:00</updated>
+    <id>https://rnowif.github.io/blog/2015/07/29/tell-dont-ask</id>
     <content type="html"><![CDATA[<p>Quand j'étais à l'école et que j'apprenais la programmation orientée objet (POO), on nous disait que les classes permettaient d'encapsuler des comportements et de cacher leur implémentation au reste du monde. Ainsi, le code qui appelle une méthode attend d'elle qu'elle se comporte comme elle a été spécifiée, quelle que soit son implémentation.</p>
 
 <!-- more -->

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: jvm | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/jvm/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-09-24T19:59:42+02:00</updated>
+  <updated>2018-10-10T06:13:52+13:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[What is a Volatile Variable in Java?]]></title>
     <link href="https://rnowif.github.io/blog/2018/09/21/what-is-a-volatile-variable-in-java/"/>
-    <updated>2018-09-21T12:13:33+02:00</updated>
+    <updated>2018-09-21T22:13:33+12:00</updated>
     <id>https://rnowif.github.io/blog/2018/09/21/what-is-a-volatile-variable-in-java</id>
     <content type="html"><![CDATA[<p>The <code>volatile</code> keyword is one of the less known and less understood keyword of the Java language. The goal of this article is to explain what it is and when to use it.</p>
 

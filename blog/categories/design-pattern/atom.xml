@@ -4,7 +4,7 @@
   <title><![CDATA[Category: design pattern | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/design-pattern/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-09-24T19:59:42+02:00</updated>
+  <updated>2018-10-10T06:13:52+13:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Implémenter un mécanisme d’AOP, sans framework !]]></title>
     <link href="https://rnowif.github.io/blog/2016/11/03/aop-sans-framework/"/>
-    <updated>2016-11-03T07:55:27+01:00</updated>
+    <updated>2016-11-03T19:55:27+13:00</updated>
     <id>https://rnowif.github.io/blog/2016/11/03/aop-sans-framework</id>
     <content type="html"><![CDATA[<p>L'<em>Aspect Oriented Programming</em> est un paradigme de programmation qui permet de traiter les préoccupations transverses (ou <em>cross cutting concerns</em> en anglais) telles que le logging, le cache ou les transactions séparément du code métier.</p>
 

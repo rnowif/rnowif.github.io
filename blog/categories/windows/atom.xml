@@ -4,7 +4,7 @@
   <title><![CDATA[Category: windows | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/windows/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-09-24T19:59:42+02:00</updated>
+  <updated>2018-10-10T06:13:52+13:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Distribuer son application java sur Windows grâce à Maven]]></title>
-    <link href="https://rnowif.github.io/blog/2015/03/19/distribuer-son-application-java-sur-windows-grace-a-maven/"/>
-    <updated>2015-03-19T21:25:16+01:00</updated>
-    <id>https://rnowif.github.io/blog/2015/03/19/distribuer-son-application-java-sur-windows-grace-a-maven</id>
+    <link href="https://rnowif.github.io/blog/2015/03/20/distribuer-son-application-java-sur-windows-grace-a-maven/"/>
+    <updated>2015-03-20T09:25:16+13:00</updated>
+    <id>https://rnowif.github.io/blog/2015/03/20/distribuer-son-application-java-sur-windows-grace-a-maven</id>
     <content type="html"><![CDATA[<p>Vous avez développé une application java qui va révolutionner le monde. Bravo ! Maintenant, il vous faut la distribuer au monde entier afin que chacun puisse en profiter. Cet article a pour but de montrer comment le faire grâce à l'outil <a href="http://maven.apache.org/">Maven</a>. Il ne s'agit pas d'un article sur Maven en lui-même ni sur la mise en place d'un projet avec Maven.</p>
 
 <!-- more -->

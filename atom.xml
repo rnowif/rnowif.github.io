@@ -4,7 +4,7 @@
   <title><![CDATA[Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-09-24T19:59:42+02:00</updated>
+  <updated>2018-10-10T06:13:52+13:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[What is a Volatile Variable in Java?]]></title>
     <link href="https://rnowif.github.io/blog/2018/09/21/what-is-a-volatile-variable-in-java/"/>
-    <updated>2018-09-21T12:13:33+02:00</updated>
+    <updated>2018-09-21T22:13:33+12:00</updated>
     <id>https://rnowif.github.io/blog/2018/09/21/what-is-a-volatile-variable-in-java</id>
     <content type="html"><![CDATA[<p>The <code>volatile</code> keyword is one of the less known and less understood keyword of the Java language. The goal of this article is to explain what it is and when to use it.</p>
 
@@ -126,7 +126,7 @@ Finally, there is the main memory (also called RAM). All CPUs can access this me
   <entry>
     <title type="html"><![CDATA[Intersection Types in Java]]></title>
     <link href="https://rnowif.github.io/blog/2018/09/19/intersection-types-in-java/"/>
-    <updated>2018-09-19T11:29:15+02:00</updated>
+    <updated>2018-09-19T21:29:15+12:00</updated>
     <id>https://rnowif.github.io/blog/2018/09/19/intersection-types-in-java</id>
     <content type="html"><![CDATA[<p>This blog post aims to explain how we can use intersection types in Java when we expect an object that implements different interfaces.</p>
 
@@ -270,9 +270,9 @@ Finally, there is the main memory (also called RAM). All CPUs can access this me
   
   <entry>
     <title type="html"><![CDATA[Testing Java Spring Boot Microservices]]></title>
-    <link href="https://rnowif.github.io/blog/2017/09/17/testing-java-spring-cloud-microservices/"/>
-    <updated>2017-09-17T16:09:24+02:00</updated>
-    <id>https://rnowif.github.io/blog/2017/09/17/testing-java-spring-cloud-microservices</id>
+    <link href="https://rnowif.github.io/blog/2017/09/18/testing-java-spring-cloud-microservices/"/>
+    <updated>2017-09-18T02:09:24+12:00</updated>
+    <id>https://rnowif.github.io/blog/2017/09/18/testing-java-spring-cloud-microservices</id>
     <content type="html"><![CDATA[<p>Tests are an essential part of our codebase. At the very least, they minimize the risk of regression when we modify our code. There are several types of tests and each has a specific role: unit tests, integration tests, component tests, contract tests and end-to-end tests. It is crucial to understand the role of each type of tests in order to leverage their potential.</p>
 
 <p>The goal of this article is to describe a strategy to use them in order to test Java Spring Boot microservices. For every type of tests, we will try to explain its role, its scope as well as tooling we like to use.</p>
@@ -646,7 +646,7 @@ During the execution of the consumer tests, contracts (called pacts) are generat
   <entry>
     <title type="html"><![CDATA[Setup a Circuit Breaker with Hystrix, Feign Client and Spring Boot]]></title>
     <link href="https://rnowif.github.io/blog/2017/07/23/setup-a-circuit-breaker-with-hystrix/"/>
-    <updated>2017-07-23T13:33:38+02:00</updated>
+    <updated>2017-07-23T23:33:38+12:00</updated>
     <id>https://rnowif.github.io/blog/2017/07/23/setup-a-circuit-breaker-with-hystrix</id>
     <content type="html"><![CDATA[<p>In a microservices architecture, several things can go wrong. A middleware, the network or the service you want to contact can be down. In this world of uncertainty, you have to anticipate problems in order not to break the entire chain and throw an error to the end user when you could offer a partially degraded service instead.</p>
 
@@ -868,9 +868,9 @@ During the execution of the consumer tests, contracts (called pacts) are generat
   
   <entry>
     <title type="html"><![CDATA[Controlling the Time in Java]]></title>
-    <link href="https://rnowif.github.io/blog/2017/07/20/controlling-time-in-java/"/>
-    <updated>2017-07-20T15:06:15+02:00</updated>
-    <id>https://rnowif.github.io/blog/2017/07/20/controlling-time-in-java</id>
+    <link href="https://rnowif.github.io/blog/2017/07/21/controlling-time-in-java/"/>
+    <updated>2017-07-21T01:06:15+12:00</updated>
+    <id>https://rnowif.github.io/blog/2017/07/21/controlling-time-in-java</id>
     <content type="html"><![CDATA[<p>Time is a tricky thing, it&rsquo;s always changing. Having such moving parts into the codebase can be very annoying when testing, for instance. In this article, we will see how to control the time in Java.</p>
 
 <!-- more -->
@@ -1079,7 +1079,7 @@ During the execution of the consumer tests, contracts (called pacts) are generat
   <entry>
     <title type="html"><![CDATA[Keep Calm and Use Git Reflog]]></title>
     <link href="https://rnowif.github.io/blog/2017/04/11/git-reflog/"/>
-    <updated>2017-04-11T08:52:15+02:00</updated>
+    <updated>2017-04-11T18:52:15+12:00</updated>
     <id>https://rnowif.github.io/blog/2017/04/11/git-reflog</id>
     <content type="html"><![CDATA[<p>Git is a very powerful tool but it takes a fair amount of time to masterize it. It can be particuarly easy to break or lose things when you amend some commits, resolve conflicts or force push your changes.</p>
 
@@ -1253,7 +1253,7 @@ During the execution of the consumer tests, contracts (called pacts) are generat
   <entry>
     <title type="html"><![CDATA[Trivia Kata: A Refactoring Story]]></title>
     <link href="https://rnowif.github.io/blog/2017/04/10/trivia-refactoring/"/>
-    <updated>2017-04-10T08:52:15+02:00</updated>
+    <updated>2017-04-10T18:52:15+12:00</updated>
     <id>https://rnowif.github.io/blog/2017/04/10/trivia-refactoring</id>
     <content type="html"><![CDATA[<p>Refactoring a legacy code can be a tricky business. More often than not, the code is not tested, unclear and contains some bugs. If not planned, the time required to refactor will eat all the time allocated to the feature. The feature will then be implemented very quickly and it will result in more buggy unmaintainable code.</p>
 
@@ -1667,9 +1667,9 @@ During the execution of the consumer tests, contracts (called pacts) are generat
   
   <entry>
     <title type="html"><![CDATA[Pourquoi utiliser le TDD est une bonne idée pour apprendre un nouveau langage]]></title>
-    <link href="https://rnowif.github.io/blog/2016/12/26/pourquoi-utiliser-le-tdd-pour-apprendre-langage/"/>
-    <updated>2016-12-26T17:44:15+01:00</updated>
-    <id>https://rnowif.github.io/blog/2016/12/26/pourquoi-utiliser-le-tdd-pour-apprendre-langage</id>
+    <link href="https://rnowif.github.io/blog/2016/12/27/pourquoi-utiliser-le-tdd-pour-apprendre-langage/"/>
+    <updated>2016-12-27T05:44:15+13:00</updated>
+    <id>https://rnowif.github.io/blog/2016/12/27/pourquoi-utiliser-le-tdd-pour-apprendre-langage</id>
     <content type="html"><![CDATA[<p>Durant ma dernière mission, j'ai eu à écrire du code dans des langages que je ne connaissais pas du tout, ou très peu (Ruby, Perl, Python, Go). J'ai donc expérimenté une technique qui consiste à apprendre un langage par les tests. Cette technique se nomme le <em>Test Driven Learning</em>.</p>
 
 <p>L'objectif de cet article est de décrire pourquoi il peut être intéressant d'utiliser le TDD pour apprendre un nouveau langage de manière efficace.</p>
@@ -1728,7 +1728,7 @@ En effet, il faut bien créer un fichier, éventuellement une classe, instancier
   <entry>
     <title type="html"><![CDATA[Implémenter un mécanisme d’AOP, sans framework !]]></title>
     <link href="https://rnowif.github.io/blog/2016/11/03/aop-sans-framework/"/>
-    <updated>2016-11-03T07:55:27+01:00</updated>
+    <updated>2016-11-03T19:55:27+13:00</updated>
     <id>https://rnowif.github.io/blog/2016/11/03/aop-sans-framework</id>
     <content type="html"><![CDATA[<p>L'<em>Aspect Oriented Programming</em> est un paradigme de programmation qui permet de traiter les préoccupations transverses (ou <em>cross cutting concerns</em> en anglais) telles que le logging, le cache ou les transactions séparément du code métier.</p>
 
@@ -2138,9 +2138,9 @@ Par aileurs, l’AOP implémenté grâce à ce mécanisme ne peut pas fonctionne
   
   <entry>
     <title type="html"><![CDATA[Ecrire des tests plus robustes au changement]]></title>
-    <link href="https://rnowif.github.io/blog/2016/11/02/ecrire-des-tests-plus-robustes-au-changement/"/>
-    <updated>2016-11-02T17:31:42+01:00</updated>
-    <id>https://rnowif.github.io/blog/2016/11/02/ecrire-des-tests-plus-robustes-au-changement</id>
+    <link href="https://rnowif.github.io/blog/2016/11/03/ecrire-des-tests-plus-robustes-au-changement/"/>
+    <updated>2016-11-03T05:31:42+13:00</updated>
+    <id>https://rnowif.github.io/blog/2016/11/03/ecrire-des-tests-plus-robustes-au-changement</id>
     <content type="html"><![CDATA[<p>Un des principaux freins à l'écriture de tests est quand ceux-ci doivent être mis à jour à chaque fois qu'une classe ou qu'une méthode est modifiée. Parfois, les tests à mettre à jour n'ont rien à voir avec la classe ou la méthode modifiée, mais comme ils s'en servent, ils s'en retrouvent affectés eux aussi. Ce problème survient quand le test est trop couplé à l'implémentation.
 Dans cet article, nous allons voir comment découpler les tests des classes qu'ils utilisent et ainsi les rendre plus robustes.</p>
 
@@ -2391,9 +2391,9 @@ La façon la plus naïve d'écrire le test pourrait être la suivante :</p>
   
   <entry>
     <title type="html"><![CDATA[Timelion, le petit nouveau de Kibana 5]]></title>
-    <link href="https://rnowif.github.io/blog/2016/10/26/timelion/"/>
-    <updated>2016-10-26T22:26:16+02:00</updated>
-    <id>https://rnowif.github.io/blog/2016/10/26/timelion</id>
+    <link href="https://rnowif.github.io/blog/2016/10/27/timelion/"/>
+    <updated>2016-10-27T09:26:16+13:00</updated>
+    <id>https://rnowif.github.io/blog/2016/10/27/timelion</id>
     <content type="html"><![CDATA[<p>Elastic vient de sortir <a href="https://www.elastic.co/blog/elastic-stack-5-0-0-released">sa dernière mouture de la stack Elastic</a>. Il s'agit de la version 5 et, pour la première fois, tous les produits ont une version commune. Cette nouvelle version vient avec son lot de nouveautés. Dans cet article, nous allons nous concentrer sur les nouveautés apportées à Kibana, et principalement Timelion.</p>
 
 <p>Les exemples sont tirés de métriques fournies par le plugin <a href="https://www.elastic.co/guide/en/beats/metricbeat/5.0/metricbeat-getting-started.html">MetricBeat</a>, qui remplace TopBeat dans la version 5 de la stack.</p>
@@ -2481,9 +2481,9 @@ La façon la plus naïve d'écrire le test pourrait être la suivante :</p>
   
   <entry>
     <title type="html"><![CDATA[Quoi de neuf dans Spring 5]]></title>
-    <link href="https://rnowif.github.io/blog/2016/07/30/quoi-de-neuf-dans-spring-5/"/>
-    <updated>2016-07-30T14:05:38+02:00</updated>
-    <id>https://rnowif.github.io/blog/2016/07/30/quoi-de-neuf-dans-spring-5</id>
+    <link href="https://rnowif.github.io/blog/2016/07/31/quoi-de-neuf-dans-spring-5/"/>
+    <updated>2016-07-31T00:05:38+12:00</updated>
+    <id>https://rnowif.github.io/blog/2016/07/31/quoi-de-neuf-dans-spring-5</id>
     <content type="html"><![CDATA[<p>Juergen Hoeller a annoncé hier <a href="https://spring.io/blog/2016/07/28/spring-framework-5-0-m1-released">la sortie de Spring 5.0 M1</a>. Cette nouvelle version majeure de Spring arrive avec son lot de nouveautés.
 L'objectif de cet article est de découvrir ces nouveautés et ce qu'elles peuvent apporter aux développeurs Spring. Les nouveautés décrites dans cet article sont déjà disponibles dans la version 5.0.M1.</p>
 
@@ -2597,9 +2597,9 @@ L'objectif de cet article est de découvrir ces nouveautés et ce qu'elles peuve
   
   <entry>
     <title type="html"><![CDATA[Quand ne pas mocker]]></title>
-    <link href="https://rnowif.github.io/blog/2016/04/13/quand-ne-pas-mocker/"/>
-    <updated>2016-04-13T20:55:56+02:00</updated>
-    <id>https://rnowif.github.io/blog/2016/04/13/quand-ne-pas-mocker</id>
+    <link href="https://rnowif.github.io/blog/2016/04/14/quand-ne-pas-mocker/"/>
+    <updated>2016-04-14T06:55:56+12:00</updated>
+    <id>https://rnowif.github.io/blog/2016/04/14/quand-ne-pas-mocker</id>
     <content type="html"><![CDATA[<p>En tant que <em>Test Driven Developer</em> et plutôt adepte de l'école de TDD de Londres, j'ai tendance à utiliser un nombre assez important de <em>mocks</em> quand je teste mon code. Cependant, il y a des cas où je trouve plus utile de ne <strong>pas</strong> en utiliser.</p>
 
 <p>L'objectif de cet article est de décrire ces cas ainsi que la façon de tester le code sans utiliser de <em>mocks</em>.</p>
@@ -2945,9 +2945,9 @@ La plupart du temps, il est seulement important de savoir si le système avec le
   
   <entry>
     <title type="html"><![CDATA[Refactorer, c'est comme dormir]]></title>
-    <link href="https://rnowif.github.io/blog/2016/01/31/refactorer-c-est-comme-dormir/"/>
-    <updated>2016-01-31T19:16:09+01:00</updated>
-    <id>https://rnowif.github.io/blog/2016/01/31/refactorer-c-est-comme-dormir</id>
+    <link href="https://rnowif.github.io/blog/2016/02/01/refactorer-c-est-comme-dormir/"/>
+    <updated>2016-02-01T07:16:09+13:00</updated>
+    <id>https://rnowif.github.io/blog/2016/02/01/refactorer-c-est-comme-dormir</id>
     <content type="html"><![CDATA[<p>Robert est un développeur. On a demandé à Robert d'ajouter une nouvelle fonctionnalité à l'application. Robert aimerait bien en profiter pour refactorer un peu le code car il ne respecte pas les bonnes pratiques qu'il a pu voir lors du dernier meetup Software Craftsmanship. On dit alors à Robert qu'il ne peut pas refactorer car, en ce moment, il n'y a pas le temps pour ça et qu'il doit produire. Robert se dit qu'il n'y a de toutes façons jamais le temps&hellip;</p>
 
 <p>Cette histoire vous semble familière ? En effet, le refactoring est souvent perçu comme n'apportant aucune valeur. D'autres choses dans la vie peuvent sembler n'apporter aucune valeur. Il y en a notamment une qui prend près du tiers de la vie d'une personne pendant laquelle cette personne ne fait littéralement rien : <em>dormir</em> !</p>
@@ -2999,9 +2999,9 @@ La plupart du temps, il est seulement important de savoir si le système avec le
   
   <entry>
     <title type="html"><![CDATA[Tell don't ask]]></title>
-    <link href="https://rnowif.github.io/blog/2015/07/28/tell-dont-ask/"/>
-    <updated>2015-07-28T21:57:56+02:00</updated>
-    <id>https://rnowif.github.io/blog/2015/07/28/tell-dont-ask</id>
+    <link href="https://rnowif.github.io/blog/2015/07/29/tell-dont-ask/"/>
+    <updated>2015-07-29T07:57:56+12:00</updated>
+    <id>https://rnowif.github.io/blog/2015/07/29/tell-dont-ask</id>
     <content type="html"><![CDATA[<p>Quand j'étais à l'école et que j'apprenais la programmation orientée objet (POO), on nous disait que les classes permettaient d'encapsuler des comportements et de cacher leur implémentation au reste du monde. Ainsi, le code qui appelle une méthode attend d'elle qu'elle se comporte comme elle a été spécifiée, quelle que soit son implémentation.</p>
 
 <!-- more -->
@@ -3143,9 +3143,9 @@ La plupart du temps, il est seulement important de savoir si le système avec le
   
   <entry>
     <title type="html"><![CDATA[Multiples vues JSON avec @JsonView]]></title>
-    <link href="https://rnowif.github.io/blog/2015/04/14/multiples-vues-json-avec-at-jsonview/"/>
-    <updated>2015-04-14T22:05:31+02:00</updated>
-    <id>https://rnowif.github.io/blog/2015/04/14/multiples-vues-json-avec-at-jsonview</id>
+    <link href="https://rnowif.github.io/blog/2015/04/15/multiples-vues-json-avec-at-jsonview/"/>
+    <updated>2015-04-15T08:05:31+12:00</updated>
+    <id>https://rnowif.github.io/blog/2015/04/15/multiples-vues-json-avec-at-jsonview</id>
     <content type="html"><![CDATA[<p>Le format <a href="http://fr.wikipedia.org/wiki/JavaScript_Object_Notation">Json</a> est de plus en plus utilisé aujourd'hui notamment dans les API de type REST qui offrent des services et retournent leurs résultats sous ce format. Afin d'éviter d'avoir à écrire la transformation en Json manuellement, il existe de nombreuses librairies permettant de faire cette transformation de manière automatique.</p>
 
 <p>Dans cet article, nous allons voir comment utiliser la librairie <a href="http://jackson.codehaus.org/">Jackson</a> et notamment l'annotation <code>@JsonView</code> pour configurer plusieurs transformations pour un même objet. Nous allons également voir succintement comment intégrer cette annotation avec le framework <a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html">Spring MVC</a>.</p>
@@ -3274,9 +3274,9 @@ La plupart du temps, il est seulement important de savoir si le système avec le
   
   <entry>
     <title type="html"><![CDATA[Eviter les classes utilitaires et les appels statiques]]></title>
-    <link href="https://rnowif.github.io/blog/2015/03/30/eviter-les-classes-utilitaires-et-les-appels-statiques/"/>
-    <updated>2015-03-30T22:14:16+02:00</updated>
-    <id>https://rnowif.github.io/blog/2015/03/30/eviter-les-classes-utilitaires-et-les-appels-statiques</id>
+    <link href="https://rnowif.github.io/blog/2015/03/31/eviter-les-classes-utilitaires-et-les-appels-statiques/"/>
+    <updated>2015-03-31T09:14:16+13:00</updated>
+    <id>https://rnowif.github.io/blog/2015/03/31/eviter-les-classes-utilitaires-et-les-appels-statiques</id>
     <content type="html"><![CDATA[<p>De manière générale, les appels statiques sont des mauvaises pratiques car ils induisent notamment un fort couplage entre les classes et rendent les méthodes appelantes difficiles à tester. Cependant, il existe un cas d'utilisation qui utilise abondamment des appels statiques : il s'agit des classes utilitaires.</p>
 
 <p>Cet article a pour objectif de voir comment et quand se passer des appels statiques aux classes utilitaires.</p>
@@ -3557,9 +3557,9 @@ En effet, créer une interface, une implémentation et une injection pour chaque
   
   <entry>
     <title type="html"><![CDATA[Distribuer son application java sur Mac OSX grâce à Maven]]></title>
-    <link href="https://rnowif.github.io/blog/2015/03/20/distribuer-son-application-java-sur-mac-osx-grace-a-maven/"/>
-    <updated>2015-03-20T21:21:43+01:00</updated>
-    <id>https://rnowif.github.io/blog/2015/03/20/distribuer-son-application-java-sur-mac-osx-grace-a-maven</id>
+    <link href="https://rnowif.github.io/blog/2015/03/21/distribuer-son-application-java-sur-mac-osx-grace-a-maven/"/>
+    <updated>2015-03-21T09:21:43+13:00</updated>
+    <id>https://rnowif.github.io/blog/2015/03/21/distribuer-son-application-java-sur-mac-osx-grace-a-maven</id>
     <content type="html"><![CDATA[<p>Dans un article précédent, nous avons vu comment distribuer son application Java sur Windows grâce à Maven. Cet article vise à faire la même chose sur MacOSX.
 Nous n'allons donc pas revenir sur l'alternative qui vise à distribuer directement le jar et passer directement à la partie qui nous intéresse, à savoir distribuer un exécutable Mac OSX.</p>
 
@@ -3677,9 +3677,9 @@ Ce fichier app pourra être exécuté en double cliquant dessus simplement.</p>
   
   <entry>
     <title type="html"><![CDATA[Distribuer son application java sur Windows grâce à Maven]]></title>
-    <link href="https://rnowif.github.io/blog/2015/03/19/distribuer-son-application-java-sur-windows-grace-a-maven/"/>
-    <updated>2015-03-19T21:25:16+01:00</updated>
-    <id>https://rnowif.github.io/blog/2015/03/19/distribuer-son-application-java-sur-windows-grace-a-maven</id>
+    <link href="https://rnowif.github.io/blog/2015/03/20/distribuer-son-application-java-sur-windows-grace-a-maven/"/>
+    <updated>2015-03-20T09:25:16+13:00</updated>
+    <id>https://rnowif.github.io/blog/2015/03/20/distribuer-son-application-java-sur-windows-grace-a-maven</id>
     <content type="html"><![CDATA[<p>Vous avez développé une application java qui va révolutionner le monde. Bravo ! Maintenant, il vous faut la distribuer au monde entier afin que chacun puisse en profiter. Cet article a pour but de montrer comment le faire grâce à l'outil <a href="http://maven.apache.org/">Maven</a>. Il ne s'agit pas d'un article sur Maven en lui-même ni sur la mise en place d'un projet avec Maven.</p>
 
 <!-- more -->

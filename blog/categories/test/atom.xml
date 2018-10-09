@@ -4,7 +4,7 @@
   <title><![CDATA[Category: test | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/test/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-09-24T19:59:42+02:00</updated>
+  <updated>2018-10-10T06:13:52+13:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Quand ne pas mocker]]></title>
-    <link href="https://rnowif.github.io/blog/2016/04/13/quand-ne-pas-mocker/"/>
-    <updated>2016-04-13T20:55:56+02:00</updated>
-    <id>https://rnowif.github.io/blog/2016/04/13/quand-ne-pas-mocker</id>
+    <link href="https://rnowif.github.io/blog/2016/04/14/quand-ne-pas-mocker/"/>
+    <updated>2016-04-14T06:55:56+12:00</updated>
+    <id>https://rnowif.github.io/blog/2016/04/14/quand-ne-pas-mocker</id>
     <content type="html"><![CDATA[<p>En tant que <em>Test Driven Developer</em> et plutôt adepte de l'école de TDD de Londres, j'ai tendance à utiliser un nombre assez important de <em>mocks</em> quand je teste mon code. Cependant, il y a des cas où je trouve plus utile de ne <strong>pas</strong> en utiliser.</p>
 
 <p>L'objectif de cet article est de décrire ces cas ainsi que la façon de tester le code sans utiliser de <em>mocks</em>.</p>

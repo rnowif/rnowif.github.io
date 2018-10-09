@@ -4,7 +4,7 @@
   <title><![CDATA[Category: refactoring | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/refactoring/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-09-24T19:59:42+02:00</updated>
+  <updated>2018-10-10T06:13:52+13:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Trivia Kata: A Refactoring Story]]></title>
     <link href="https://rnowif.github.io/blog/2017/04/10/trivia-refactoring/"/>
-    <updated>2017-04-10T08:52:15+02:00</updated>
+    <updated>2017-04-10T18:52:15+12:00</updated>
     <id>https://rnowif.github.io/blog/2017/04/10/trivia-refactoring</id>
     <content type="html"><![CDATA[<p>Refactoring a legacy code can be a tricky business. More often than not, the code is not tested, unclear and contains some bugs. If not planned, the time required to refactor will eat all the time allocated to the feature. The feature will then be implemented very quickly and it will result in more buggy unmaintainable code.</p>
 
@@ -267,9 +267,9 @@ Game aGame = new Game(
   
   <entry>
     <title type="html"><![CDATA[Refactorer, c'est comme dormir]]></title>
-    <link href="https://rnowif.github.io/blog/2016/01/31/refactorer-c-est-comme-dormir/"/>
-    <updated>2016-01-31T19:16:09+01:00</updated>
-    <id>https://rnowif.github.io/blog/2016/01/31/refactorer-c-est-comme-dormir</id>
+    <link href="https://rnowif.github.io/blog/2016/02/01/refactorer-c-est-comme-dormir/"/>
+    <updated>2016-02-01T07:16:09+13:00</updated>
+    <id>https://rnowif.github.io/blog/2016/02/01/refactorer-c-est-comme-dormir</id>
     <content type="html"><![CDATA[<p>Robert est un développeur. On a demandé à Robert d'ajouter une nouvelle fonctionnalité à l'application. Robert aimerait bien en profiter pour refactorer un peu le code car il ne respecte pas les bonnes pratiques qu'il a pu voir lors du dernier meetup Software Craftsmanship. On dit alors à Robert qu'il ne peut pas refactorer car, en ce moment, il n'y a pas le temps pour ça et qu'il doit produire. Robert se dit qu'il n'y a de toutes façons jamais le temps&hellip;</p>
 
 <p>Cette histoire vous semble familière ? En effet, le refactoring est souvent perçu comme n'apportant aucune valeur. D'autres choses dans la vie peuvent sembler n'apporter aucune valeur. Il y en a notamment une qui prend près du tiers de la vie d'une personne pendant laquelle cette personne ne fait littéralement rien : <em>dormir</em> !</p>
