@@ -4,7 +4,7 @@
   <title><![CDATA[Category: java | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/java/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-10-10T06:13:52+13:00</updated>
+  <updated>2018-10-20T04:35:15+13:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -12,6 +12,53 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[C# for the Java Developer: Extension Methods]]></title>
+    <link href="https://rnowif.github.io/blog/2018/10/20/c-sharp-for-the-java-developer-extension-methods/"/>
+    <updated>2018-10-20T01:20:24+13:00</updated>
+    <id>https://rnowif.github.io/blog/2018/10/20/c-sharp-for-the-java-developer-extension-methods</id>
+    <content type="html"><![CDATA[<p>Being a Java developer for several years now, I recently decided to dive back into C# and share what I learn in the process. In this blog post, I will talk about extensions methods. This concept, which exists in some JVM languages (like <a href="https://kotlinlang.org/docs/reference/extensions.html">Kotlin</a>) but not in Java, let the developer add methods to a class without touching its code (hence the name <em>extension</em> methods).</p>
+
+<!-- more -->
+
+
+<p>Let&rsquo;s say you want to create a method that puts the first letter of a string in upper case and returns the new string. You cannot modify (or even inherit) the <code>String</code> class in Java to add this method. Since you don&rsquo;t necessarily want to create your own custom flavour of the <code>String</code> class for your code base, you would probably create a static function that takes a <code>String</code> as an argument and return another <code>String</code>:</p>
+
+<pre><code class="java">class StringExtensions {
+    static String capitalize(String word) {
+        return Character.toUpperCase(word.charAt(0)) + word.substring(1);
+    }
+}
+</code></pre>
+
+<p>Now, you can simply invoke this function like this:</p>
+
+<pre><code class="java">String word = "hello";
+String capitalizedWord = StringExtensions.capitalize(word);
+</code></pre>
+
+<p>Of course, creating a static method is also possible in C#. However, C# has a feature that allows to add new methods to a class without having to modify its code. This feature is called <em>extension methods</em>. In order to create an extension method, you have to create a top-level static class and implement a static method. The first argument of this method specifies the type that the method operates on and should have the <code>this</code> modifier:</p>
+
+<pre><code class="csharp">static class StringExtensions 
+{
+  static string Capitalize(this String word)
+  {
+      // Note that this cannot access any private data in the String class. 
+      return char.ToUpper(word[0]) + word.Substring(1);
+  }
+}
+</code></pre>
+
+<p>In order to use it, the namespace that contains the class must be specified with a <code>using</code> directive. Afterwards, the method can be invoked as if it was an instance method of the type:</p>
+
+<pre><code class="csharp">string word = "hello";
+string capitalizedWord = word.Capitalize();
+</code></pre>
+
+<p>Extension methods are very powerful. Beside the fact that the code looks &ldquo;cleaner&rdquo;, it is also possible to seamlessly plug new behaviours in existing types by simply importing a namespace. The extension code can be in separate specific modules that can be imported only when needed.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[What is a Volatile Variable in Java?]]></title>
@@ -694,129 +741,6 @@ public class VideoClientFallbackFactory implements FallbackFactory&lt;VideoClien
 <h2>Conclusion</h2>
 
 <p>Microservices foster low coupling between components and resiliency. Hence, it would be sad to throw an error every time a service or a middleware is down. The circuit breaker pattern explained in this article allows you to ensure the continuity of service, even if it has to be offered in a degraded manner. As always, Spring Boot is a great help to setup this mechanism very easily.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Controlling the Time in Java]]></title>
-    <link href="https://rnowif.github.io/blog/2017/07/21/controlling-time-in-java/"/>
-    <updated>2017-07-21T01:06:15+12:00</updated>
-    <id>https://rnowif.github.io/blog/2017/07/21/controlling-time-in-java</id>
-    <content type="html"><![CDATA[<p>Time is a tricky thing, it&rsquo;s always changing. Having such moving parts into the codebase can be very annoying when testing, for instance. In this article, we will see how to control the time in Java.</p>
-
-<!-- more -->
-
-
-<p>Let&rsquo;s take a simple example of a pizza delivery service. Its policy is that pizzas should be delivered in 10 minutes. When the customer ask for a delivery, the delivery time is automatically calculated by the system based on this policy.</p>
-
-<pre><code class="java">public class DeliveryPolicy {
-  public Delivery createDelivery(Pizza pizza) {
-    LocalDateTime deliveryTime = LocalDateTime.now().plus(10, ChronoUnit.MINUTES);
-
-    return new Delivery(pizza, deliveryTime);
-  }
-}
-</code></pre>
-
-<h2>How Do we Test it?</h2>
-
-<p>Since the time always changes we cannot test this method very precisely without changing its code. We could test that the delivery time is <em>approximatively</em> 10 minutes in the future but like all fuzzy tests, it could fail from time to time depending on the context on which it is executed.</p>
-
-<h2>Make Dependency Visible</h2>
-
-<p>The reason why this code is so difficult to test is that it has a hidden dependency: the clock. Since Java 8, all <code>now</code> methods of the Date API take a clock as an argument. We can then make this dependency visible.</p>
-
-<pre><code class="java">public class DeliveryPolicy {
-
-  private final Clock clock;
-
-  public DeliveryPolicy() {
-    this.clock = Clock.systemDefaultZone();
-  }
-
-  public Delivery createDelivery(Pizza pizza) {
-    LocalDateTime deliveryTime = LocalDateTime.now(clock).plus(10, ChronoUnit.MINUTES);
-
-    return new Delivery(pizza, deliveryTime);
-  }
-}
-</code></pre>
-
-<h2>Dependency Injection to the Rescue</h2>
-
-<p>Now that the dependency is out there, we can inject it in the constructor, like any other dependency, and testing this method becomes trivial.</p>
-
-<pre><code class="java">public class DeliveryPolicy {
-
-  private final Clock clock;
-
-  public DeliveryPolicy(ClockProvider clockProvider) {
-    this.clock = clockProvider.get();
-  }
-
-  public Delivery createDelivery(Pizza pizza) {
-    LocalDateTime deliveryTime = LocalDateTime.now(clock).plus(10, ChronoUnit.MINUTES);
-
-    return new Delivery(pizza, deliveryTime);
-  }
-}
-</code></pre>
-
-<pre><code class="java">public class DeliveryPolicyTest {
-
-  @Test
-  public void should_schedule_delivery_ten_minutes_later() {
-    ZonedDateTime now = ZonedDateTime.of(LocalDateTime.of(2017, 7, 18, 0, 0, 0), ZoneId.of("+01"));
-    DeliveryPolicy policy = new DeliveryPolicy(() -&gt; Clock.fixed(now.toInstant(), now.getZone()));
-
-    Delivery delivery = policy.createDelivery(new Pizza());
-
-    LocalDateTime tenMinutesLater = LocalDateTime.of(2017, 7, 18, 0, 10, 0);
-    assertThat(delivery.getDeliveryTime()).isEqualTo(tenMinutesLater);
-  }
-}
-</code></pre>
-
-<h2>Usage with Spring Framework and Spring Boot</h2>
-
-<p>If you use Spring Framework in your application, you can create a <code>ClockProvider</code> bean that will give the default Clock. Moreover, if you use Spring Boot, it allows you to mock this bean very easily in integration tests with the <code>@MockBean</code> annotation.</p>
-
-<pre><code class="java">@RunWith(SpringRunner.class)
-@SpringBootTest
-public class DeliveryPolicyIT {
-
-  @MockBean
-  private ClockProvider clockProvider;
-
-  @Autowired
-  private DeliveryPolicy policy;
-
-  @Test
-  public void should_schedule_delivery_ten_minutes_later() {
-    ZonedDateTime now = ZonedDateTime.of(LocalDateTime.of(2017, 7, 18, 0, 0, 0), ZoneId.of("+01"));
-    Mockito.when(clockProvider.get()).thenReturn(Clock.fixed(now.toInstant(), now.getZone()));
-
-    Delivery delivery = policy.createDelivery(new Pizza());
-
-    LocalDateTime tenMinutesLater = LocalDateTime.of(2017, 7, 18, 0, 10, 0);
-    assertThat(delivery.getDeliveryTime()).isEqualTo(tenMinutesLater);
-  }
-}
-</code></pre>
-
-<pre><code class="java">@Configuration
-public class ClockConfig {
-
-  @Bean
-  public ClockProvider clockProvider() {
-    return () -&gt; Clock.systemDefaultZone();
-  }
-}
-</code></pre>
-
-<h2>Conclusion</h2>
-
-<p>I used to think that the time, like random, was a very difficult thing to test. With the Java 8 Date API, it becomes trivial. You just have to acknowledge the dependency you have on the clock and treat it like any other dependency. Now, I almost never use a method of the Date API without passing a clock as a parameter. This allows me to control the time throughout the application very easily (in unit, integration or functional tests).</p>
 ]]></content>
   </entry>
   
