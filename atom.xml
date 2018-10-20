@@ -4,7 +4,7 @@
   <title><![CDATA[Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-10-21T06:42:18+13:00</updated>
+  <updated>2018-10-21T07:44:54+13:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -12,6 +12,112 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[C# for the Java Developer: Enums]]></title>
+    <link href="https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-enums/"/>
+    <updated>2018-10-21T06:54:27+13:00</updated>
+    <id>https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-enums</id>
+    <content type="html"><![CDATA[<p>Enums is a very common concept. It exists, of course, in Java and C# as well. However, Java and C# enums do not have the same capabilities. This blog post aims to show their differences.</p>
+
+<!-- more -->
+
+
+<p>In Java, enums are very much like regular classes: they can implement interfaces and have methods. However, they cannot inherit other classes or be explicitly instantiated. They can be viewed as <code>final</code> classes (or <code>sealed</code> classes in C#) that already inherit the virtual &ldquo;enum&rdquo; class, have only private constructor(s) and a set of pre-defined instances (the values of the enum).</p>
+
+<p>For instance, let&rsquo;s take the example of the HTTP status codes. In Java, it is possible to write this code:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">enum</span> <span class="n">HttpStatus</span> <span class="kd">implements</span> <span class="n">Comparable</span><span class="o">&lt;</span><span class="n">HttpStatus</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">OK</span><span class="o">(</span><span class="mi">200</span><span class="o">),</span> <span class="n">SERVER_ERROR</span><span class="o">(</span><span class="mi">500</span><span class="o">),</span> <span class="n">NOT_FOUND</span><span class="o">(</span><span class="mi">404</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">code</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">HttpStatus</span><span class="o">(</span><span class="kt">int</span> <span class="n">code</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="o">.</span><span class="na">code</span> <span class="o">=</span> <span class="n">code</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// This is a regular instance method</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="nf">code</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">code</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// This is the implementation of the Comparable interface</span>
+</span><span class='line'>  <span class="nd">@Override</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="nf">compareTo</span><span class="o">(</span><span class="n">HttpStatus</span> <span class="n">o</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>      <span class="c1">// Http statuses will be sorted by status code</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">Integer</span><span class="o">.</span><span class="na">compare</span><span class="o">(</span><span class="n">code</span><span class="o">,</span> <span class="n">o</span><span class="o">.</span><span class="na">code</span><span class="o">);</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">HttpStatus</span> <span class="n">status</span> <span class="o">=</span> <span class="n">HttpStatus</span><span class="o">.</span><span class="na">OK</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// The &#39;code&#39; method can be invoked like any other method</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">code</span> <span class="o">=</span> <span class="n">status</span><span class="o">.</span><span class="na">code</span><span class="o">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In C#, enums are just integers in disguise. The previous snippet can be simulated in C# only because the <code>code</code> attribute happens to be an <code>int</code>. Otherwise, it would be very complex to have the same behaviour:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">enum</span> <span class="n">HttpStatus</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// int value of the enum can be forced to a specific value</span>
+</span><span class='line'>  <span class="n">OK</span> <span class="p">=</span> <span class="m">200</span><span class="p">,</span>
+</span><span class='line'>  <span class="n">NOT_FOUND</span> <span class="p">=</span> <span class="m">404</span><span class="p">,</span>
+</span><span class='line'>  <span class="n">SERVER_ERROR</span> <span class="p">=</span> <span class="m">500</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="n">HttpStatus</span> <span class="n">status</span> <span class="p">=</span> <span class="n">HttpStatus</span><span class="p">.</span><span class="n">OK</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// The enum can be casted to an int to get its value</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">code</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">status</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To sum up, Java enums are much more powerful than their C# counterparts. I often use these features when I write Java code and I think I would miss them if I had to write C# code on a daily basis.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[C# for the Java Developer: Lambdas]]></title>
@@ -3632,289 +3738,6 @@ La plupart du temps, il est seulement important de savoir si le système avec le
 <h2>Conclusion</h2>
 
 <p><code>@JsonView</code> est un outil très simple et très puissant qui permet d'avoir plusieurs représentations du même objet sans avoir à écrire de code autre que quelques annotations. De plus, son intégration avec Spring MVC le rend très peu intrusif et ne pollue pas le code avec des opérations de conversion.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Eviter les classes utilitaires et les appels statiques]]></title>
-    <link href="https://rnowif.github.io/blog/2015/03/31/eviter-les-classes-utilitaires-et-les-appels-statiques/"/>
-    <updated>2015-03-31T09:14:16+13:00</updated>
-    <id>https://rnowif.github.io/blog/2015/03/31/eviter-les-classes-utilitaires-et-les-appels-statiques</id>
-    <content type="html"><![CDATA[<p>De manière générale, les appels statiques sont des mauvaises pratiques car ils induisent notamment un fort couplage entre les classes et rendent les méthodes appelantes difficiles à tester. Cependant, il existe un cas d'utilisation qui utilise abondamment des appels statiques : il s'agit des classes utilitaires.</p>
-
-<p>Cet article a pour objectif de voir comment et quand se passer des appels statiques aux classes utilitaires.</p>
-
-<!-- more -->
-
-
-<h2>De l'utilisation des classes utilitaires</h2>
-
-<p>Les classes utilitaires sont utilisées absolument partout dans les programmes Java. Que ce soit les classes du JDK telles que <code>Math</code> ou <code>Arrays</code> ou bien celles de librairies externes comme <code>CollectionUtils</code> ou <code>FileUtils</code>, vous en avez forcément déjà utilisé.
-Comme leur nom l'indique, ces classes sont très utiles pour effectuer des opérations courantes et sans état.</p>
-
-<h2>Cas d'utilisation</h2>
-
-<p>Pour illustrer mes propos, je vais prendre un cas d'utilisation assez classique : calculer le hash d'un mot de passe avant insertion en base de données. Ce cas d'utilisation semble être éligible à l'utilisation d'une classe utilitaire.</p>
-
-<h3>Utilisation d'une méthode statique</h3>
-
-<h4>Implémentation</h4>
-
-<p>En suivant la logique des classes utilitaires, voici une implémentation possible de ce comportement.</p>
-
-<p>Nous allons créer une classe utilitaire nommée <code>SecurityUtils</code> qui dispose d'une méthode statique <code>sha256</code> qui hash un texte en clair.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SecurityUtils</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">sha256</span><span class="o">(</span><span class="n">String</span> <span class="n">plainText</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>     <span class="k">try</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">MessageDigest</span> <span class="n">md</span><span class="o">;</span>
-</span><span class='line'>        <span class="n">md</span> <span class="o">=</span> <span class="n">MessageDigest</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="s">&quot;SHA-256&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">md</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">plainText</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(</span><span class="s">&quot;iso-8859-1&quot;</span><span class="o">),</span> <span class="mi">0</span><span class="o">,</span> <span class="n">plainText</span><span class="o">.</span><span class="na">length</span><span class="o">());</span>
-</span><span class='line'>        <span class="kt">byte</span><span class="o">[]</span> <span class="n">shaHash</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="na">digest</span><span class="o">();</span>
-</span><span class='line'>        <span class="k">return</span> <span class="nf">toHexadecimal</span><span class="o">(</span><span class="n">shaHash</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>     <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">UnsupportedEncodingException</span> <span class="o">|</span> <span class="n">NoSuchAlgorithmException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">logger</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
-</span><span class='line'>     <span class="o">}</span>
-</span><span class='line'>   <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Ensuite, la classe du service qui va appeler cette méthode</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserService</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="kd">public</span> <span class="n">User</span> <span class="nf">save</span><span class="o">(</span><span class="n">User</span> <span class="n">user</span><span class="o">,</span> <span class="n">String</span> <span class="n">plainPassword</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">user</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="n">SecurityUtils</span><span class="o">.</span><span class="na">sha256</span><span class="o">(</span><span class="n">plainPassword</span><span class="o">));</span>
-</span><span class='line'>      <span class="n">repository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">return</span> <span class="n">user</span><span class="o">;</span>
-</span><span class='line'>   <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Ce code semble correct et est très courant dans les programmes Java. Cependant, il me pose un problème conséquent. En effet, comment tester la méthode <code>save</code> de manière unitaire ?</p>
-
-<h4>Tests</h4>
-
-<p>Tester unitairement une méthode qui effectue des appels statiques est compliqué. Un test unitaire compliqué est souvent un symptôme d'un code trop couplé et mal conçu.</p>
-
-<p>Voici une implémentation naïve du test unitaire de la méthode <code>save</code>.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserServiceTest</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="nd">@Test</span>
-</span><span class='line'>   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">should_hash_password_when_save</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">User</span> <span class="n">user</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">UserService</span><span class="o">().</span><span class="na">save</span><span class="o">(</span><span class="k">new</span> <span class="nf">User</span><span class="o">(),</span> <span class="s">&quot;pass_word&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">assertThat</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getPassword</span><span class="o">).</span><span class="na">isEqualTo</span><span class="o">(</span><span class="n">SecurityUtils</span><span class="o">.</span><span class="na">sha256</span><span class="o">(</span><span class="s">&quot;pass_word&quot;</span><span class="o">));</span>
-</span><span class='line'>   <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Ce test a le mérite de ne pas dépendre de l'implémentation de <code>sha256</code>. Cependant, si celle-ci lance une exception, ou bien retourne toujours une chaine vide par exemple, le test peut générer des faux négatifs ou des faux positifs sans que l'on sache si cela provient du service ou de la classe utilitaire.</p>
-
-<p>Il est bien évidemment possible de mocker des méthodes statiques avec des librairies comme <a href="https://code.google.com/p/powermock/">PowerMock</a> mais je préfère éviter d'utiliser ce genre de raccourci. C'est pourquoi je préfère me passer de méthodes statiques et utiliser des méthodes d'instances à la place.</p>
-
-<h3>Utilisation d'une méthode d'instance</h3>
-
-<h4>Implémentation</h4>
-
-<p>Pour le même cas d'utilisation, voici l'implémentation que j'utiliserais.</p>
-
-<p>Tout d'abord, je définis une interface qui sera le contrat de ma classe utilitaire.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">SecurityProvider</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="kd">public</span> <span class="n">String</span> <span class="nf">sha256</span><span class="o">(</span><span class="n">String</span> <span class="n">plainText</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Ensuite, il faut implémenter cette interface.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SecurityProviderImpl</span> <span class="kd">implements</span> <span class="n">SecurityProvider</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="kd">public</span> <span class="n">String</span> <span class="nf">sha256</span><span class="o">(</span><span class="n">String</span> <span class="n">plainText</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>     <span class="k">try</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">MessageDigest</span> <span class="n">md</span><span class="o">;</span>
-</span><span class='line'>        <span class="n">md</span> <span class="o">=</span> <span class="n">MessageDigest</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="s">&quot;SHA-256&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">md</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">plainText</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(</span><span class="s">&quot;iso-8859-1&quot;</span><span class="o">),</span> <span class="mi">0</span><span class="o">,</span> <span class="n">plainText</span><span class="o">.</span><span class="na">length</span><span class="o">());</span>
-</span><span class='line'>        <span class="kt">byte</span><span class="o">[]</span> <span class="n">shaHash</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="na">digest</span><span class="o">();</span>
-</span><span class='line'>        <span class="k">return</span> <span class="nf">toHexadecimal</span><span class="o">(</span><span class="n">shaHash</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>     <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">UnsupportedEncodingException</span> <span class="o">|</span> <span class="n">NoSuchAlgorithmException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">logger</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
-</span><span class='line'>     <span class="o">}</span>
-</span><span class='line'>   <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Finalement, pour utiliser cette classe, il faut l'injecter dans le service. L'injection peut se faire à la main, via Spring ou JEE mais cela pourrait être l'objet d'un autre article donc je ne rentrerai pas dans les détails.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserService</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="kd">private</span> <span class="kd">final</span> <span class="n">SecurityProvider</span> <span class="n">securityProvider</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="kd">public</span> <span class="nf">UserService</span><span class="o">(</span><span class="n">SecurityProvider</span> <span class="n">securityProvider</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>      <span class="k">this</span><span class="o">.</span><span class="na">securityProvider</span> <span class="o">=</span> <span class="n">securityProvider</span><span class="o">;</span>
-</span><span class='line'>   <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="kd">public</span> <span class="n">User</span> <span class="nf">save</span><span class="o">(</span><span class="n">User</span> <span class="n">user</span><span class="o">,</span> <span class="n">String</span> <span class="n">plainPassword</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">user</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="n">securityProvider</span><span class="o">.</span><span class="na">sha256</span><span class="o">(</span><span class="n">plainPassword</span><span class="o">));</span>
-</span><span class='line'>      <span class="n">repository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">return</span> <span class="n">user</span><span class="o">;</span>
-</span><span class='line'>   <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>Tests</h4>
-
-<p>Cette implémentation est beaucoup plus simple à tester unitairement. En effet, il suffit de mocker l'interface pour vérifier le bon comportement du service. Ce mock peut être fait manuellement ou à l'aide d'un framework comme <a href="http://mockito.org/">Mockito</a>.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserServiceTest</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="nd">@Test</span>
-</span><span class='line'>   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">should_hash_password_when_save</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">SecurityProvider</span> <span class="n">securityProvider</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">SecurityProvider</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>         <span class="nd">@Override</span>
-</span><span class='line'>         <span class="kd">public</span> <span class="n">String</span> <span class="nf">sha256</span><span class="o">(</span><span class="n">String</span> <span class="n">plainText</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="k">return</span> <span class="s">&quot;Hashed :&quot;</span> <span class="o">+</span> <span class="n">plainText</span><span class="o">;</span>
-</span><span class='line'>         <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">User</span> <span class="n">user</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">UserService</span><span class="o">(</span><span class="n">securityProvider</span><span class="o">).</span><span class="na">save</span><span class="o">(</span><span class="k">new</span> <span class="nf">User</span><span class="o">(),</span> <span class="s">&quot;pass_word&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">assertThat</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getPassword</span><span class="o">).</span><span class="na">isEqualTo</span><span class="o">(</span><span class="s">&quot;Hashed :pass_word&quot;</span><span class="o">);</span>
-</span><span class='line'>   <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Ce test est à 100% découplé de l'implémentation réelle de la méthode <code>sha256</code> et permet de tester de manière réellement unitaire la méthode <code>save</code> du service.</p>
-
-<h2>Bonnes pratiques et pragmatisme</h2>
-
-<p>L'utilisation des classes utilitaires et des méthodes statiques est globalement à proscrire car cela rend le code fortement couplé et difficile à tester. Cependant, un développeur se doit d'être pragmatique.
-En effet, créer une interface, une implémentation et une injection pour chaque appel à une méthode utilitaire peut sembler un peu trop long et verbeux.</p>
-
-<p>Je pense qu'il s'agit de trouver le bon compromis entre une utilisation sage des méthodes statiques et les bonnes pratiques de programmation. Par exemple, il n'est pas utile de mettre en place ce pattern pour des calculs simples comme une valeur absolue, un test sur la présence ou non d'élément dans une liste ou le calcul d'un minimum entre deux nombres. Par contre, quand il s'agit de traitements plus lourds comme des calculs complexes ou la manipulation d'un fichier, ce travail supplémentaire peut porter ses fruits et doit être mis en place.</p>
 ]]></content>
   </entry>
   

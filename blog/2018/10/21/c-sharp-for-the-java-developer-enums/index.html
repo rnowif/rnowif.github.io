@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 <head>
   <meta charset="utf-8">
-  <title>C# for the Java Developer: Lambdas - Renaud Humbert-Labeaumaz</title>
+  <title>C# for the Java Developer: Enums - Renaud Humbert-Labeaumaz</title>
   <meta name="author" content="Renaud Humbert-Labeaumaz">
 
   
@@ -14,15 +14,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-lambdas/">
+  <link rel="canonical" href="https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-enums/">
   <link href="/favicon.png" type="image/png" rel="icon">
   <link href="/atom.xml" rel="alternate" title="Renaud Humbert-Labeaumaz" type="application/atom+xml">
 
   <!-- http://opengraphprotocol.org/ -->
   <meta name="twitter:card" content="summary_large_image">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-lambdas/">
-  <meta property="og:title" content="C# for the Java Developer: Lambdas - Renaud Humbert-Labeaumaz">
+  <meta property="og:url" content="https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-enums/">
+  <meta property="og:title" content="C# for the Java Developer: Enums - Renaud Humbert-Labeaumaz">
   
 
   <script src="/javascripts/libs/jquery/jquery-2.1.3.min.js"></script>
@@ -121,35 +121,69 @@
 
 
 
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2018-10-21T00:37:12+13:00"  data-updated="true" itemprop="datePublished dateCreated">Sun 21 Oct 2018, 12:37 AM</time>
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2018-10-21T06:54:27+13:00"  data-updated="true" itemprop="datePublished dateCreated">Sun 21 Oct 2018,  6:54 AM</time>
         
       </p>
     
     
     <h1 class="entry-title" itemprop="name headline">
-        C# for the Java Developer: Lambdas
+        C# for the Java Developer: Enums
         
     </h1>
     
   </header>
 
 
-<div class="entry-content clearfix" itemprop="articleBody description"><p>A lambda is an anonymous function that can be assigned to a variable, passed as an argument of a method and invoked at any time. We can find lambdas in Java and C# and the resulting code is very similar. A Java lambda can be viewed as the implementation of an interface with only one method (called a <em>functional interface</em>) whereas a C# lambda can be assigned to a <code>delegate</code>, which is a concept that does not exist in Java. This article aims to explain how lambdas work in Java and C# and highlight their differences and similarities.</p>
+<div class="entry-content clearfix" itemprop="articleBody description"><p>Enums is a very common concept. It exists, of course, in Java and C# as well. However, Java and C# enums do not have the same capabilities. This blog post aims to show their differences.</p>
 
 <!-- more -->
 
 
-<h2>Java Functional Interfaces</h2>
+<p>In Java, enums are very much like regular classes: they can implement interfaces and have methods. However, they cannot inherit other classes or be explicitly instantiated. They can be viewed as <code>final</code> classes (or <code>sealed</code> classes in C#) that already inherit the virtual &ldquo;enum&rdquo; class, have only private constructor(s) and a set of pre-defined instances (the values of the enum).</p>
 
-<p>In Java, a lambda can simply be viewed as an anonymous function that implements an interface with only one method. This kind of interface is called a <em>functional interface</em> and can be annotated with the <code>@FunctionalInterface</code> annotation that tells the compiler to enforce the only-one-method rule:</p>
+<p>For instance, let&rsquo;s take the example of the HTTP status codes. In Java, it is possible to write this code:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@FunctionalInterface</span>
-</span><span class='line'><span class="kd">interface</span> <span class="nc">Printer</span> <span class="o">{</span>
-</span><span class='line'>  <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">String</span> <span class="n">message</span><span class="o">);</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">enum</span> <span class="n">HttpStatus</span> <span class="kd">implements</span> <span class="n">Comparable</span><span class="o">&lt;</span><span class="n">HttpStatus</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">OK</span><span class="o">(</span><span class="mi">200</span><span class="o">),</span> <span class="n">SERVER_ERROR</span><span class="o">(</span><span class="mi">500</span><span class="o">),</span> <span class="n">NOT_FOUND</span><span class="o">(</span><span class="mi">404</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">code</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">HttpStatus</span><span class="o">(</span><span class="kt">int</span> <span class="n">code</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="o">.</span><span class="na">code</span> <span class="o">=</span> <span class="n">code</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// This is a regular instance method</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="nf">code</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">code</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// This is the implementation of the Comparable interface</span>
+</span><span class='line'>  <span class="nd">@Override</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="nf">compareTo</span><span class="o">(</span><span class="n">HttpStatus</span> <span class="n">o</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>      <span class="c1">// Http statuses will be sorted by status code</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">Integer</span><span class="o">.</span><span class="na">compare</span><span class="o">(</span><span class="n">code</span><span class="o">,</span> <span class="n">o</span><span class="o">.</span><span class="na">code</span><span class="o">);</span>
+</span><span class='line'>  <span class="o">}</span>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -160,58 +194,27 @@
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// The function interface is implemented with a lambda</span>
-</span><span class='line'><span class="n">Printer</span> <span class="n">standardPrinter</span> <span class="o">=</span> <span class="n">message</span> <span class="o">-&gt;</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">HttpStatus</span> <span class="n">status</span> <span class="o">=</span> <span class="n">HttpStatus</span><span class="o">.</span><span class="na">OK</span><span class="o">;</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">// The print method of standardPrinter can be invoked</span>
-</span><span class='line'><span class="n">standardPrinter</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">&quot;Hello World!&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="c1">// The &#39;code&#39; method can be invoked like any other method</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">code</span> <span class="o">=</span> <span class="n">status</span><span class="o">.</span><span class="na">code</span><span class="o">();</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>From the previous snippet, you should note that the way the interface is implemented makes absolutely no difference. It can be a lambda, a concrete or even an anonymous class. In any ways, you can simply invoke the <code>print</code> method of the interface.</p>
-
-<p>There are some pre-defined <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">generic functional interfaces</a> in the JDK that can be used directly off the shelf. The main ones are described below:</p>
-
-<table>
-<thead>
-<tr>
-<th> Name </th>
-<th> Method </th>
-<th> Role </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td> <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html"><code>Function&lt;T,R&gt;</code></a> </td>
-<td> <code>R apply(T t)</code> </td>
-<td> Takes an argument of a given type T and returns an object of type R </td>
-</tr>
-<tr>
-<td> <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html"><code>Consumer&lt;T&gt;</code></a> </td>
-<td> <code>void accept(T)</code> </td>
-<td> Takes an argument of a given type T and does something useful (typically with side effects) </td>
-</tr>
-<tr>
-<td> <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html"><code>Predicate&lt;T&gt;</code></a> </td>
-<td> <code>boolean test(T)</code> </td>
-<td> Takes an argument of a given type T and returns a boolean (similar to <code>Function&lt;T, Boolean&gt;</code>) </td>
-</tr>
-<tr>
-<td> <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html"><code>Supplier&lt;T&gt;</code></a> </td>
-<td> <code>T get()</code> </td>
-<td> Returns an object of type T </td>
-</tr>
-</tbody>
-</table>
-
-
-<h2>C# Delegates</h2>
-
-<p>In C#, a lambda can be assigned to a delegate which is a type that encapsulates a method:</p>
+<p>In C#, enums are just integers in disguise. The previous snippet can be simulated in C# only because the <code>code</code> attribute happens to be an <code>int</code>. Otherwise, it would be very complex to have the same behaviour:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">delegate</span> <span class="k">void</span> <span class="nf">Print</span><span class="p">(</span><span class="kt">string</span> <span class="n">message</span><span class="p">);</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">enum</span> <span class="n">HttpStatus</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// int value of the enum can be forced to a specific value</span>
+</span><span class='line'>  <span class="n">OK</span> <span class="p">=</span> <span class="m">200</span><span class="p">,</span>
+</span><span class='line'>  <span class="n">NOT_FOUND</span> <span class="p">=</span> <span class="m">404</span><span class="p">,</span>
+</span><span class='line'>  <span class="n">SERVER_ERROR</span> <span class="p">=</span> <span class="m">500</span>
+</span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -221,44 +224,14 @@
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="c1">// A lambda is assigned to the delegate</span>
-</span><span class='line'><span class="n">Print</span> <span class="n">print</span> <span class="p">=</span> <span class="n">message</span> <span class="p">=&gt;</span> <span class="n">System</span><span class="p">.</span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="n">HttpStatus</span> <span class="n">status</span> <span class="p">=</span> <span class="n">HttpStatus</span><span class="p">.</span><span class="n">OK</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">// print can be directly invoked as a method</span>
-</span><span class='line'><span class="n">print</span><span class="p">(</span><span class="s">&quot;Hello World!&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="c1">// The enum can be casted to an int to get its value</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">code</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">status</span><span class="p">;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Like in Java, some delegates are already defined in the .NET framework, the main ones are described below:</p>
-
-<table>
-<thead>
-<tr>
-<th> Method </th>
-<th> Role </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.func-2"><code>TResult Func&lt;in T,out TResult&gt;(T arg)</code></a> </td>
-<td> Takes an argument of a given type T and returns an object of type TResult </td>
-</tr>
-<tr>
-<td> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.action-1"><code>void Action&lt;in T&gt;(T obj)</code></a> </td>
-<td> Takes an argument of a given type T and does something useful (typically with side effects) </td>
-</tr>
-<tr>
-<td> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.predicate-1"><code>bool Predicate&lt;in T&gt;(T obj)</code></a> </td>
-<td> Takes an argument of a given type T and returns a boolean (similar to <code>Func&lt;T, bool&gt;</code>) </td>
-</tr>
-</tbody>
-</table>
-
-
-<h2>Conclusion</h2>
-
-<p>From a Java perspective, using lambdas in APIs (like Linq for instance) is pretty straightforward. However, when digging a little bit deeper, there are some subtle differences to understand. I find the Java approach simpler as it does not introduce another concept but the C# approach is cleaner because the delegate can be invoked directly like a method.</p>
+<p>To sum up, Java enums are much more powerful than their C# counterparts. I often use these features when I write Java code and I think I would miss them if I had to write C# code on a daily basis.</p>
 </div>
 
 
@@ -293,14 +266,14 @@
     
     <h4>Share this post</h4>
     
-    <a class="fa fa-twitter" href="https://twitter.com/intent/tweet?url=https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-lambdas/;"
+    <a class="fa fa-twitter" href="https://twitter.com/intent/tweet?url=https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-enums/;"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
         <span class="hidden">Twitter</span>
     </a>
-    <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-lambdas/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+    <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-enums/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
         <span class="hidden">Facebook</span>
     </a>
-    <a class="fa fa-google-plus" href="https://plus.google.com/share?url=https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-lambdas/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+    <a class="fa fa-google-plus" href="https://plus.google.com/share?url=https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-enums/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
         <span class="hidden">Google+</span>
     </a>
     
@@ -345,7 +318,7 @@
 
 
 
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2018-10-21T00:37:12+13:00"  data-updated="true" itemprop="datePublished dateCreated">Sun 21 Oct 2018, 12:37 AM</time>
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2018-10-21T06:54:27+13:00"  data-updated="true" itemprop="datePublished dateCreated">Sun 21 Oct 2018,  6:54 AM</time>
           <br>
 
 <span class="glyphicon glyphicon-tags"></span>&nbsp;
@@ -362,28 +335,16 @@
             
             
               
-                <a href="/blog/2018/10/20/c-sharp-for-the-java-developer-generics/" class="col-xs-12 col-md-4 btn btn-default" title="Previous Post: C# for the Java Developer: Generics"> 
+                <a href="/blog/2018/10/21/c-sharp-for-the-java-developer-lambdas/" class="col-xs-12 col-md-4 btn btn-default" title="Previous Post: C# for the Java Developer: Lambdas"> 
                   <div class="text-muted">
                     <small>Previous Post</small>
                   </div>
                   <div class="pager-title">
-                    <h4>C# for the Java Developer: Generics</h4>
+                    <h4>C# for the Java Developer: Lambdas</h4>
                   </div>
                 </a>
               
             
-            
-            
-              
-              <a href="/blog/2018/10/21/c-sharp-for-the-java-developer-enums/" class="col-xs-12 col-md-4 btn btn-default pull-right" title="Next Post: C# for the Java Developer: Enums">
-                <div class="text-muted">
-                  <small>Next Post</small>
-                </div>
-                <div class="pager-title">
-                  <h4>C# for the Java Developer: Enums</h4>
-                </div>
-              </a>
-              
             
             
           </div>
@@ -421,8 +382,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-lambdas/';
-        var disqus_url = 'https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-lambdas/';
+        var disqus_identifier = 'https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-enums/';
+        var disqus_url = 'https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-enums/';
         var disqus_script = 'embed.js';
       
     (function () {

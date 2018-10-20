@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/c-number/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-10-21T06:42:18+13:00</updated>
+  <updated>2018-10-21T07:44:54+13:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -12,6 +12,69 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[C# for the Java Developer: Enums]]></title>
+    <link href="https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-enums/"/>
+    <updated>2018-10-21T06:54:27+13:00</updated>
+    <id>https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-enums</id>
+    <content type="html"><![CDATA[<p>Enums is a very common concept. It exists, of course, in Java and C# as well. However, Java and C# enums do not have the same capabilities. This blog post aims to show their differences.</p>
+
+<!-- more -->
+
+
+<p>In Java, enums are very much like regular classes: they can implement interfaces and have methods. However, they cannot inherit other classes or be explicitly instantiated. They can be viewed as <code>final</code> classes (or <code>sealed</code> classes in C#) that already inherit the virtual &ldquo;enum&rdquo; class, have only private constructor(s) and a set of pre-defined instances (the values of the enum).</p>
+
+<p>For instance, let&rsquo;s take the example of the HTTP status codes. In Java, it is possible to write this code:</p>
+
+<pre><code class="java">enum HttpStatus implements Comparable&lt;HttpStatus&gt; {
+    OK(200), SERVER_ERROR(500), NOT_FOUND(404);
+
+    private final int code;
+
+    HttpStatus(int code) {
+        this.code = code;
+    }
+
+    // This is a regular instance method
+    int code() {
+        return code;
+    }
+
+    // This is the implementation of the Comparable interface
+    @Override
+    int compareTo(HttpStatus o) {
+        // Http statuses will be sorted by status code
+        return Integer.compare(code, o.code);
+    }
+}
+</code></pre>
+
+<pre><code class="java">HttpStatus status = HttpStatus.OK;
+
+// The 'code' method can be invoked like any other method
+int code = status.code();
+</code></pre>
+
+<p>In C#, enums are just integers in disguise. The previous snippet can be simulated in C# only because the <code>code</code> attribute happens to be an <code>int</code>. Otherwise, it would be very complex to have the same behaviour:</p>
+
+<pre><code class="csharp">enum HttpStatus {
+    // int value of the enum can be forced to a specific value
+    OK = 200,
+    NOT_FOUND = 404,
+    SERVER_ERROR = 500
+}
+</code></pre>
+
+<pre><code class="csharp">HttpStatus status = HttpStatus.OK;
+
+// The enum can be casted to an int to get its value
+int code = (int) status;
+</code></pre>
+
+<p>To sum up, Java enums are much more powerful than their C# counterparts. I often use these features when I write Java code and I think I would miss them if I had to write C# code on a daily basis.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[C# for the Java Developer: Lambdas]]></title>
