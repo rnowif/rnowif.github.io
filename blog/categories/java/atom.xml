@@ -4,7 +4,7 @@
   <title><![CDATA[Category: java | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/java/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-10-20T06:16:51+13:00</updated>
+  <updated>2018-10-21T00:12:26+13:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -12,6 +12,110 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[C# for the Java Developer: Generics]]></title>
+    <link href="https://rnowif.github.io/blog/2018/10/20/c-sharp-for-the-java-developer-generics/"/>
+    <updated>2018-10-20T05:57:36+13:00</updated>
+    <id>https://rnowif.github.io/blog/2018/10/20/c-sharp-for-the-java-developer-generics</id>
+    <content type="html"><![CDATA[<p>In my journey into the C# world, I wanted to talk about generics. Generics exist in both Java and C# languages but their implementation is <em>very</em> different. This blog post aims to explain the differences and the similarities between the two.<br/>
+TL;DR Java generics is a lie, C# generics is not.</p>
+
+<!-- more -->
+
+
+<h2>Java Generics is a Lie</h2>
+
+<p>Generics have been introduced in Java 5. Before that, you had to manipulate <code>Objects</code> and cast them to the desired type:</p>
+
+<pre><code class="java">List apples = new ArrayList();
+apples.add(new Apple());
+// This is really a list of objects, so the cast is required
+Apple firstApple = (Apple) apples.get(0);
+</code></pre>
+
+<p>In the previous snippet, you should note that there is absolutely nothing that prevents you from adding a <code>Banana</code> into the list and make the program crash at runtime. Also, this code is still valid in the latest version of Java (which is Java 11 as we speak). To say the least, this approach is not very safe and do not leverage the type system as much as we could expect.</p>
+
+<p>Since Java 5, it is then possible to use the generic version of the <code>List</code> class:</p>
+
+<pre><code class="java">List&lt;Apple&gt; apples = new ArrayList&lt;Apple&gt;();
+apples.add(new Apple());
+// The cast is not required any more thanks to the generics
+Apple firstApple = apples.get(0);
+</code></pre>
+
+<p>The thing is that, at runtime, the two previous snippets are strictly equivalent. Indeed, Java generics are removed during compilation and the resulting bytecode only manipulate <code>Objects</code> and casts. This is called <em>type erasure</em>. As a consequence, it is not possible, in Java, to write code like this:</p>
+
+<pre><code class="java">/**
+ * Filter objects of the given type
+ */
+&lt;T&gt; List&lt;T&gt; filterObjectsOfType(List&lt;Object&gt; objects) {
+    List&lt;T&gt; filteredObjects = new ArrayList&lt;&gt;();
+    for (Object o : objects) {
+        if (o instanceof T) {
+            filteredObjects.add((T) o);
+        }
+    }
+    return filteredObjects;
+}
+</code></pre>
+
+<p>Indeed, the type of <code>T</code> is erased at runtime and the <code>instanceof</code> operation cannot be performed. That is why a class object is often passed as an argument of the method:</p>
+
+<pre><code class="java">/**
+ * Filter objects of the given type
+ */
+&lt;T&gt; List&lt;T&gt; filterObjectsOfType(List&lt;Object&gt; objects, Class&lt;T&gt; clazz) {
+    List&lt;T&gt; filteredObjects = new ArrayList&lt;&gt;();
+    for (Object o : objects) {
+        if (clazz.isInstance(o)) {
+            filteredObjects.add((T) o);
+        }
+    }
+    return filteredObjects;
+}
+</code></pre>
+
+<p>This method can be invoked like this:</p>
+
+<pre><code class="java">List&lt;String&gt; stringsOnly = filterObjectsOfType(Arrays.asList("hello", 2), String.class);
+// stringsOnly contains only "hello"
+</code></pre>
+
+<h2>C# Generics is a Runtime Feature</h2>
+
+<p>C# generics, on the other hand, is a totally different beast. Indeed, the real type is kept at runtime and it is possible to use this type to write this kind of code:</p>
+
+<pre><code class="csharp">/**
+ * Filter objects of the given type
+ */
+public IEnumerable&lt;T&gt; FilterObjectsOfType&lt;T&gt;(IEnumerable&lt;object&gt; objects)
+{
+    List&lt;T&gt; filteredObjects = new List&lt;T&gt;();
+    foreach (var obj in objects)
+    {
+        if (obj is T)
+        {
+            filteredObjects.Add((T) obj);    
+        }
+    }
+    return filteredObjects;
+} 
+</code></pre>
+
+<p>This method can be invoked like this:</p>
+
+<pre><code class="csharp">IEnumerable&lt;String&gt; stringsOnly = FilterObjectsOfType&lt;String&gt;(new List&lt;object&gt;(new object[] { "hello", 2 }));
+// stringsOnly contains only "hello"
+</code></pre>
+
+<h2>Conclusion</h2>
+
+<p>In Java, generics are used to write type-safe code but this feature is limited and the code can be awkward sometimes due to the type erasure mechanism. In C#, it is a runtime feature and its usage is much more straightforward.</p>
+
+<p><em>PS: I realize that the code I wrote in the snippets is not really idiomatic but I wanted to have Java and C# code as similar as possible to be able to focus only on the usage of generics.</em></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[C# for the Java Developer: Extension Methods]]></title>
@@ -609,138 +713,6 @@ During the execution of the consumer tests, contracts (called pacts) are generat
 <h2>Conclusion</h2>
 
 <p>Automatic tests are very important in the software development industry. A good testing strategy can help to write more relevant, robust and maintainable tests. This article describes an example of strategy to test Java Spring Boot microservices.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Setup a Circuit Breaker with Hystrix, Feign Client and Spring Boot]]></title>
-    <link href="https://rnowif.github.io/blog/2017/07/23/setup-a-circuit-breaker-with-hystrix/"/>
-    <updated>2017-07-23T23:33:38+12:00</updated>
-    <id>https://rnowif.github.io/blog/2017/07/23/setup-a-circuit-breaker-with-hystrix</id>
-    <content type="html"><![CDATA[<p>In a microservices architecture, several things can go wrong. A middleware, the network or the service you want to contact can be down. In this world of uncertainty, you have to anticipate problems in order not to break the entire chain and throw an error to the end user when you could offer a partially degraded service instead.</p>
-
-<p>The goal of this article is to show how to implement the circuit breaker pattern using Hystrix, Feign Client and Spring Boot.</p>
-
-<!-- more -->
-
-
-<h2>Feign Client Crash Course</h2>
-
-<p><a href="https://github.com/OpenFeign/feign">Feign</a> is an HTTP client created by Netflix to make HTTP communications easier. It is integrated to Spring Boot with the <code>spring-cloud-starter-feign</code> starter.</p>
-
-<p>To create a client to consume an HTTP service, an interface annotated with <code>@FeignClient</code> must be created. Endpoints can be declared in this interface using an API that is very close to the Spring MVC API. The <code>@EnableFeignClients</code> annotation must also be added to a Spring Configuration class.</p>
-
-<pre><code class="java">@Configuration
-@EnableFeignClients
-public class FeignConfiguration {
-
-}
-</code></pre>
-
-<pre><code class="java">@FeignClient(name = "videos", url = "http://localhost:9090/videos")
-public interface VideoClient {
-
-    @PostMapping(value = "/api/videos/suggest")
-    List&lt;Suggestion&gt; suggest(@RequestBody ViewingHistory history);
-
-}
-</code></pre>
-
-<p>An instance of <code>VideoClient</code> is automagically injected into the Spring application context and can be autowired and used throughout the application. Moreover, if the <code>videos</code> microservice is registred to the same discovery service as the current microservice, there is no need for an URL as it will be retrieved for you based on the <code>name</code>.</p>
-
-<p>If the <code>videos</code> service, a middleware or the network happens to be down or overloaded, the <code>suggest</code> method will throw a <code>FeignException</code> that will be propagated throughout the stack if not caught.</p>
-
-<h2>Create a Fallback Implementation</h2>
-
-<p>Fortunately, Spring Cloud comes with a solution to this problem: a circuit breaker. In this article, we will use <a href="https://github.com/Netflix/Hystrix">Hystrix</a>. It is also created by Netflix and also integrated to Spring Boot using the <code>spring-cloud-starter-hystrix</code> starter.</p>
-
-<p>The idea is to create an implementation of the <code>VideoClient</code> and mark it as the default behaviour if <code>videos</code> is unreachable or overloaded. Like a lot of other Spring features, it is enabled using an annotation: <code>@EnableCircuitBreaker</code>.</p>
-
-<pre><code class="java">@Configuration
-@EnableFeignClients
-@EnableCircuitBreaker
-public class FeignConfiguration {
-
-}
-</code></pre>
-
-<pre><code class="java">@FeignClient(name = "videos", url = "http://localhost:9090/videos", fallback = VideoClientFallback.class)
-public interface VideoClient {
-
-    @PostMapping(value = "/api/videos/suggest")
-    List&lt;Suggestion&gt; suggest(@RequestBody ViewingHistory history);
-
-}
-</code></pre>
-
-<pre><code class="java">@Component
-public class VideoClientFallback implements VideoClient {
-
-    @Override
-    public List&lt;Suggestion&gt; suggest(ViewingHistory history) {
-      // Degraded service: no suggestion to offer
-      return new ArrayList&lt;&gt;();
-    }
-
-}
-</code></pre>
-
-<p>A configuration property has to be added to the <code>application.yml</code> file of the Spring Boot application to tell Feign to enable Hystrix.</p>
-
-<pre><code class="yml">feign:
-    hystrix:
-        enabled: true
-</code></pre>
-
-<p>Voila! Every time the remote service will be unavailable, the <code>suggest</code> method of the <code>VideoClientFallback</code> will be called and the end user will not get an error violently thrown at her.</p>
-
-<h2>Keep Track of the Source Error</h2>
-
-<p>With this setup, the fallback will be called regardless of the initial error that will be swallowed. If you want to retrieve this error and do something with it, you can use a <code>FallbackFactory</code>.</p>
-
-<pre><code class="java">@FeignClient(name = "videos", url = "http://localhost:9090/videos", fallbackFactory = VideoClientFallbackFactory.class)
-public interface VideoClient {
-
-  @PostMapping(value = "/api/videos/suggest")
-  List&lt;Suggestion&gt; suggest(@RequestBody ViewingHistory history);
-
-}
-</code></pre>
-
-<pre><code class="java">@Component
-public class VideoClientFallbackFactory implements FallbackFactory&lt;VideoClient&gt; {
-
-    @Override
-    public VideoClient create(Throwable throwable) {
-        return new VideoClientFallback(throwable);
-    }
-
-}
-</code></pre>
-
-<pre><code class="java">public class VideoClientFallback implements VideoClient {
-
-    private final Throwable cause;
-
-    public VideoClientFallback(Throwable cause) {
-      this.cause = cause;
-    }
-
-    @Override
-    public List&lt;Suggestion&gt; suggest(ViewingHistory history) {
-        if (cause instanceof FeignException &amp;&amp; ((FeignException) cause).status() == 404) {
-            // Treat the HTTP 404 status
-        }
-
-        return new ArrayList&lt;&gt;();
-    }
-
-}
-</code></pre>
-
-<h2>Conclusion</h2>
-
-<p>Microservices foster low coupling between components and resiliency. Hence, it would be sad to throw an error every time a service or a middleware is down. The circuit breaker pattern explained in this article allows you to ensure the continuity of service, even if it has to be offered in a degraded manner. As always, Spring Boot is a great help to setup this mechanism very easily.</p>
 ]]></content>
   </entry>
   

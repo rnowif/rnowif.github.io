@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: c# | Renaud Humbert-Labeaumaz]]></title>
-  <link href="https://rnowif.github.io/blog/categories/c-number/atom.xml" rel="self"/>
+  <title><![CDATA[Category: .net | Renaud Humbert-Labeaumaz]]></title>
+  <link href="https://rnowif.github.io/blog/categories/dot-net/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
   <updated>2018-10-21T00:12:26+13:00</updated>
   <id>https://rnowif.github.io/</id>
@@ -114,53 +114,6 @@ public IEnumerable&lt;T&gt; FilterObjectsOfType&lt;T&gt;(IEnumerable&lt;object&g
 <p>In Java, generics are used to write type-safe code but this feature is limited and the code can be awkward sometimes due to the type erasure mechanism. In C#, it is a runtime feature and its usage is much more straightforward.</p>
 
 <p><em>PS: I realize that the code I wrote in the snippets is not really idiomatic but I wanted to have Java and C# code as similar as possible to be able to focus only on the usage of generics.</em></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[C# for the Java Developer: Extension Methods]]></title>
-    <link href="https://rnowif.github.io/blog/2018/10/20/c-sharp-for-the-java-developer-extension-methods/"/>
-    <updated>2018-10-20T01:20:24+13:00</updated>
-    <id>https://rnowif.github.io/blog/2018/10/20/c-sharp-for-the-java-developer-extension-methods</id>
-    <content type="html"><![CDATA[<p>After spending several years crafting Java code, I recently decided to dive back into C# and share what I learn in the process. In this blog post, I will talk about extensions methods. This concept, which exists in some JVM languages (like <a href="https://kotlinlang.org/docs/reference/extensions.html">Kotlin</a>) but not in Java, let the developer add methods to a class without touching its code (hence the name <em>extension</em> methods).</p>
-
-<!-- more -->
-
-
-<p>Let&rsquo;s say you want to create a method that puts the first letter of a string in upper case and returns the new string. You cannot modify (or even inherit) the <code>String</code> class in Java to add this method. Since you don&rsquo;t necessarily want to create your own custom flavour of the <code>String</code> class for your code base, you would probably create a static function that takes a <code>String</code> as an argument and return another <code>String</code>:</p>
-
-<pre><code class="java">class StringExtensions {
-    static String capitalize(String word) {
-        return Character.toUpperCase(word.charAt(0)) + word.substring(1);
-    }
-}
-</code></pre>
-
-<p>Now, you can simply invoke this function like this:</p>
-
-<pre><code class="java">String word = "hello";
-String capitalizedWord = StringExtensions.capitalize(word);
-</code></pre>
-
-<p>Of course, creating a static method is also possible in C#. However, C# has a feature that allows to add new methods to a class without having to modify its code. This feature is called <em>extension methods</em>. In order to create an extension method, you have to create a top-level static class and implement a static method. The first argument of this method specifies the type that the method operates on and should have the <code>this</code> modifier:</p>
-
-<pre><code class="csharp">static class StringExtensions 
-{
-  static string Capitalize(this String word)
-  {
-      // Note that this cannot access any private data in the String class. 
-      return char.ToUpper(word[0]) + word.Substring(1);
-  }
-}
-</code></pre>
-
-<p>In order to use it, the namespace that contains the class must be specified with a <code>using</code> directive. Afterwards, the method can be invoked as if it was an instance method of the type:</p>
-
-<pre><code class="csharp">string word = "hello";
-string capitalizedWord = word.Capitalize();
-</code></pre>
-
-<p>Extension methods are very powerful. Beside the fact that the code looks &ldquo;cleaner&rdquo;, it is also possible to seamlessly plug new behaviours in existing types by simply importing a namespace. The extension code can be in separate specific modules that can be imported only when needed.</p>
 ]]></content>
   </entry>
   

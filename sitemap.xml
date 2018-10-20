@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>https://rnowif.github.io/blog/2018/10/20/c-sharp-for-the-java-developer-generics/</loc>
+<lastmod>2018-10-20T05:57:36+13:00</lastmod>
+</url>
+<url>
 <loc>https://rnowif.github.io/blog/2018/10/20/c-sharp-for-the-java-developer-extension-methods/</loc>
 <lastmod>2018-10-20T01:20:24+13:00</lastmod>
 </url>
@@ -166,5 +170,8 @@
 </url>
 <url>
 <loc>https://rnowif.github.io/blog/categories/c-number/</loc>
+</url>
+<url>
+<loc>https://rnowif.github.io/blog/categories/dot-net/</loc>
 </url>
 </urlset>
