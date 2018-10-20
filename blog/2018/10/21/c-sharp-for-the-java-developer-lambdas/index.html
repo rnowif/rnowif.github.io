@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>C# for the Java Developer: Lambdas - Renaud Humbert-Labeaumaz</title>
+  <meta name="author" content="Renaud Humbert-Labeaumaz">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-lambdas/">
+  <link href="/favicon.png" type="image/png" rel="icon">
+  <link href="/atom.xml" rel="alternate" title="Renaud Humbert-Labeaumaz" type="application/atom+xml">
+
+  <!-- http://opengraphprotocol.org/ -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-lambdas/">
+  <meta property="og:title" content="C# for the Java Developer: Lambdas - Renaud Humbert-Labeaumaz">
+  
+
+  <script src="/javascripts/libs/jquery/jquery-2.1.3.min.js"></script>
+
+<link href="/assets/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="/assets/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+  
+  <link href="/stylesheets/screen.css" media="screen, projection, print" rel="stylesheet" type="text/css">
+
+  
+   <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-127790305-1', 'auto');
+    ga('send', 'pageview');
+
+  </script>
+
+
+</head>
+
+  <body   >
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="wrap">
+      
+        <header role="banner">
+          <nav class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" title="toggle navbar" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Renaud Humbert-Labeaumaz</a>
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li ><a href="/blog/archives">Archives</a></li>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="subscribe-rss" href="/atom.xml" title="subscribe via RSS">
+                        <span class="visible-xs">RSS</span>
+                        <img class="hidden-xs" src="/images/rss.png" alt="RSS">
+                    </a>
+                </li>
+                
+            </ul>
+            
+                <form class="navbar-form navbar-right" action="https://www.google.com/search" method="GET">
+                    <input type="hidden" name="sitesearch" value="rnowif.github.io">
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="q" placeholder="Search">
+                    </div>
+                </form>
+            
+        </div>
+    </div>
+</nav>
+
+
+        </header>
+      
+      <div id="main" role="main" class="container">
+        <div id="content">
+          <div class="row">
+  <div class="page-content" itemscope itemtype="http://schema.org/Blog">
+    <meta itemprop="name" content="Renaud Humbert-Labeaumaz" />
+    
+    <meta itemprop="url" content="https://rnowif.github.io" />
+    <article class="hentry" role="article" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+      
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2018-10-21T00:37:12+13:00"  data-updated="true" itemprop="datePublished dateCreated">Sun 21 Oct 2018, 12:37 AM</time>
+        
+      </p>
+    
+    
+    <h1 class="entry-title" itemprop="name headline">
+        C# for the Java Developer: Lambdas
+        
+    </h1>
+    
+  </header>
+
+
+<div class="entry-content clearfix" itemprop="articleBody description"><p>A lambda is an anonymous function that can be assigned to a variable, passed as an argument of a method and invoked at any time. We can find lambdas in Java and C# and the resulting code is very similar. A Java lambda can be viewed as the implementation of an interface with only one method (called a <em>functional interface</em>) whereas a C# lambda can be assigned to a <code>delegate</code>, which is a concept that does not exist in Java. This article aims to explain how lambdas work in Java and C# and highlight their differences and similarities.</p>
+
+<!-- more -->
+
+
+<h2>Java Functional Interfaces</h2>
+
+<p>In Java, a lambda can simply be viewed as an anonymous function that implements an interface with only one method. This kind of interface is called a <em>functional interface</em> and can be annotated with the <code>@FunctionalInterface</code> annotation that tells the compiler to enforce the only-one-method rule:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@FunctionalInterface</span>
+</span><span class='line'><span class="kd">interface</span> <span class="nc">Printer</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">String</span> <span class="n">message</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// The function interface is implemented with a lambda</span>
+</span><span class='line'><span class="n">Printer</span> <span class="n">standardPrinter</span> <span class="o">=</span> <span class="n">message</span> <span class="o">-&gt;</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// The print method of standardPrinter can be invoked</span>
+</span><span class='line'><span class="n">standardPrinter</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">&quot;Hello World!&quot;</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>From the previous snippet, you should note that the way the interface is implemented makes absolutely no difference. It can be a lambda, a concrete or even an anonymous class. In any ways, you can simply invoke the <code>print</code> method of the interface.</p>
+
+<p>There are some pre-defined <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">generic functional interfaces</a> in the JDK that can be used directly off the shelf. The main ones are described below:</p>
+
+<table>
+<thead>
+<tr>
+<th> Name </th>
+<th> Method </th>
+<th> Role </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html"><code>Function&lt;T,R&gt;</code></a> </td>
+<td> <code>R apply(T t)</code> </td>
+<td> Takes an argument of a given type T and returns an object of type R </td>
+</tr>
+<tr>
+<td> <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html"><code>Consumer&lt;T&gt;</code></a> </td>
+<td> <code>void accept(T)</code> </td>
+<td> Takes an argument of a given type T and does something useful (typically with side effects) </td>
+</tr>
+<tr>
+<td> <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html"><code>Predicate&lt;T&gt;</code></a> </td>
+<td> <code>boolean test(T)</code> </td>
+<td> Takes an argument of a given type T and returns a boolean (similar to <code>Function&lt;T, Boolean&gt;</code>) </td>
+</tr>
+<tr>
+<td> <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html"><code>Supplier&lt;T&gt;</code></a> </td>
+<td> <code>T get()</code> </td>
+<td> Returns an object of type T </td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>C# Delegates</h2>
+
+<p>In C#, a lambda can be assigned to a delegate which is a type that encapsulates a method:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">delegate</span> <span class="k">void</span> <span class="nf">Print</span><span class="p">(</span><span class="kt">string</span> <span class="n">message</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="c1">// A lambda is assigned to the delegate</span>
+</span><span class='line'><span class="n">Print</span> <span class="n">print</span> <span class="p">=</span> <span class="n">message</span> <span class="p">=&gt;</span> <span class="n">System</span><span class="p">.</span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// print can be directly invoked as a method</span>
+</span><span class='line'><span class="n">print</span><span class="p">(</span><span class="s">&quot;Hello World!&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Like in Java, some delegates are already defined in the .NET framework, the main ones are described below:</p>
+
+<table>
+<thead>
+<tr>
+<th> Method </th>
+<th> Role </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.func-2"><code>TResult Func&lt;in T,out TResult&gt;(T arg)</code></a> </td>
+<td> Takes an argument of a given type T and returns an object of type TResult </td>
+</tr>
+<tr>
+<td> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.action-1"><code>void Action&lt;in T&gt;(T obj)</code></a> </td>
+<td> Takes an argument of a given type T and does something useful (typically with side effects) </td>
+</tr>
+<tr>
+<td> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.predicate-1"><code>bool Predicate&lt;in T&gt;(T obj)</code></a> </td>
+<td> Takes an argument of a given type T and returns a boolean (similar to <code>Func&lt;T, bool&gt;</code>) </td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>Conclusion</h2>
+
+<p>From a Java perspective, using lambdas in APIs (like Linq for instance) is pretty straightforward. However, when digging a little bit deeper, there are some subtle differences to understand. I find the Java approach simpler as it does not introduce another concept but the C# approach is cleaner because the delegate can be invoked directly like a method.</p>
+</div>
+
+
+      <footer class="post-footer">
+        <p class="meta text-muted">
+          
+  
+
+
+
+<figure class="author-image">
+    <span class="img" href="/about" style="background-image: url(/images/renaud.png)"><span class="hidden">Picture</span></span>
+</figure>
+
+<section class="author">
+    <h4><span class="byline author vcard" itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="fn" itemprop="name">Renaud Humbert-Labeaumaz</span></span></h4>
+
+    <a class="fa fa-link" href="https://rnowif.github.io">
+        <span class="hidden">https://rnowif.github.io</span>
+    </a>
+    <a class="fa fa-twitter" href="https://twitter.com/rnowif">
+        <span class="hidden">rnowif</span>
+    </a>
+    <a class="fa fa-github" href="https://github.com/rnowif">
+        <span class="hidden">rnowif</span>
+    </a>
+</section>
+
+<hr>
+
+<section class="share">
+    
+    <h4>Share this post</h4>
+    
+    <a class="fa fa-twitter" href="https://twitter.com/intent/tweet?url=https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-lambdas/;"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-lambdas/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="fa fa-google-plus" href="https://plus.google.com/share?url=https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-lambdas/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+    
+</section>
+
+
+
+
+<!--
+<footer class="post-footer">
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/intent/tweet?text=Instant%20Movie%20Streamer%20v3%20Release&amp;url=http://iyask.me/instant-movie-streamer-v3-release/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://iyask.me/instant-movie-streamer-v3-release/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://iyask.me/instant-movie-streamer-v3-release/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+
+        </footer>
+
+
+-->
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2018-10-21T00:37:12+13:00"  data-updated="true" itemprop="datePublished dateCreated">Sun 21 Oct 2018, 12:37 AM</time>
+          <br>
+
+<span class="glyphicon glyphicon-tags"></span>&nbsp;
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-number/'>c#</a>, <a class='category' href='/blog/categories/java/'>java</a>
+  
+</span>
+
+
+        </p>
+        
+          <div class="pager">
+            
+            
+              
+                <a href="/blog/2018/10/20/c-sharp-for-the-java-developer-generics/" class="col-xs-12 col-md-4 btn btn-default" title="Previous Post: C# for the Java Developer: Generics"> 
+                  <div class="text-muted">
+                    <small>Previous Post</small>
+                  </div>
+                  <div class="pager-title">
+                    <h4>C# for the Java Developer: Generics</h4>
+                  </div>
+                </a>
+              
+            
+            
+            
+          </div>
+        
+      </footer>
+    </article>
+    
+      <section>
+        <h2>Comments</h2>
+        <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+      </section>
+    
+  </div>
+</div>
+
+        </div>
+      </div>
+    </div>
+    <footer role="contentinfo"><div class="container">
+    <p class="text-muted credits">
+  Copyright &copy; 2018 - Renaud Humbert-Labeaumaz<br>
+  <small>
+      <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>,
+      <span class="credit">customized with <a href="https://github.com/bhrigu123/abacus">abacus theme</a></span>.
+  </small>
+</p>
+
+</div>
+</footer>
+    
+
+<script type="text/javascript">
+      var disqus_shortname = 'rnowif';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-lambdas/';
+        var disqus_url = 'https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-lambdas/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+<script src="/assets/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/javascripts/modernizr.js"></script>
+
+
+  </body>
+</html>

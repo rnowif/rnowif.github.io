@@ -4,7 +4,7 @@
   <title><![CDATA[Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-10-21T00:32:00+13:00</updated>
+  <updated>2018-10-21T06:42:18+13:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -12,6 +12,139 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[C# for the Java Developer: Lambdas]]></title>
+    <link href="https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-lambdas/"/>
+    <updated>2018-10-21T00:37:12+13:00</updated>
+    <id>https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-lambdas</id>
+    <content type="html"><![CDATA[<p>A lambda is an anonymous function that can be assigned to a variable, passed as an argument of a method and invoked at any time. We can find lambdas in Java and C# and the resulting code is very similar. A Java lambda can be viewed as the implementation of an interface with only one method (called a <em>functional interface</em>) whereas a C# lambda can be assigned to a <code>delegate</code>, which is a concept that does not exist in Java. This article aims to explain how lambdas work in Java and C# and highlight their differences and similarities.</p>
+
+<!-- more -->
+
+
+<h2>Java Functional Interfaces</h2>
+
+<p>In Java, a lambda can simply be viewed as an anonymous function that implements an interface with only one method. This kind of interface is called a <em>functional interface</em> and can be annotated with the <code>@FunctionalInterface</code> annotation that tells the compiler to enforce the only-one-method rule:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@FunctionalInterface</span>
+</span><span class='line'><span class="kd">interface</span> <span class="nc">Printer</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">String</span> <span class="n">message</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// The function interface is implemented with a lambda</span>
+</span><span class='line'><span class="n">Printer</span> <span class="n">standardPrinter</span> <span class="o">=</span> <span class="n">message</span> <span class="o">-&gt;</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// The print method of standardPrinter can be invoked</span>
+</span><span class='line'><span class="n">standardPrinter</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">&quot;Hello World!&quot;</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>From the previous snippet, you should note that the way the interface is implemented makes absolutely no difference. It can be a lambda, a concrete or even an anonymous class. In any ways, you can simply invoke the <code>print</code> method of the interface.</p>
+
+<p>There are some pre-defined <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">generic functional interfaces</a> in the JDK that can be used directly off the shelf. The main ones are described below:</p>
+
+<table>
+<thead>
+<tr>
+<th> Name </th>
+<th> Method </th>
+<th> Role </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html"><code>Function&lt;T,R&gt;</code></a> </td>
+<td> <code>R apply(T t)</code> </td>
+<td> Takes an argument of a given type T and returns an object of type R </td>
+</tr>
+<tr>
+<td> <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html"><code>Consumer&lt;T&gt;</code></a> </td>
+<td> <code>void accept(T)</code> </td>
+<td> Takes an argument of a given type T and does something useful (typically with side effects) </td>
+</tr>
+<tr>
+<td> <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html"><code>Predicate&lt;T&gt;</code></a> </td>
+<td> <code>boolean test(T)</code> </td>
+<td> Takes an argument of a given type T and returns a boolean (similar to <code>Function&lt;T, Boolean&gt;</code>) </td>
+</tr>
+<tr>
+<td> <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html"><code>Supplier&lt;T&gt;</code></a> </td>
+<td> <code>T get()</code> </td>
+<td> Returns an object of type T </td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>C# Delegates</h2>
+
+<p>In C#, a lambda can be assigned to a delegate which is a type that encapsulates a method:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">delegate</span> <span class="k">void</span> <span class="nf">Print</span><span class="p">(</span><span class="kt">string</span> <span class="n">message</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="c1">// A lambda is assigned to the delegate</span>
+</span><span class='line'><span class="n">Print</span> <span class="n">print</span> <span class="p">=</span> <span class="n">message</span> <span class="p">=&gt;</span> <span class="n">System</span><span class="p">.</span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// print can be directly invoked as a method</span>
+</span><span class='line'><span class="n">print</span><span class="p">(</span><span class="s">&quot;Hello World!&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Like in Java, some delegates are already defined in the .NET framework, the main ones are described below:</p>
+
+<table>
+<thead>
+<tr>
+<th> Method </th>
+<th> Role </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.func-2"><code>TResult Func&lt;in T,out TResult&gt;(T arg)</code></a> </td>
+<td> Takes an argument of a given type T and returns an object of type TResult </td>
+</tr>
+<tr>
+<td> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.action-1"><code>void Action&lt;in T&gt;(T obj)</code></a> </td>
+<td> Takes an argument of a given type T and does something useful (typically with side effects) </td>
+</tr>
+<tr>
+<td> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.predicate-1"><code>bool Predicate&lt;in T&gt;(T obj)</code></a> </td>
+<td> Takes an argument of a given type T and returns a boolean (similar to <code>Func&lt;T, bool&gt;</code>) </td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>Conclusion</h2>
+
+<p>From a Java perspective, using lambdas in APIs (like Linq for instance) is pretty straightforward. However, when digging a little bit deeper, there are some subtle differences to understand. I find the Java approach simpler as it does not introduce another concept but the C# approach is cleaner because the delegate can be invoked directly like a method.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[C# for the Java Developer: Generics]]></title>
@@ -3782,126 +3915,6 @@ Comme leur nom l'indique, ces classes sont très utiles pour effectuer des opér
 En effet, créer une interface, une implémentation et une injection pour chaque appel à une méthode utilitaire peut sembler un peu trop long et verbeux.</p>
 
 <p>Je pense qu'il s'agit de trouver le bon compromis entre une utilisation sage des méthodes statiques et les bonnes pratiques de programmation. Par exemple, il n'est pas utile de mettre en place ce pattern pour des calculs simples comme une valeur absolue, un test sur la présence ou non d'élément dans une liste ou le calcul d'un minimum entre deux nombres. Par contre, quand il s'agit de traitements plus lourds comme des calculs complexes ou la manipulation d'un fichier, ce travail supplémentaire peut porter ses fruits et doit être mis en place.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Distribuer son application java sur Mac OSX grâce à Maven]]></title>
-    <link href="https://rnowif.github.io/blog/2015/03/21/distribuer-son-application-java-sur-mac-osx-grace-a-maven/"/>
-    <updated>2015-03-21T09:21:43+13:00</updated>
-    <id>https://rnowif.github.io/blog/2015/03/21/distribuer-son-application-java-sur-mac-osx-grace-a-maven</id>
-    <content type="html"><![CDATA[<p>Dans un article précédent, nous avons vu comment distribuer son application Java sur Windows grâce à Maven. Cet article vise à faire la même chose sur MacOSX.
-Nous n'allons donc pas revenir sur l'alternative qui vise à distribuer directement le jar et passer directement à la partie qui nous intéresse, à savoir distribuer un exécutable Mac OSX.</p>
-
-<!-- more -->
-
-
-<h2>Distribuer son application sur Mac OSX</h2>
-
-<p>Sous Mac OSX, l'installation d'une application se fait via un fichier dmg. Le plugin <a href="http://mojo.codehaus.org/osxappbundle-maven-plugin/">osxappbundle</a> permet de générer automatiquement ce fichier.</p>
-
-<h3>Générer le fichier dmg sous Mac</h3>
-
-<p>L'utilisation de ce plugin est cependant différente selon qu'il est exécuté sous Mac ou sous un autre OS. En effet, le fichier dmg ne peut être généré <em>que sous Mac</em>.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;groupId&gt;</span>org.codehaus.mojo<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;artifactId&gt;</span>osxappbundle-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0-alpha-1<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;configuration&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;bundleName&gt;</span>MyApp<span class="nt">&lt;/bundleName&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;mainClass&gt;</span>com.foo.MyApplication<span class="nt">&lt;/mainClass&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;internetEnable&gt;</span>true<span class="nt">&lt;/internetEnable&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;diskImageFile&gt;</span>${project.build.directory}/MyApp.dmg<span class="nt">&lt;/diskImageFile&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/configuration&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;executions&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;execution&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;phase&gt;</span>package<span class="nt">&lt;/phase&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;goals&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;goal&gt;</span>bundle<span class="nt">&lt;/goal&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/goals&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/execution&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/executions&gt;</span>
-</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Générer le fichier app sous Windows ou Linux</h3>
-
-<p>Sous un autre OS, il n'est pas possible de générer le fichier dmg. Le plugin va seulement générer un fichier zip qui, une fois dézippé, va se transformer en application Mac (format app).
-Ce fichier app pourra être exécuté en double cliquant dessus simplement.</p>
-
-<p>Pour fonctionner, le plugin a besoin du fichier <code>JavaApplicationStub</code> qui se trouve dans le dossier <code>/System/Library/Frameworks/JavaVM.framework/Resources/MacOS</code> de MacOS. Dans l'exemple ci-dessous, ce fichier a été déposé dans le dossier <code>src/main/resources</code> du projet.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;groupId&gt;</span>org.codehaus.mojo<span class="nt">&lt;/groupId&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;artifactId&gt;</span>osxappbundle-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;version&gt;</span>1.0-alpha-1<span class="nt">&lt;/version&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;configuration&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;bundleName&gt;</span>MyApp<span class="nt">&lt;/bundleName&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;mainClass&gt;</span>com.foo.MyApplication<span class="nt">&lt;/mainClass&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;internetEnable&gt;</span>true<span class="nt">&lt;/internetEnable&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;javaApplicationStub&gt;</span>${basedir}/src/main/resources/JavaApplicationStub<span class="nt">&lt;/javaApplicationStub&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;buildDirectory&gt;</span>${project.build.directory}/MyApp.app<span class="nt">&lt;/buildDirectory&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;diskImageFile&gt;</span>${project.build.directory}/MyApp.dmg<span class="nt">&lt;/diskImageFile&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;zipFile&gt;</span>${project.build.directory}/MyApp.zip<span class="nt">&lt;/zipFile&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/configuration&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;executions&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;execution&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;phase&gt;</span>package<span class="nt">&lt;/phase&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;goals&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;goal&gt;</span>bundle<span class="nt">&lt;/goal&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/goals&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/execution&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/executions&gt;</span>
-</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Conclusion</h2>
-
-<p>Générer un fichier exécutable pour MacOS n'est pas très compliqué. Cependant, afin de générer un fichier dmg, il faut absolument que la machine qui utilise le plugin maven tourne sous MacOS. Dans le cas contraire (un serveur d'intégration continue sous Linux par exemple), il faudra se contenter d'un fichier zip qui, une fois dézippé, pourra être ouvert comme une application normale.</p>
 ]]></content>
   </entry>
   
