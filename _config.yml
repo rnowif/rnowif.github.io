@@ -4,7 +4,7 @@
 
 url: https://rnowif.github.io
 title: Renaud Humbert-Labeaumaz
-subtitle: Java developer.
+subtitle: Software Developer
 author: Renaud Humbert-Labeaumaz
 simple_search: https://www.google.com/search
 description:
@@ -95,7 +95,7 @@ disqus_short_name: rnowif
 disqus_show_comment_count: false
 
 # Google Analytics
-google_analytics_tracking_id:
+google_analytics_tracking_id: UA-127790305-1
 
 # Facebook Like
 facebook_like: false
