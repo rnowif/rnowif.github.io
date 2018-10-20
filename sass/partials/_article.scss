@@ -5,3 +5,11 @@
 .pager-title {
 	color: #337ab7;
 }
+
+article table td, article table th {
+	padding: 2px 5px;
+}
+
+article table code {
+	white-space: nowrap;
+}
