@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: .net | Renaud Humbert-Labeaumaz]]></title>
-  <link href="https://rnowif.github.io/blog/categories/dot-net/atom.xml" rel="self"/>
+  <title><![CDATA[Category: clean code | Renaud Humbert-Labeaumaz]]></title>
+  <link href="https://rnowif.github.io/blog/categories/clean-code/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
   <updated>2018-10-22T23:11:08+13:00</updated>
   <id>https://rnowif.github.io/</id>
@@ -111,110 +111,6 @@ public void SubmitExpense([FromBody] SubmitExpenseCommand expense)
 
 <p>In this architecture, the emphasis is put on the domain. Every other modules should adapt to it but it does not depend on anything. This results in lightweight classes that are very easy to understand and test in isolation.<br/>
 Moreover, the low coupling makes it very easy to change the infrastructure. Indeed, the domain module would not change a bit if we decided to have a CLI instead of a Web App or if the data should be retrieved from an external Web API instead of a PostgreSQL database.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[C# for the Java Developer: Generics]]></title>
-    <link href="https://rnowif.github.io/blog/2018/10/20/c-sharp-for-the-java-developer-generics/"/>
-    <updated>2018-10-20T05:57:36+13:00</updated>
-    <id>https://rnowif.github.io/blog/2018/10/20/c-sharp-for-the-java-developer-generics</id>
-    <content type="html"><![CDATA[<p>In my journey into the C# world, I wanted to talk about generics. Generics exist in both Java and C# languages but their implementation is <em>very</em> different. This blog post aims to explain the differences and the similarities between the two.<br/>
-TL;DR Java generics is a lie, C# generics is not.</p>
-
-<!-- more -->
-
-
-<h2>Java Generics is a Lie</h2>
-
-<p>Generics have been introduced in Java 5. Before that, you had to manipulate <code>Objects</code> and cast them to the desired type:</p>
-
-<pre><code class="java">List apples = new ArrayList();
-apples.add(new Apple());
-// This is really a list of objects, so the cast is required
-Apple firstApple = (Apple) apples.get(0);
-</code></pre>
-
-<p>In the previous snippet, you should note that there is absolutely nothing that prevents you from adding a <code>Banana</code> into the list and make the program crash at runtime. Also, this code is still valid in the latest version of Java (which is Java 11 as we speak). To say the least, this approach is not very safe and do not leverage the type system as much as we could expect.</p>
-
-<p>Since Java 5, it is then possible to use the generic version of the <code>List</code> class:</p>
-
-<pre><code class="java">List&lt;Apple&gt; apples = new ArrayList&lt;Apple&gt;();
-apples.add(new Apple());
-// The cast is not required any more thanks to the generics
-Apple firstApple = apples.get(0);
-</code></pre>
-
-<p>The thing is that, at runtime, the two previous snippets are strictly equivalent. Indeed, Java generics are removed during compilation and the resulting bytecode only manipulate <code>Objects</code> and casts. This is called <em>type erasure</em>. As a consequence, it is not possible, in Java, to write code like this:</p>
-
-<pre><code class="java">/**
- * Filter objects of the given type
- */
-&lt;T&gt; List&lt;T&gt; filterObjectsOfType(List&lt;Object&gt; objects) {
-    List&lt;T&gt; filteredObjects = new ArrayList&lt;&gt;();
-    for (Object o : objects) {
-        if (o instanceof T) {
-            filteredObjects.add((T) o);
-        }
-    }
-    return filteredObjects;
-}
-</code></pre>
-
-<p>Indeed, the type of <code>T</code> is erased at runtime and the <code>instanceof</code> operation cannot be performed. That is why a class object is often passed as an argument of the method:</p>
-
-<pre><code class="java">/**
- * Filter objects of the given type
- */
-&lt;T&gt; List&lt;T&gt; filterObjectsOfType(List&lt;Object&gt; objects, Class&lt;T&gt; clazz) {
-    List&lt;T&gt; filteredObjects = new ArrayList&lt;&gt;();
-    for (Object o : objects) {
-        if (clazz.isInstance(o)) {
-            filteredObjects.add((T) o);
-        }
-    }
-    return filteredObjects;
-}
-</code></pre>
-
-<p>This method can be invoked like this:</p>
-
-<pre><code class="java">List&lt;String&gt; stringsOnly = filterObjectsOfType(Arrays.asList("hello", 2), String.class);
-// stringsOnly contains only "hello"
-</code></pre>
-
-<h2>C# Generics is a Runtime Feature</h2>
-
-<p>C# generics, on the other hand, is a totally different beast. Indeed, the real type is kept at runtime and it is possible to use this type to write this kind of code:</p>
-
-<pre><code class="csharp">/**
- * Filter objects of the given type
- */
-public IEnumerable&lt;T&gt; FilterObjectsOfType&lt;T&gt;(IEnumerable&lt;object&gt; objects)
-{
-    List&lt;T&gt; filteredObjects = new List&lt;T&gt;();
-    foreach (var obj in objects)
-    {
-        if (obj is T)
-        {
-            filteredObjects.Add((T) obj);    
-        }
-    }
-    return filteredObjects;
-} 
-</code></pre>
-
-<p>This method can be invoked like this:</p>
-
-<pre><code class="csharp">IEnumerable&lt;String&gt; stringsOnly = FilterObjectsOfType&lt;String&gt;(new List&lt;object&gt;(new object[] { "hello", 2 }));
-// stringsOnly contains only "hello"
-</code></pre>
-
-<h2>Conclusion</h2>
-
-<p>In Java, generics are used to write type-safe code but this feature is limited and the code can be awkward sometimes due to the type erasure mechanism. In C#, it is a runtime feature and its usage is much more straightforward.</p>
-
-<p><em>PS: I realize that the code I wrote in the snippets is not really idiomatic but I wanted to have Java and C# code as similar as possible to be able to focus only on the usage of generics.</em></p>
 ]]></content>
   </entry>
   

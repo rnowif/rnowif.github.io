@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>https://rnowif.github.io/blog/2018/10/22/asp-dot-net-clean-architecture/</loc>
+<lastmod>2018-10-22T10:04:23+13:00</lastmod>
+</url>
+<url>
 <loc>https://rnowif.github.io/blog/2018/10/21/c-sharp-for-the-java-developer-enums/</loc>
 <lastmod>2018-10-21T06:54:27+13:00</lastmod>
 </url>
@@ -181,5 +185,14 @@
 </url>
 <url>
 <loc>https://rnowif.github.io/blog/categories/dot-net/</loc>
+</url>
+<url>
+<loc>https://rnowif.github.io/blog/categories/asp-dot-net/</loc>
+</url>
+<url>
+<loc>https://rnowif.github.io/blog/categories/architecture/</loc>
+</url>
+<url>
+<loc>https://rnowif.github.io/blog/categories/clean-code/</loc>
 </url>
 </urlset>
