@@ -4,7 +4,7 @@
   <title><![CDATA[Category: spring | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/spring/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-10-22T23:26:28+13:00</updated>
+  <updated>2018-10-23T10:10:12+13:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -385,6 +385,10 @@ During the execution of the consumer tests, contracts (called pacts) are generat
 <h2>Conclusion</h2>
 
 <p>Automatic tests are very important in the software development industry. A good testing strategy can help to write more relevant, robust and maintainable tests. This article describes an example of strategy to test Java Spring Boot microservices.</p>
+
+<hr />
+
+<p><em>This article has been written in collaboration with Nadia Humbert-Labeaumaz (<a href="https://www.twitter.com/nphumbert">@nphumbert</a>)</em></p>
 ]]></content>
   </entry>
   
