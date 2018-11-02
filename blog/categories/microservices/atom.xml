@@ -4,7 +4,7 @@
   <title><![CDATA[Category: microservices | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/microservices/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-10-23T10:10:12+13:00</updated>
+  <updated>2018-11-03T08:44:00+13:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -521,6 +521,10 @@ public class VideoClientFallbackFactory implements FallbackFactory&lt;VideoClien
 <h2>Conclusion</h2>
 
 <p>Microservices foster low coupling between components and resiliency. Hence, it would be sad to throw an error every time a service or a middleware is down. The circuit breaker pattern explained in this article allows you to ensure the continuity of service, even if it has to be offered in a degraded manner. As always, Spring Boot is a great help to setup this mechanism very easily.</p>
+
+<hr />
+
+<p><em>This article has been written in collaboration with Nadia Humbert-Labeaumaz (<a href="https://www.twitter.com/nphumbert">@nphumbert</a>)</em></p>
 ]]></content>
   </entry>
   
