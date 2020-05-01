@@ -4,7 +4,7 @@
   <title><![CDATA[Category: microservices | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/microservices/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-11-03T08:44:00+13:00</updated>
+  <updated>2020-05-01T17:49:42-04:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Testing Java Spring Boot Microservices]]></title>
-    <link href="https://rnowif.github.io/blog/2017/09/18/testing-java-spring-cloud-microservices/"/>
-    <updated>2017-09-18T02:09:24+12:00</updated>
-    <id>https://rnowif.github.io/blog/2017/09/18/testing-java-spring-cloud-microservices</id>
+    <link href="https://rnowif.github.io/blog/2017/09/17/testing-java-spring-cloud-microservices/"/>
+    <updated>2017-09-17T16:09:24+02:00</updated>
+    <id>https://rnowif.github.io/blog/2017/09/17/testing-java-spring-cloud-microservices</id>
     <content type="html"><![CDATA[<p>Tests are an essential part of our codebase. At the very least, they minimize the risk of regression when we modify our code. There are several types of tests and each has a specific role: unit tests, integration tests, component tests, contract tests and end-to-end tests. It is crucial to understand the role of each type of tests in order to leverage their potential.</p>
 
 <p>The goal of this article is to describe a strategy to use them in order to test Java Spring Boot microservices. For every type of tests, we will try to explain its role, its scope as well as tooling we like to use.</p>
@@ -385,17 +385,13 @@ During the execution of the consumer tests, contracts (called pacts) are generat
 <h2>Conclusion</h2>
 
 <p>Automatic tests are very important in the software development industry. A good testing strategy can help to write more relevant, robust and maintainable tests. This article describes an example of strategy to test Java Spring Boot microservices.</p>
-
-<hr />
-
-<p><em>This article has been written in collaboration with Nadia Humbert-Labeaumaz (<a href="https://www.twitter.com/nphumbert">@nphumbert</a>)</em></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Setup a Circuit Breaker with Hystrix, Feign Client and Spring Boot]]></title>
     <link href="https://rnowif.github.io/blog/2017/07/23/setup-a-circuit-breaker-with-hystrix/"/>
-    <updated>2017-07-23T23:33:38+12:00</updated>
+    <updated>2017-07-23T13:33:38+02:00</updated>
     <id>https://rnowif.github.io/blog/2017/07/23/setup-a-circuit-breaker-with-hystrix</id>
     <content type="html"><![CDATA[<p>In a microservices architecture, several things can go wrong. A middleware, the network or the service you want to contact can be down. In this world of uncertainty, you have to anticipate problems in order not to break the entire chain and throw an error to the end user when you could offer a partially degraded service instead.</p>
 
@@ -521,10 +517,6 @@ public class VideoClientFallbackFactory implements FallbackFactory&lt;VideoClien
 <h2>Conclusion</h2>
 
 <p>Microservices foster low coupling between components and resiliency. Hence, it would be sad to throw an error every time a service or a middleware is down. The circuit breaker pattern explained in this article allows you to ensure the continuity of service, even if it has to be offered in a degraded manner. As always, Spring Boot is a great help to setup this mechanism very easily.</p>
-
-<hr />
-
-<p><em>This article has been written in collaboration with Nadia Humbert-Labeaumaz (<a href="https://www.twitter.com/nphumbert">@nphumbert</a>)</em></p>
 ]]></content>
   </entry>
   

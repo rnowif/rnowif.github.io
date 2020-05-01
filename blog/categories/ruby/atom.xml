@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-11-03T08:44:00+13:00</updated>
+  <updated>2020-05-01T17:49:42-04:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Pourquoi utiliser le TDD est une bonne idée pour apprendre un nouveau langage]]></title>
-    <link href="https://rnowif.github.io/blog/2016/12/27/pourquoi-utiliser-le-tdd-pour-apprendre-langage/"/>
-    <updated>2016-12-27T05:44:15+13:00</updated>
-    <id>https://rnowif.github.io/blog/2016/12/27/pourquoi-utiliser-le-tdd-pour-apprendre-langage</id>
+    <link href="https://rnowif.github.io/blog/2016/12/26/pourquoi-utiliser-le-tdd-pour-apprendre-langage/"/>
+    <updated>2016-12-26T17:44:15+01:00</updated>
+    <id>https://rnowif.github.io/blog/2016/12/26/pourquoi-utiliser-le-tdd-pour-apprendre-langage</id>
     <content type="html"><![CDATA[<p>Durant ma dernière mission, j'ai eu à écrire du code dans des langages que je ne connaissais pas du tout, ou très peu (Ruby, Perl, Python, Go). J'ai donc expérimenté une technique qui consiste à apprendre un langage par les tests. Cette technique se nomme le <em>Test Driven Learning</em>.</p>
 
 <p>L'objectif de cet article est de décrire pourquoi il peut être intéressant d'utiliser le TDD pour apprendre un nouveau langage de manière efficace.</p>

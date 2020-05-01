@@ -4,7 +4,7 @@
   <title><![CDATA[Category: macosx | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/macosx/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-11-03T08:44:00+13:00</updated>
+  <updated>2020-05-01T17:49:42-04:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Distribuer son application java sur Mac OSX grâce à Maven]]></title>
-    <link href="https://rnowif.github.io/blog/2015/03/21/distribuer-son-application-java-sur-mac-osx-grace-a-maven/"/>
-    <updated>2015-03-21T09:21:43+13:00</updated>
-    <id>https://rnowif.github.io/blog/2015/03/21/distribuer-son-application-java-sur-mac-osx-grace-a-maven</id>
+    <link href="https://rnowif.github.io/blog/2015/03/20/distribuer-son-application-java-sur-mac-osx-grace-a-maven/"/>
+    <updated>2015-03-20T21:21:43+01:00</updated>
+    <id>https://rnowif.github.io/blog/2015/03/20/distribuer-son-application-java-sur-mac-osx-grace-a-maven</id>
     <content type="html"><![CDATA[<p>Dans un article précédent, nous avons vu comment distribuer son application Java sur Windows grâce à Maven. Cet article vise à faire la même chose sur MacOSX.
 Nous n'allons donc pas revenir sur l'alternative qui vise à distribuer directement le jar et passer directement à la partie qui nous intéresse, à savoir distribuer un exécutable Mac OSX.</p>
 

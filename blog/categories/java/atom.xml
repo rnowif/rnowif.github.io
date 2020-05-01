@@ -4,7 +4,7 @@
   <title><![CDATA[Category: java | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/java/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-11-03T08:44:00+13:00</updated>
+  <updated>2020-05-01T17:49:42-04:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -340,7 +340,7 @@ string capitalizedWord = word.Capitalize();
   <entry>
     <title type="html"><![CDATA[What is a Volatile Variable in Java?]]></title>
     <link href="https://rnowif.github.io/blog/2018/09/21/what-is-a-volatile-variable-in-java/"/>
-    <updated>2018-09-21T22:13:33+12:00</updated>
+    <updated>2018-09-21T12:13:33+02:00</updated>
     <id>https://rnowif.github.io/blog/2018/09/21/what-is-a-volatile-variable-in-java</id>
     <content type="html"><![CDATA[<p>The <code>volatile</code> keyword is one of the less known and less understood keyword of the Java language. The goal of this article is to explain what it is and when to use it.</p>
 

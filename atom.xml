@@ -4,7 +4,7 @@
   <title><![CDATA[Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-11-03T08:44:00+13:00</updated>
+  <updated>2020-05-01T17:49:42-04:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -12,6 +12,58 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[The Blind Golden Master]]></title>
+    <link href="https://rnowif.github.io/blog/2020/05/01/the-blind-golden-master/"/>
+    <updated>2020-05-01T17:46:38-04:00</updated>
+    <id>https://rnowif.github.io/blog/2020/05/01/the-blind-golden-master</id>
+    <content type="html"><![CDATA[<p>As part of my work, I regularly have to refactor/rewrite some part of our system that has little test coverage, if any. Most of the time, the code is too big or complex to write a test suite comprehensive enough to give me the confidence I need in a timely manner. Consequently, I have come to use a characterisation test technique that I called the &ldquo;Blind Golden Master&rdquo;.</p>
+
+<!-- more -->
+
+
+<h2>Characterisation Tests</h2>
+
+<p>If you know what a characterisation test is, you can skip this section. If not, bear with me for a moment. A characterisation test aims to check that an already existing piece of code always keeps <strong>the same behaviour</strong> throughout the changes you make. This behaviour does not need to be correct - if there is a bug in the code, these tests will check that it is still here at the end! Characterisation tests are then extremely useful during refactoring efforts since it is not necessary to understand (or even read) the code to write them.</p>
+
+<p>One of the most usual characterisation test techniques is the Golden Master. The idea is to exercise the code and record its output somehow (e.g. in a file). Then, the test will exercise the code with the same input and check the output against the previously recorded one - the golden master. See <a href="https://rnowif.github.io/blog/2017/04/10/trivia-refactoring/">here</a> for an example of this technique.</p>
+
+<h2>The Blind Golden Master</h2>
+
+<p>Sometimes, it is impractical to store the output of the code - or we simply couldn&rsquo;t be bothered to do it. Sometimes, the new implementation and the legacy one have to co-exist (and evolve) for a while and the only goal is to check that they always both behave the same.</p>
+
+<p>With this technique, the test simply call both the new and the legacy code and assert that their output are identical. This approach is extremely effective when the method has a limited set of parameters and no side effect.</p>
+
+<p>For instance, I used it to change the template engine for our codebase (C#).</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="kt">string</span> <span class="n">newResult</span> <span class="p">=</span> <span class="n">_newEngine</span><span class="p">.</span><span class="n">Render</span><span class="p">(</span><span class="n">templateName</span><span class="p">,</span> <span class="n">model</span><span class="p">);</span>
+</span><span class='line'><span class="kt">string</span> <span class="n">legacyResult</span> <span class="p">=</span> <span class="n">_legacyEngine</span><span class="p">.</span><span class="n">Render</span><span class="p">(</span><span class="n">templateName</span><span class="p">,</span> <span class="n">model</span><span class="p">);</span>
+</span><span class='line'><span class="n">Minify</span><span class="p">(</span><span class="n">newResult</span><span class="p">).</span><span class="n">Should</span><span class="p">().</span><span class="n">BeEquivalentTo</span><span class="p">(</span><span class="n">Minify</span><span class="p">(</span><span class="n">legacyResult</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I also used it to change an algorithm that determine the file extension of a document (see the Java codebase <a href="https://github.com/rnowif/refactoring-with-tests/tree/refacto/socrates">here</a>).</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">FileExtension</span> <span class="n">legacyValue</span> <span class="o">=</span> <span class="n">application</span><span class="o">.</span><span class="na">getExtension</span><span class="o">(</span><span class="n">country</span><span class="o">,</span> <span class="n">region</span><span class="o">);</span>
+</span><span class='line'><span class="n">FileExtension</span> <span class="n">newValue</span> <span class="o">=</span> <span class="n">application</span><span class="o">.</span><span class="na">getExtensionV2</span><span class="o">(</span><span class="n">country</span><span class="o">,</span> <span class="n">region</span><span class="o">);</span>
+</span><span class='line'><span class="n">assertEquals</span><span class="o">(</span><span class="n">legacyValue</span><span class="o">,</span> <span class="n">newValue</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If the algorithm is crucial to the application and there are a lot of potential combinations to test, it is even possible to run the test in production: every time the code is called, it can invoke both the algorithms, compare their output and raise an error if they don&rsquo;t match, and always return the legacy result. When there is no more error, it is time to switch to the new implementation. This <a href="https://github.blog/2015-12-15-move-fast/">article</a> explains how GitHub rewrote its merge algorithm using this technique.</p>
+
+<h2>Conclusion</h2>
+
+<p>The Blind Golden Master is an extremely simple technique that provides confidence during refactoring without having to spend hours writing tests for the legacy code. It is a powerful enabler for improvement that does not require any specific tooling or overhead. Since I started using it a few years ago, it has proven a precious addition to my testing toolbox.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ASP.Net Clean Architecture]]></title>
@@ -625,7 +677,7 @@ TL;DR Java generics is a lie, C# generics is not.</p>
   <entry>
     <title type="html"><![CDATA[What is a Volatile Variable in Java?]]></title>
     <link href="https://rnowif.github.io/blog/2018/09/21/what-is-a-volatile-variable-in-java/"/>
-    <updated>2018-09-21T22:13:33+12:00</updated>
+    <updated>2018-09-21T12:13:33+02:00</updated>
     <id>https://rnowif.github.io/blog/2018/09/21/what-is-a-volatile-variable-in-java</id>
     <content type="html"><![CDATA[<p>The <code>volatile</code> keyword is one of the less known and less understood keyword of the Java language. The goal of this article is to explain what it is and when to use it.</p>
 
@@ -735,7 +787,7 @@ Finally, there is the main memory (also called RAM). All CPUs can access this me
   <entry>
     <title type="html"><![CDATA[Intersection Types in Java]]></title>
     <link href="https://rnowif.github.io/blog/2018/09/19/intersection-types-in-java/"/>
-    <updated>2018-09-19T21:29:15+12:00</updated>
+    <updated>2018-09-19T11:29:15+02:00</updated>
     <id>https://rnowif.github.io/blog/2018/09/19/intersection-types-in-java</id>
     <content type="html"><![CDATA[<p>This blog post aims to explain how we can use intersection types in Java when we expect an object that implements different interfaces.</p>
 
@@ -879,9 +931,9 @@ Finally, there is the main memory (also called RAM). All CPUs can access this me
   
   <entry>
     <title type="html"><![CDATA[Testing Java Spring Boot Microservices]]></title>
-    <link href="https://rnowif.github.io/blog/2017/09/18/testing-java-spring-cloud-microservices/"/>
-    <updated>2017-09-18T02:09:24+12:00</updated>
-    <id>https://rnowif.github.io/blog/2017/09/18/testing-java-spring-cloud-microservices</id>
+    <link href="https://rnowif.github.io/blog/2017/09/17/testing-java-spring-cloud-microservices/"/>
+    <updated>2017-09-17T16:09:24+02:00</updated>
+    <id>https://rnowif.github.io/blog/2017/09/17/testing-java-spring-cloud-microservices</id>
     <content type="html"><![CDATA[<p>Tests are an essential part of our codebase. At the very least, they minimize the risk of regression when we modify our code. There are several types of tests and each has a specific role: unit tests, integration tests, component tests, contract tests and end-to-end tests. It is crucial to understand the role of each type of tests in order to leverage their potential.</p>
 
 <p>The goal of this article is to describe a strategy to use them in order to test Java Spring Boot microservices. For every type of tests, we will try to explain its role, its scope as well as tooling we like to use.</p>
@@ -1249,17 +1301,13 @@ During the execution of the consumer tests, contracts (called pacts) are generat
 <h2>Conclusion</h2>
 
 <p>Automatic tests are very important in the software development industry. A good testing strategy can help to write more relevant, robust and maintainable tests. This article describes an example of strategy to test Java Spring Boot microservices.</p>
-
-<hr />
-
-<p><em>This article has been written in collaboration with Nadia Humbert-Labeaumaz (<a href="https://www.twitter.com/nphumbert">@nphumbert</a>)</em></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Setup a Circuit Breaker with Hystrix, Feign Client and Spring Boot]]></title>
     <link href="https://rnowif.github.io/blog/2017/07/23/setup-a-circuit-breaker-with-hystrix/"/>
-    <updated>2017-07-23T23:33:38+12:00</updated>
+    <updated>2017-07-23T13:33:38+02:00</updated>
     <id>https://rnowif.github.io/blog/2017/07/23/setup-a-circuit-breaker-with-hystrix</id>
     <content type="html"><![CDATA[<p>In a microservices architecture, several things can go wrong. A middleware, the network or the service you want to contact can be down. In this world of uncertainty, you have to anticipate problems in order not to break the entire chain and throw an error to the end user when you could offer a partially degraded service instead.</p>
 
@@ -1476,18 +1524,14 @@ During the execution of the consumer tests, contracts (called pacts) are generat
 <h2>Conclusion</h2>
 
 <p>Microservices foster low coupling between components and resiliency. Hence, it would be sad to throw an error every time a service or a middleware is down. The circuit breaker pattern explained in this article allows you to ensure the continuity of service, even if it has to be offered in a degraded manner. As always, Spring Boot is a great help to setup this mechanism very easily.</p>
-
-<hr />
-
-<p><em>This article has been written in collaboration with Nadia Humbert-Labeaumaz (<a href="https://www.twitter.com/nphumbert">@nphumbert</a>)</em></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Controlling the Time in Java]]></title>
-    <link href="https://rnowif.github.io/blog/2017/07/21/controlling-time-in-java/"/>
-    <updated>2017-07-21T01:06:15+12:00</updated>
-    <id>https://rnowif.github.io/blog/2017/07/21/controlling-time-in-java</id>
+    <link href="https://rnowif.github.io/blog/2017/07/20/controlling-time-in-java/"/>
+    <updated>2017-07-20T14:06:15+01:00</updated>
+    <id>https://rnowif.github.io/blog/2017/07/20/controlling-time-in-java</id>
     <content type="html"><![CDATA[<p>Time is a tricky thing, it&rsquo;s always changing. Having such moving parts into the codebase can be very annoying when testing, for instance. In this article, we will see how to control the time in Java.</p>
 
 <!-- more -->
@@ -1696,7 +1740,7 @@ During the execution of the consumer tests, contracts (called pacts) are generat
   <entry>
     <title type="html"><![CDATA[Keep Calm and Use Git Reflog]]></title>
     <link href="https://rnowif.github.io/blog/2017/04/11/git-reflog/"/>
-    <updated>2017-04-11T18:52:15+12:00</updated>
+    <updated>2017-04-11T07:52:15+01:00</updated>
     <id>https://rnowif.github.io/blog/2017/04/11/git-reflog</id>
     <content type="html"><![CDATA[<p>Git is a very powerful tool but it takes a fair amount of time to masterize it. It can be particuarly easy to break or lose things when you amend some commits, resolve conflicts or force push your changes.</p>
 
@@ -1870,7 +1914,7 @@ During the execution of the consumer tests, contracts (called pacts) are generat
   <entry>
     <title type="html"><![CDATA[Trivia Kata: A Refactoring Story]]></title>
     <link href="https://rnowif.github.io/blog/2017/04/10/trivia-refactoring/"/>
-    <updated>2017-04-10T18:52:15+12:00</updated>
+    <updated>2017-04-10T07:52:15+01:00</updated>
     <id>https://rnowif.github.io/blog/2017/04/10/trivia-refactoring</id>
     <content type="html"><![CDATA[<p>Refactoring a legacy code can be a tricky business. More often than not, the code is not tested, unclear and contains some bugs. If not planned, the time required to refactor will eat all the time allocated to the feature. The feature will then be implemented very quickly and it will result in more buggy unmaintainable code.</p>
 
@@ -2284,9 +2328,9 @@ During the execution of the consumer tests, contracts (called pacts) are generat
   
   <entry>
     <title type="html"><![CDATA[Pourquoi utiliser le TDD est une bonne idée pour apprendre un nouveau langage]]></title>
-    <link href="https://rnowif.github.io/blog/2016/12/27/pourquoi-utiliser-le-tdd-pour-apprendre-langage/"/>
-    <updated>2016-12-27T05:44:15+13:00</updated>
-    <id>https://rnowif.github.io/blog/2016/12/27/pourquoi-utiliser-le-tdd-pour-apprendre-langage</id>
+    <link href="https://rnowif.github.io/blog/2016/12/26/pourquoi-utiliser-le-tdd-pour-apprendre-langage/"/>
+    <updated>2016-12-26T17:44:15+01:00</updated>
+    <id>https://rnowif.github.io/blog/2016/12/26/pourquoi-utiliser-le-tdd-pour-apprendre-langage</id>
     <content type="html"><![CDATA[<p>Durant ma dernière mission, j'ai eu à écrire du code dans des langages que je ne connaissais pas du tout, ou très peu (Ruby, Perl, Python, Go). J'ai donc expérimenté une technique qui consiste à apprendre un langage par les tests. Cette technique se nomme le <em>Test Driven Learning</em>.</p>
 
 <p>L'objectif de cet article est de décrire pourquoi il peut être intéressant d'utiliser le TDD pour apprendre un nouveau langage de manière efficace.</p>
@@ -2345,7 +2389,7 @@ En effet, il faut bien créer un fichier, éventuellement une classe, instancier
   <entry>
     <title type="html"><![CDATA[Implémenter un mécanisme d’AOP, sans framework !]]></title>
     <link href="https://rnowif.github.io/blog/2016/11/03/aop-sans-framework/"/>
-    <updated>2016-11-03T19:55:27+13:00</updated>
+    <updated>2016-11-03T08:55:27+02:00</updated>
     <id>https://rnowif.github.io/blog/2016/11/03/aop-sans-framework</id>
     <content type="html"><![CDATA[<p>L'<em>Aspect Oriented Programming</em> est un paradigme de programmation qui permet de traiter les préoccupations transverses (ou <em>cross cutting concerns</em> en anglais) telles que le logging, le cache ou les transactions séparément du code métier.</p>
 
@@ -2755,9 +2799,9 @@ Par aileurs, l’AOP implémenté grâce à ce mécanisme ne peut pas fonctionne
   
   <entry>
     <title type="html"><![CDATA[Ecrire des tests plus robustes au changement]]></title>
-    <link href="https://rnowif.github.io/blog/2016/11/03/ecrire-des-tests-plus-robustes-au-changement/"/>
-    <updated>2016-11-03T05:31:42+13:00</updated>
-    <id>https://rnowif.github.io/blog/2016/11/03/ecrire-des-tests-plus-robustes-au-changement</id>
+    <link href="https://rnowif.github.io/blog/2016/11/02/ecrire-des-tests-plus-robustes-au-changement/"/>
+    <updated>2016-11-02T17:31:42+01:00</updated>
+    <id>https://rnowif.github.io/blog/2016/11/02/ecrire-des-tests-plus-robustes-au-changement</id>
     <content type="html"><![CDATA[<p>Un des principaux freins à l'écriture de tests est quand ceux-ci doivent être mis à jour à chaque fois qu'une classe ou qu'une méthode est modifiée. Parfois, les tests à mettre à jour n'ont rien à voir avec la classe ou la méthode modifiée, mais comme ils s'en servent, ils s'en retrouvent affectés eux aussi. Ce problème survient quand le test est trop couplé à l'implémentation.
 Dans cet article, nous allons voir comment découpler les tests des classes qu'ils utilisent et ainsi les rendre plus robustes.</p>
 
@@ -3008,9 +3052,9 @@ La façon la plus naïve d'écrire le test pourrait être la suivante :</p>
   
   <entry>
     <title type="html"><![CDATA[Timelion, le petit nouveau de Kibana 5]]></title>
-    <link href="https://rnowif.github.io/blog/2016/10/27/timelion/"/>
-    <updated>2016-10-27T09:26:16+13:00</updated>
-    <id>https://rnowif.github.io/blog/2016/10/27/timelion</id>
+    <link href="https://rnowif.github.io/blog/2016/10/26/timelion/"/>
+    <updated>2016-10-26T22:26:16+02:00</updated>
+    <id>https://rnowif.github.io/blog/2016/10/26/timelion</id>
     <content type="html"><![CDATA[<p>Elastic vient de sortir <a href="https://www.elastic.co/blog/elastic-stack-5-0-0-released">sa dernière mouture de la stack Elastic</a>. Il s'agit de la version 5 et, pour la première fois, tous les produits ont une version commune. Cette nouvelle version vient avec son lot de nouveautés. Dans cet article, nous allons nous concentrer sur les nouveautés apportées à Kibana, et principalement Timelion.</p>
 
 <p>Les exemples sont tirés de métriques fournies par le plugin <a href="https://www.elastic.co/guide/en/beats/metricbeat/5.0/metricbeat-getting-started.html">MetricBeat</a>, qui remplace TopBeat dans la version 5 de la stack.</p>
@@ -3098,9 +3142,9 @@ La façon la plus naïve d'écrire le test pourrait être la suivante :</p>
   
   <entry>
     <title type="html"><![CDATA[Quoi de neuf dans Spring 5]]></title>
-    <link href="https://rnowif.github.io/blog/2016/07/31/quoi-de-neuf-dans-spring-5/"/>
-    <updated>2016-07-31T00:05:38+12:00</updated>
-    <id>https://rnowif.github.io/blog/2016/07/31/quoi-de-neuf-dans-spring-5</id>
+    <link href="https://rnowif.github.io/blog/2016/07/30/quoi-de-neuf-dans-spring-5/"/>
+    <updated>2016-07-30T14:05:38+02:00</updated>
+    <id>https://rnowif.github.io/blog/2016/07/30/quoi-de-neuf-dans-spring-5</id>
     <content type="html"><![CDATA[<p>Juergen Hoeller a annoncé hier <a href="https://spring.io/blog/2016/07/28/spring-framework-5-0-m1-released">la sortie de Spring 5.0 M1</a>. Cette nouvelle version majeure de Spring arrive avec son lot de nouveautés.
 L'objectif de cet article est de découvrir ces nouveautés et ce qu'elles peuvent apporter aux développeurs Spring. Les nouveautés décrites dans cet article sont déjà disponibles dans la version 5.0.M1.</p>
 
@@ -3214,9 +3258,9 @@ L'objectif de cet article est de découvrir ces nouveautés et ce qu'elles peuve
   
   <entry>
     <title type="html"><![CDATA[Quand ne pas mocker]]></title>
-    <link href="https://rnowif.github.io/blog/2016/04/14/quand-ne-pas-mocker/"/>
-    <updated>2016-04-14T06:55:56+12:00</updated>
-    <id>https://rnowif.github.io/blog/2016/04/14/quand-ne-pas-mocker</id>
+    <link href="https://rnowif.github.io/blog/2016/04/13/quand-ne-pas-mocker/"/>
+    <updated>2016-04-13T20:55:56+02:00</updated>
+    <id>https://rnowif.github.io/blog/2016/04/13/quand-ne-pas-mocker</id>
     <content type="html"><![CDATA[<p>En tant que <em>Test Driven Developer</em> et plutôt adepte de l'école de TDD de Londres, j'ai tendance à utiliser un nombre assez important de <em>mocks</em> quand je teste mon code. Cependant, il y a des cas où je trouve plus utile de ne <strong>pas</strong> en utiliser.</p>
 
 <p>L'objectif de cet article est de décrire ces cas ainsi que la façon de tester le code sans utiliser de <em>mocks</em>.</p>
@@ -3562,9 +3606,9 @@ La plupart du temps, il est seulement important de savoir si le système avec le
   
   <entry>
     <title type="html"><![CDATA[Refactorer, c'est comme dormir]]></title>
-    <link href="https://rnowif.github.io/blog/2016/02/01/refactorer-c-est-comme-dormir/"/>
-    <updated>2016-02-01T07:16:09+13:00</updated>
-    <id>https://rnowif.github.io/blog/2016/02/01/refactorer-c-est-comme-dormir</id>
+    <link href="https://rnowif.github.io/blog/2016/01/31/refactorer-c-est-comme-dormir/"/>
+    <updated>2016-01-31T19:16:09+01:00</updated>
+    <id>https://rnowif.github.io/blog/2016/01/31/refactorer-c-est-comme-dormir</id>
     <content type="html"><![CDATA[<p>Robert est un développeur. On a demandé à Robert d'ajouter une nouvelle fonctionnalité à l'application. Robert aimerait bien en profiter pour refactorer un peu le code car il ne respecte pas les bonnes pratiques qu'il a pu voir lors du dernier meetup Software Craftsmanship. On dit alors à Robert qu'il ne peut pas refactorer car, en ce moment, il n'y a pas le temps pour ça et qu'il doit produire. Robert se dit qu'il n'y a de toutes façons jamais le temps&hellip;</p>
 
 <p>Cette histoire vous semble familière ? En effet, le refactoring est souvent perçu comme n'apportant aucune valeur. D'autres choses dans la vie peuvent sembler n'apporter aucune valeur. Il y en a notamment une qui prend près du tiers de la vie d'une personne pendant laquelle cette personne ne fait littéralement rien : <em>dormir</em> !</p>
@@ -3611,150 +3655,6 @@ La plupart du temps, il est seulement important de savoir si le système avec le
 <hr />
 
 <p><em>Cet article a été écrit en collaboration avec Nadia Humbert-Labeaumaz (<a href="https://www.twitter.com/nphumbert">@nphumbert</a>)</em></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Tell don't ask]]></title>
-    <link href="https://rnowif.github.io/blog/2015/07/29/tell-dont-ask/"/>
-    <updated>2015-07-29T07:57:56+12:00</updated>
-    <id>https://rnowif.github.io/blog/2015/07/29/tell-dont-ask</id>
-    <content type="html"><![CDATA[<p>Quand j'étais à l'école et que j'apprenais la programmation orientée objet (POO), on nous disait que les classes permettaient d'encapsuler des comportements et de cacher leur implémentation au reste du monde. Ainsi, le code qui appelle une méthode attend d'elle qu'elle se comporte comme elle a été spécifiée, quelle que soit son implémentation.</p>
-
-<!-- more -->
-
-
-<p>Prenons l'exemple d'un panier, dont le coût total doit être calculé selon certaines règles (somme de tous les articles, ajout éventuel de taxes, charges, etc.). En POO, on pourrait s'attendre à ce que la classe <code>Basket</code> ait une méthode <code>calculateTotalCost</code> qui va calculer ce coût. Après tout, le code appelant ne veut pas savoir comment calculer un coût, il veut juste le récupérer.</p>
-
-<p>Pourtant, lors de mes premiers mois dans le monde du travail, je suis tombé sur ce genre ce code, au détour d'une méthode de la <em>couche service</em> (je vous fais grâce de la classe <code>Basket</code>)</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">int</span> <span class="nf">calculateTotalCost</span><span class="o">(</span><span class="n">Basket</span> <span class="n">basket</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="kt">int</span> <span class="n">totalCost</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="k">for</span> <span class="o">(</span><span class="n">Article</span> <span class="n">article</span> <span class="o">:</span> <span class="n">basket</span><span class="o">.</span><span class="na">getArticles</span><span class="o">())</span> <span class="o">{</span>
-</span><span class='line'>      <span class="n">totalCost</span> <span class="o">+=</span> <span class="n">article</span><span class="o">.</span><span class="na">getUnitPrice</span><span class="o">()</span> <span class="o">*</span> <span class="n">article</span><span class="o">.</span><span class="na">getQuantity</span><span class="o">();</span>
-</span><span class='line'>   <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">totalCost</span> <span class="o">=</span> <span class="n">totalCost</span> <span class="o">+</span> <span class="n">TAX_RATE</span> <span class="o">*</span> <span class="n">totalCost</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="n">basket</span><span class="o">.</span><span class="na">setTotalCost</span><span class="o">(</span><span class="n">totalCost</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="k">return</span> <span class="n">totalCost</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Pourquoi en est-on arrivé là ?</p>
-
-<ul>
-<li>A cause de Java qui encourage les <em>getters</em> et <em>setters</em> sur les beans ?</li>
-<li>A cause des librairies comme <a href="https://projectlombok.org/">lombok</a>, qui automatisent la création de ces accesseurs ?</li>
-<li>A cause de l'architecture en couches qui a été usée et abusée ?</li>
-<li>A cause de l'héritage des langages procéduraux comme le C, et la fainéantise des développeurs pour changer de paradigme ?</li>
-<li>Ou peut-être n'y a-t-il pas de problème et qu'il s'agit d'une bonne manière de coder ?</li>
-</ul>
-
-
-<p>Selon moi, il ne s'agit pas d'une manière correcte de coder ce genre de fonctionnalités et c'est pourquoi j'ai décidé d'écrire cet article.</p>
-
-<h2>Le principe <em>Tell don&rsquo;t ask</em></h2>
-
-<p>Ce principe stipule qu'au lieu de demander (<em>ask</em>) à un objet des informations pour les exploiter, il vaut mieux dire (<em>tell</em>) à cet objet ce que l'on veut faire et il s'en chargera lui même.</p>
-
-<p>Selon ce principe, la classe <code>Basket</code> utilisée ci-dessus devient</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Basket</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Article</span><span class="o">&gt;</span> <span class="n">articles</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="c1">// ...</span>
-</span><span class='line'>
-</span><span class='line'>   <span class="kd">public</span> <span class="kt">int</span> <span class="nf">calculateTotalCost</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>      
-</span><span class='line'>      <span class="kt">int</span> <span class="n">totalCost</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">for</span> <span class="o">(</span><span class="n">Article</span> <span class="n">article</span> <span class="o">:</span> <span class="n">articles</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>          <span class="n">totalCost</span> <span class="o">+=</span> <span class="n">article</span><span class="o">.</span><span class="na">priceWithoutTaxes</span><span class="o">();</span>
-</span><span class='line'>      <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">return</span> <span class="n">totalCost</span> <span class="o">+</span> <span class="n">TAX_RATE</span> <span class="o">*</span> <span class="n">totalCost</span><span class="o">;</span>
-</span><span class='line'>   <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>et le service devient</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">int</span> <span class="nf">calculateTotalCost</span><span class="o">(</span><span class="n">Basket</span> <span class="n">basket</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>   <span class="k">return</span> <span class="n">basket</span><span class="o">.</span><span class="na">calculateTotalCost</span><span class="o">();</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Plusieurs remarques peuvent être faites à la lecture de ce nouveau code :</p>
-
-<ul>
-<li>Il n'y a plus d'accesseurs dans la classe <code>Basket</code>. Ses champs sont encapsulés et non exposés aux quatres vents : l'objet redevient responsable de son état.</li>
-<li>Le comportement est rapproché des données qu'il va utiliser. Ainsi, il est bien plus simple de comprendre le code (et donc de le maintenir) car les données traitées sont proches de leur traitement et elle ne sont plus utilisées ailleurs.</li>
-<li>La <a href="https://fr.wikipedia.org/wiki/Loi_de_D%C3%A9m%C3%A9ter">Loi de Demeter</a> est respectée. Ainsi, un changement dans une méthode de calcul de prix n'affectera personne d'autre que la classe dont le prix doit être calculé.</li>
-<li>La question quant à l'utilité du service est bel et bien posée. Il ne s'agit plus que d'un passe-plat totalement inutile à part à pourrir la base de code.</li>
-</ul>
-
-
-<h2>De l'utilité des services et des couches</h2>
-
-<p>En suivant ce genre de principes, il devient évident que le <em>service</em>, ce fameux <a href="https://fr.wikipedia.org/wiki/God_object">God Object</a> qui faisait la pluie et le beau temps dans le code, est réduit à peau de chagrin. Il est même possible de s'en passer très souvent.</p>
-
-<p>Cependant, il reste indispensable dans le cas où les objets doivent collaborer entre eux. Globalement, si je devais indiquer la <em>règle</em> que j'essaie de suivre au quotidien, je dirais ceci :</p>
-
-<ul>
-<li>Si l'objet dispose de toutes les informations pour effectuer un traitement, il doit le faire.</li>
-<li>Si le traitement porte sur plusieurs objets différents, une classe externe (typiquement un service) peut s'en occuper.</li>
-</ul>
-
-
-<h2>Restons pragmatiques</h2>
-
-<p>Comme toujours, les principes se confrontent à la réalité et ils ne gagnent pas toujours. Il faut parfois savoir faire des petites entorses à la règle et ne pas être dogmatique sur ce genre de sujets. Qui sait, les bonnes pratiques d'aujourd'hui seront peut-être les anti-patterns de demain.</p>
-
-<p>Cependant, après quelques temps de pratique, je pense qu'il est possible d'appliquer le principe de <em>Tell Don&rsquo;t Ask</em> au quotidien. Il est même possible de commencer dès aujourd'hui et sans devoir refactoriser l'intégralité du code source existant.</p>
-
-<p>Pensez à ça lors de vos prochains développement et n'hésitez pas à en parler sur <a href="https://twitter.com/RnowIf">Twitter (@RnowIf)</a>, dans un commentaire sur cette page ou bien lors d'un <a href="http://www.meetup.com/fr/Software-Craftsmanship-Lyon/">Meetup Craftsman</a> à Lyon ou ailleurs.</p>
 ]]></content>
   </entry>
   

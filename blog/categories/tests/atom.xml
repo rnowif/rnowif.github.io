@@ -4,7 +4,7 @@
   <title><![CDATA[Category: tests | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/tests/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-11-03T08:44:00+13:00</updated>
+  <updated>2020-05-01T17:49:42-04:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Testing Java Spring Boot Microservices]]></title>
-    <link href="https://rnowif.github.io/blog/2017/09/18/testing-java-spring-cloud-microservices/"/>
-    <updated>2017-09-18T02:09:24+12:00</updated>
-    <id>https://rnowif.github.io/blog/2017/09/18/testing-java-spring-cloud-microservices</id>
+    <link href="https://rnowif.github.io/blog/2017/09/17/testing-java-spring-cloud-microservices/"/>
+    <updated>2017-09-17T16:09:24+02:00</updated>
+    <id>https://rnowif.github.io/blog/2017/09/17/testing-java-spring-cloud-microservices</id>
     <content type="html"><![CDATA[<p>Tests are an essential part of our codebase. At the very least, they minimize the risk of regression when we modify our code. There are several types of tests and each has a specific role: unit tests, integration tests, component tests, contract tests and end-to-end tests. It is crucial to understand the role of each type of tests in order to leverage their potential.</p>
 
 <p>The goal of this article is to describe a strategy to use them in order to test Java Spring Boot microservices. For every type of tests, we will try to explain its role, its scope as well as tooling we like to use.</p>
@@ -385,18 +385,14 @@ During the execution of the consumer tests, contracts (called pacts) are generat
 <h2>Conclusion</h2>
 
 <p>Automatic tests are very important in the software development industry. A good testing strategy can help to write more relevant, robust and maintainable tests. This article describes an example of strategy to test Java Spring Boot microservices.</p>
-
-<hr />
-
-<p><em>This article has been written in collaboration with Nadia Humbert-Labeaumaz (<a href="https://www.twitter.com/nphumbert">@nphumbert</a>)</em></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Controlling the Time in Java]]></title>
-    <link href="https://rnowif.github.io/blog/2017/07/21/controlling-time-in-java/"/>
-    <updated>2017-07-21T01:06:15+12:00</updated>
-    <id>https://rnowif.github.io/blog/2017/07/21/controlling-time-in-java</id>
+    <link href="https://rnowif.github.io/blog/2017/07/20/controlling-time-in-java/"/>
+    <updated>2017-07-20T14:06:15+01:00</updated>
+    <id>https://rnowif.github.io/blog/2017/07/20/controlling-time-in-java</id>
     <content type="html"><![CDATA[<p>Time is a tricky thing, it&rsquo;s always changing. Having such moving parts into the codebase can be very annoying when testing, for instance. In this article, we will see how to control the time in Java.</p>
 
 <!-- more -->
@@ -517,9 +513,9 @@ public class ClockConfig {
   
   <entry>
     <title type="html"><![CDATA[Ecrire des tests plus robustes au changement]]></title>
-    <link href="https://rnowif.github.io/blog/2016/11/03/ecrire-des-tests-plus-robustes-au-changement/"/>
-    <updated>2016-11-03T05:31:42+13:00</updated>
-    <id>https://rnowif.github.io/blog/2016/11/03/ecrire-des-tests-plus-robustes-au-changement</id>
+    <link href="https://rnowif.github.io/blog/2016/11/02/ecrire-des-tests-plus-robustes-au-changement/"/>
+    <updated>2016-11-02T17:31:42+01:00</updated>
+    <id>https://rnowif.github.io/blog/2016/11/02/ecrire-des-tests-plus-robustes-au-changement</id>
     <content type="html"><![CDATA[<p>Un des principaux freins à l'écriture de tests est quand ceux-ci doivent être mis à jour à chaque fois qu'une classe ou qu'une méthode est modifiée. Parfois, les tests à mettre à jour n'ont rien à voir avec la classe ou la méthode modifiée, mais comme ils s'en servent, ils s'en retrouvent affectés eux aussi. Ce problème survient quand le test est trop couplé à l'implémentation.
 Dans cet article, nous allons voir comment découpler les tests des classes qu'ils utilisent et ainsi les rendre plus robustes.</p>
 

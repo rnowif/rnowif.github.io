@@ -4,7 +4,7 @@
   <title><![CDATA[Category: test | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/test/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-11-03T08:44:00+13:00</updated>
+  <updated>2020-05-01T17:49:42-04:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -14,10 +14,54 @@
 
   
   <entry>
+    <title type="html"><![CDATA[The Blind Golden Master]]></title>
+    <link href="https://rnowif.github.io/blog/2020/05/01/the-blind-golden-master/"/>
+    <updated>2020-05-01T17:46:38-04:00</updated>
+    <id>https://rnowif.github.io/blog/2020/05/01/the-blind-golden-master</id>
+    <content type="html"><![CDATA[<p>As part of my work, I regularly have to refactor/rewrite some part of our system that has little test coverage, if any. Most of the time, the code is too big or complex to write a test suite comprehensive enough to give me the confidence I need in a timely manner. Consequently, I have come to use a characterisation test technique that I called the &ldquo;Blind Golden Master&rdquo;.</p>
+
+<!-- more -->
+
+
+<h2>Characterisation Tests</h2>
+
+<p>If you know what a characterisation test is, you can skip this section. If not, bear with me for a moment. A characterisation test aims to check that an already existing piece of code always keeps <strong>the same behaviour</strong> throughout the changes you make. This behaviour does not need to be correct - if there is a bug in the code, these tests will check that it is still here at the end! Characterisation tests are then extremely useful during refactoring efforts since it is not necessary to understand (or even read) the code to write them.</p>
+
+<p>One of the most usual characterisation test techniques is the Golden Master. The idea is to exercise the code and record its output somehow (e.g. in a file). Then, the test will exercise the code with the same input and check the output against the previously recorded one - the golden master. See <a href="https://rnowif.github.io/blog/2017/04/10/trivia-refactoring/">here</a> for an example of this technique.</p>
+
+<h2>The Blind Golden Master</h2>
+
+<p>Sometimes, it is impractical to store the output of the code - or we simply couldn&rsquo;t be bothered to do it. Sometimes, the new implementation and the legacy one have to co-exist (and evolve) for a while and the only goal is to check that they always both behave the same.</p>
+
+<p>With this technique, the test simply call both the new and the legacy code and assert that their output are identical. This approach is extremely effective when the method has a limited set of parameters and no side effect.</p>
+
+<p>For instance, I used it to change the template engine for our codebase (C#).</p>
+
+<pre><code class="csharp">string newResult = _newEngine.Render(templateName, model);
+string legacyResult = _legacyEngine.Render(templateName, model);
+Minify(newResult).Should().BeEquivalentTo(Minify(legacyResult));
+</code></pre>
+
+<p>I also used it to change an algorithm that determine the file extension of a document (see the Java codebase <a href="https://github.com/rnowif/refactoring-with-tests/tree/refacto/socrates">here</a>).</p>
+
+<pre><code class="java">FileExtension legacyValue = application.getExtension(country, region);
+FileExtension newValue = application.getExtensionV2(country, region);
+assertEquals(legacyValue, newValue);
+</code></pre>
+
+<p>If the algorithm is crucial to the application and there are a lot of potential combinations to test, it is even possible to run the test in production: every time the code is called, it can invoke both the algorithms, compare their output and raise an error if they don&rsquo;t match, and always return the legacy result. When there is no more error, it is time to switch to the new implementation. This <a href="https://github.blog/2015-12-15-move-fast/">article</a> explains how GitHub rewrote its merge algorithm using this technique.</p>
+
+<h2>Conclusion</h2>
+
+<p>The Blind Golden Master is an extremely simple technique that provides confidence during refactoring without having to spend hours writing tests for the legacy code. It is a powerful enabler for improvement that does not require any specific tooling or overhead. Since I started using it a few years ago, it has proven a precious addition to my testing toolbox.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Quand ne pas mocker]]></title>
-    <link href="https://rnowif.github.io/blog/2016/04/14/quand-ne-pas-mocker/"/>
-    <updated>2016-04-14T06:55:56+12:00</updated>
-    <id>https://rnowif.github.io/blog/2016/04/14/quand-ne-pas-mocker</id>
+    <link href="https://rnowif.github.io/blog/2016/04/13/quand-ne-pas-mocker/"/>
+    <updated>2016-04-13T20:55:56+02:00</updated>
+    <id>https://rnowif.github.io/blog/2016/04/13/quand-ne-pas-mocker</id>
     <content type="html"><![CDATA[<p>En tant que <em>Test Driven Developer</em> et plutôt adepte de l'école de TDD de Londres, j'ai tendance à utiliser un nombre assez important de <em>mocks</em> quand je teste mon code. Cependant, il y a des cas où je trouve plus utile de ne <strong>pas</strong> en utiliser.</p>
 
 <p>L'objectif de cet article est de décrire ces cas ainsi que la façon de tester le code sans utiliser de <em>mocks</em>.</p>

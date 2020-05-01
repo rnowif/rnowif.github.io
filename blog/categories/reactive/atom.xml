@@ -4,7 +4,7 @@
   <title><![CDATA[Category: reactive | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/reactive/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-11-03T08:44:00+13:00</updated>
+  <updated>2020-05-01T17:49:42-04:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Quoi de neuf dans Spring 5]]></title>
-    <link href="https://rnowif.github.io/blog/2016/07/31/quoi-de-neuf-dans-spring-5/"/>
-    <updated>2016-07-31T00:05:38+12:00</updated>
-    <id>https://rnowif.github.io/blog/2016/07/31/quoi-de-neuf-dans-spring-5</id>
+    <link href="https://rnowif.github.io/blog/2016/07/30/quoi-de-neuf-dans-spring-5/"/>
+    <updated>2016-07-30T14:05:38+02:00</updated>
+    <id>https://rnowif.github.io/blog/2016/07/30/quoi-de-neuf-dans-spring-5</id>
     <content type="html"><![CDATA[<p>Juergen Hoeller a annoncé hier <a href="https://spring.io/blog/2016/07/28/spring-framework-5-0-m1-released">la sortie de Spring 5.0 M1</a>. Cette nouvelle version majeure de Spring arrive avec son lot de nouveautés.
 L'objectif de cet article est de découvrir ces nouveautés et ce qu'elles peuvent apporter aux développeurs Spring. Les nouveautés décrites dans cet article sont déjà disponibles dans la version 5.0.M1.</p>
 

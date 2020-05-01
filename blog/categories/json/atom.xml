@@ -4,7 +4,7 @@
   <title><![CDATA[Category: json | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/json/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-11-03T08:44:00+13:00</updated>
+  <updated>2020-05-01T17:49:42-04:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Multiples vues JSON avec @JsonView]]></title>
-    <link href="https://rnowif.github.io/blog/2015/04/15/multiples-vues-json-avec-at-jsonview/"/>
-    <updated>2015-04-15T08:05:31+12:00</updated>
-    <id>https://rnowif.github.io/blog/2015/04/15/multiples-vues-json-avec-at-jsonview</id>
+    <link href="https://rnowif.github.io/blog/2015/04/14/multiples-vues-json-avec-at-jsonview/"/>
+    <updated>2015-04-14T21:05:31+01:00</updated>
+    <id>https://rnowif.github.io/blog/2015/04/14/multiples-vues-json-avec-at-jsonview</id>
     <content type="html"><![CDATA[<p>Le format <a href="http://fr.wikipedia.org/wiki/JavaScript_Object_Notation">Json</a> est de plus en plus utilisé aujourd'hui notamment dans les API de type REST qui offrent des services et retournent leurs résultats sous ce format. Afin d'éviter d'avoir à écrire la transformation en Json manuellement, il existe de nombreuses librairies permettant de faire cette transformation de manière automatique.</p>
 
 <p>Dans cet article, nous allons voir comment utiliser la librairie <a href="http://jackson.codehaus.org/">Jackson</a> et notamment l'annotation <code>@JsonView</code> pour configurer plusieurs transformations pour un même objet. Nous allons également voir succintement comment intégrer cette annotation avec le framework <a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html">Spring MVC</a>.</p>

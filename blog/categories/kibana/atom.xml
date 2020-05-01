@@ -4,7 +4,7 @@
   <title><![CDATA[Category: kibana | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/kibana/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-11-03T08:44:00+13:00</updated>
+  <updated>2020-05-01T17:49:42-04:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Timelion, le petit nouveau de Kibana 5]]></title>
-    <link href="https://rnowif.github.io/blog/2016/10/27/timelion/"/>
-    <updated>2016-10-27T09:26:16+13:00</updated>
-    <id>https://rnowif.github.io/blog/2016/10/27/timelion</id>
+    <link href="https://rnowif.github.io/blog/2016/10/26/timelion/"/>
+    <updated>2016-10-26T22:26:16+02:00</updated>
+    <id>https://rnowif.github.io/blog/2016/10/26/timelion</id>
     <content type="html"><![CDATA[<p>Elastic vient de sortir <a href="https://www.elastic.co/blog/elastic-stack-5-0-0-released">sa dernière mouture de la stack Elastic</a>. Il s'agit de la version 5 et, pour la première fois, tous les produits ont une version commune. Cette nouvelle version vient avec son lot de nouveautés. Dans cet article, nous allons nous concentrer sur les nouveautés apportées à Kibana, et principalement Timelion.</p>
 
 <p>Les exemples sont tirés de métriques fournies par le plugin <a href="https://www.elastic.co/guide/en/beats/metricbeat/5.0/metricbeat-getting-started.html">MetricBeat</a>, qui remplace TopBeat dans la version 5 de la stack.</p>

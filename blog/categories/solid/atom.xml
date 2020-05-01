@@ -4,7 +4,7 @@
   <title><![CDATA[Category: solid | Renaud Humbert-Labeaumaz]]></title>
   <link href="https://rnowif.github.io/blog/categories/solid/atom.xml" rel="self"/>
   <link href="https://rnowif.github.io/"/>
-  <updated>2018-11-03T08:44:00+13:00</updated>
+  <updated>2020-05-01T17:49:42-04:00</updated>
   <id>https://rnowif.github.io/</id>
   <author>
     <name><![CDATA[Renaud Humbert-Labeaumaz]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Intersection Types in Java]]></title>
     <link href="https://rnowif.github.io/blog/2018/09/19/intersection-types-in-java/"/>
-    <updated>2018-09-19T21:29:15+12:00</updated>
+    <updated>2018-09-19T11:29:15+02:00</updated>
     <id>https://rnowif.github.io/blog/2018/09/19/intersection-types-in-java</id>
     <content type="html"><![CDATA[<p>This blog post aims to explain how we can use intersection types in Java when we expect an object that implements different interfaces.</p>
 
