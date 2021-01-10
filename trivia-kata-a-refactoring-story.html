@@ -1,0 +1,185 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Trivia Kata: A Refactoring Story - A Software Gardener</title><meta name="description" content="Refactoring a legacy code can be a tricky business. More often than not, the code is not tested, unclear and contains some bugs. If not planned, the time required to refactor will eat all the time allocated to the feature. The feature will then be&hellip;"><meta name="generator" content="Publii Open-Source CMS for Static Site"><link rel="canonical" href="https://rnowif.github.io/rnowif.github.io/trivia-kata-a-refactoring-story.html"><link rel="alternate" type="application/atom+xml" href="https://rnowif.github.io/rnowif.github.io/feed.xml"><link rel="alternate" type="application/json" href="https://rnowif.github.io/rnowif.github.io/feed.json"><meta property="og:title" content="Trivia Kata: A Refactoring Story"><meta property="og:image" content="https://rnowif.github.io/rnowif.github.io/media/posts/11/mkjr_-2zUjvV0M9dQ-unsplash.jpg"><meta property="og:site_name" content="A Software Gardener"><meta property="og:description" content="Refactoring a legacy code can be a tricky business. More often than not, the code is not tested, unclear and contains some bugs. If not planned, the time required to refactor will eat all the time allocated to the feature. The feature will then be&hellip;"><meta property="og:url" content="https://rnowif.github.io/rnowif.github.io/trivia-kata-a-refactoring-story.html"><meta property="og:type" content="article"><style>:root{--body-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--heading-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--logo-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--menu-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"}</style><link rel="stylesheet" href="https://rnowif.github.io/rnowif.github.io/assets/css/style.css?v=1d9126d5c592483966037cf187b30969"><link rel="stylesheet" href="https://rnowif.github.io/rnowif.github.io/assets/css/prism.css?v=a9de1acca9c12df6ea0d5f1bf5f5f4c7"><script type="application/ld+json">{"@context":"http://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://rnowif.github.io/rnowif.github.io/trivia-kata-a-refactoring-story.html"},"headline":"Trivia Kata: A Refactoring Story","datePublished":"2017-04-10T11:34","dateModified":"2021-01-11T11:35","image":{"@type":"ImageObject","url":"https://rnowif.github.io/rnowif.github.io/media/posts/11/mkjr_-2zUjvV0M9dQ-unsplash.jpg","height":3456,"width":5184},"description":"Refactoring a legacy code can be a tricky business. More often than not, the code is not tested, unclear and contains some bugs. If not planned, the time required to refactor will eat all the time allocated to the feature. The feature will then be&hellip;","author":{"@type":"Person","name":"Renaud Humbert-Labeaumaz"},"publisher":{"@type":"Organization","name":"Renaud Humbert-Labeaumaz"}}</script></head><body><div class="site-container"><header class="top" id="js-header"><a class="logo" href="https://rnowif.github.io/rnowif.github.io/">A Software Gardener</a></header><main><article class="post"><div class="hero"><figure class="hero__image hero__image--overlay"><img src="https://rnowif.github.io/rnowif.github.io/media/posts/11/mkjr_-2zUjvV0M9dQ-unsplash.jpg" srcset="https://rnowif.github.io/rnowif.github.io/media/posts/11/responsive/mkjr_-2zUjvV0M9dQ-unsplash-xs.jpg 300w, https://rnowif.github.io/rnowif.github.io/media/posts/11/responsive/mkjr_-2zUjvV0M9dQ-unsplash-sm.jpg 480w, https://rnowif.github.io/rnowif.github.io/media/posts/11/responsive/mkjr_-2zUjvV0M9dQ-unsplash-md.jpg 768w, https://rnowif.github.io/rnowif.github.io/media/posts/11/responsive/mkjr_-2zUjvV0M9dQ-unsplash-lg.jpg 1024w, https://rnowif.github.io/rnowif.github.io/media/posts/11/responsive/mkjr_-2zUjvV0M9dQ-unsplash-xl.jpg 1360w, https://rnowif.github.io/rnowif.github.io/media/posts/11/responsive/mkjr_-2zUjvV0M9dQ-unsplash-2xl.jpg 1600w" sizes="(max-width: 1600px) 100vw, 1600px" loading="eager" height="3456" width="5184" alt=""><figcaption>https://unsplash.com/@mkjr_</figcaption></figure><header class="hero__content"><div class="wrapper"><div class="post__meta"><time datetime="2017-04-10T11:34">April 10, 2017</time></div><h1>Trivia Kata: A Refactoring Story</h1><div class="post__meta post__meta--author"><img src="https://rnowif.github.io/rnowif.github.io/media/website/renaud.png" loading="eager" alt="Renaud Humbert-Labeaumaz" class="post__author-thumb"> <a href="https://rnowif.github.io/rnowif.github.io/authors/renaud-humbert-labeaumaz/" class="feed__author invert">Renaud Humbert-Labeaumaz</a></div></div></header></div><div class="wrapper post__entry"><p>Refactoring a legacy code can be a tricky business. More often than not, the code is not tested, unclear and contains some bugs. If not planned, the time required to refactor will eat all the time allocated to the feature. The feature will then be implemented very quickly and it will result in more buggy unmaintainable code.</p><p>In this blog post, I will try to show some tools and methods to refactor safely a piece of code. I will use the <a href="https://github.com/jbrains/trivia">trivia kata</a> as a support for this. The resulting code can be found on <a href="https://github.com/rnowif/trivia-refactoring/commits/master">GitHub</a>.</p><h2 id="characterization-test-the-golden-master">Characterization Test: the Golden Master</h2><p>The prerequisite to any refactor is to build a test harness to be sure that the refactoring will not break anything. In this example, it could seem like a waste of time to test all possible paths with unit tests. Fortunately, the code contains a lot of traces that print what the code does. It is then possible to run the code with a set of inputs, capture the output and save it. This output is called the <em>Golden Master</em>. Every time the code is modified, the same inputs are used to run the code and the output is compared to the golden master. As you may have noticed, this will not ensure that the code is bug-free, it will just make sure that the code always <strong>behaves</strong> the same.</p><p>In Java, the golden master can be implemented using a library called <em>approval</em>:</p><pre><code class="language-java">&lt;dependency&gt;
+    &lt;groupId&gt;com.github.nikolavp&lt;/groupId&gt;
+    &lt;artifactId&gt;approval-core&lt;/artifactId&gt;
+    &lt;version&gt;0.3&lt;/version&gt;
+&lt;/dependency&gt;</code></pre><p>The associated test is shown below (see <a href="https://github.com/rnowif/trivia-refactoring/commit/0c4255e69cc5395a70de417913de20c82606b0c2">commit</a>):</p><pre><code class="language-java">@Test
+public void should_record_and_verify_golden_master() {
+    String result = playGame(1L);
+
+    Approvals.verify(result, Paths.get(&quot;src&quot;, &quot;main&quot;, &quot;resources&quot;, &quot;approval&quot;, &quot;result.txt&quot;)); // 2
+}
+
+private String playGame(long seed) {
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outputStream)); // 3
+
+    boolean notAWinner;
+    Game aGame = new Game();
+
+    aGame.add(&quot;Chet&quot;);
+    aGame.add(&quot;Pat&quot;);
+    aGame.add(&quot;Sue&quot;);
+
+    Random rand = new Random(seed); // 1
+
+    do {
+
+        aGame.roll(rand.nextInt(5) + 1);
+
+        if (rand.nextInt(9) == 7) {
+            notAWinner = aGame.wrongAnswer();
+        } else {
+            notAWinner = aGame.wasCorrectlyAnswered();
+        }
+
+    } while (notAWinner);
+
+    return new String(outputStream.toByteArray());
+}</code></pre><p>Since the code uses a <code>Random</code> to roll a dice, we have to fix the seed of the <code>Random</code> so it always returns the same random rolls in the same order (<code>1</code>). The code has to be run once with this seed and the output has to be pasted into <code>src/main/resources/approval/result.txt</code> to create the golden master (<code>2</code>). Afterwards, the test will capture the output (<code>3</code>) and compare it to the golden master. If a difference appears, a diff will prompt.</p><p>Sometimes during my refactoring sessions, I like to make mistakes on purpose just to check the robustness of my test harness. I find it very useful to increase the confidence you have in your tests and fix them if you have to.</p><h2 id="first-step-clean-up">First Step: Clean Up</h2><p>Personnaly, I can’t really think when I am in front of a bloated and unclear code. Thus, the first thing I did to refactor this piece of code is to rearrange it, delete unused imports and dead code, remove magic strings and magic numbers, use generics and reduce the visibility of fields and methods that can be reduced to be sure that I can touch them without breaking the public API. The major part of these refactorings can be made for you by your IDE so don’t hesitate to do it as it reduces the risk of error and it is much quicker. You can also use a plugin like <a href="http://www.sonarlint.org/index.html">SonarLint</a> for instance to detect issues directly into your IDE.</p><p>Once the code easier to think about, I noticed that strings where used to identify categories. This seemed like a good place to create an enum (see <a href="https://github.com/rnowif/trivia-refactoring/commit/1578c0ce9d7da73641e5f4202b1a72f00ba13723">commit</a>). To start, I just replaced the strings with the enum:</p><pre><code class="language-java">private void askQuestion() {
+    if (currentCategory() == &quot;Pop&quot;)
+        print(popQuestions.removeFirst());
+    if (currentCategory() == &quot;Science&quot;)
+        print(scienceQuestions.removeFirst());
+    if (currentCategory() == &quot;Sports&quot;)
+        print(sportsQuestions.removeFirst());
+    if (currentCategory() == &quot;Rock&quot;)
+        print(rockQuestions.removeFirst());
+}
+
+private String currentCategory() {
+    if (places[currentPlayer] == 0) return &quot;Pop&quot;;
+    if (places[currentPlayer] == 4) return &quot;Pop&quot;;
+    if (places[currentPlayer] == 8) return &quot;Pop&quot;;
+    if (places[currentPlayer] == 1) return &quot;Science&quot;;
+    if (places[currentPlayer] == 5) return &quot;Science&quot;;
+    if (places[currentPlayer] == 9) return &quot;Science&quot;;
+    if (places[currentPlayer] == 2) return &quot;Sports&quot;;
+    if (places[currentPlayer] == 6) return &quot;Sports&quot;;
+    if (places[currentPlayer] == 10) return &quot;Sports&quot;;
+    return &quot;Rock&quot;;
+}</code></pre><p>became</p><pre><code class="language-java">private void askQuestion() {
+    if (currentCategory().equals(Category.POP))
+        print(popQuestions.removeFirst());
+    if (currentCategory().equals(Category.SCIENCE))
+        print(scienceQuestions.removeFirst());
+    if (currentCategory().equals(Category.SPORTS))
+        print(sportsQuestions.removeFirst());
+    if (currentCategory().equals(Category.ROCK))
+        print(rockQuestions.removeFirst());
+}
+
+private Category currentCategory() {
+    if (places[currentPlayer] == 0) return Category.POP;
+    if (places[currentPlayer] == 4) return Category.POP;
+    if (places[currentPlayer] == 8) return Category.POP;
+    if (places[currentPlayer] == 1) return Category.SCIENCE;
+    if (places[currentPlayer] == 5) return Category.SCIENCE;
+    if (places[currentPlayer] == 9) return Category.SCIENCE;
+    if (places[currentPlayer] == 2) return Category.SPORTS;
+    if (places[currentPlayer] == 6) return Category.SPORTS;
+    if (places[currentPlayer] == 10) return Category.SPORTS;
+    return Category.ROCK;
+}</code></pre><p>This kind of <code>if</code> statement that looks a lot like a <code>switch</code> can almost always be replaced by a <code>Map</code> so that is what I did (see <a href="https://github.com/rnowif/trivia-refactoring/commit/b8780743929eb10ab5f8a90c9fe68c9dd3c310a9">commit</a>). I created two maps to contain questions of each category and the category for each position:</p><pre><code class="language-java">private void askQuestion() {
+    print(questionsByCategory.get(currentCategory()).removeFirst());
+}
+
+private Category currentCategory() {
+   return categoriesByPosition.get(currentPosition());
+}</code></pre><h2 id="second-step-segregate">Second Step: Segregate</h2><p>The second step I chose to follow is to put specific logic into private methods. Once again, your IDE can help you here, use it!</p><p>For instance, that piece of code:</p><pre><code class="language-java">print(players.get(currentPlayer) + &quot; is getting out of the penalty box&quot;);
+
+places[currentPlayer] = places[currentPlayer] + roll;
+if (places[currentPlayer] &gt;= NB_CELLS) {
+    places[currentPlayer] = places[currentPlayer] - NB_CELLS;
+}
+
+print(players.get(currentPlayer)  + &quot;&#39;s new location is &quot; + places[currentPlayer]);</code></pre><p>became</p><pre><code class="language-java">print(players.get(currentPlayer) + &quot; is getting out of the penalty box&quot;);
+move(roll);
+print(players.get(currentPlayer) + &quot;&#39;s new location is &quot; + currentPosition());</code></pre><p>By doing that, you can remove duplication by factorizing algorithms (like move a player) into specific methods. Moreover, you prepare the field for extracting objects from this code (see the next section). However, in order to do that properly, the private methods have to be in the purest form possible: they should use or modify the least amount of private fields possible (see <a href="https://github.com/rnowif/trivia-refactoring/commit/160c52d4a393fef3a58ad062fa9b552f0a9631a0">commit</a>). With that in mind, the following code:</p><pre><code class="language-java">private Category currentCategory() {
+    return categoriesByPosition.get(currentPosition());
+}</code></pre><p>has been replaced by</p><pre><code class="language-java">private Category currentCategory(int position) {
+    return categoriesByPosition.get(position);
+}</code></pre><h2 id="third-step-divide-and-conquer">Third Step: Divide and Conquer</h2><p>Now that logic has been segregated into private methods, it is pretty straightforward to extract objects from these methods.</p><p>In this kata, we saw that several concepts emerge: <code>Player</code>, <code>Board</code> and <code>QuestionDeck</code>. A <code>PlayerList</code> class has also been added to handle the players rotation. All these classes can be tested in isolation in order not to rely solely on the golden master anymore.</p><p>For instance, the following code prints the next question to ask:</p><pre><code class="language-java">public void roll(int roll) {
+
+  // ...
+
+  Category currentCategory = board.categoryOf(newPosition);
+  print(&quot;The category is &quot; + currentCategory);
+  print(nextQuestionAbout(currentCategory));
+}
+
+private String nextQuestionAbout(Category category) {
+  return questionsByCategory.get(category).removeFirst();
+}</code></pre><p>By creating a <code>QuestionDeck</code> object, we can have a code like this (see <a href="https://github.com/rnowif/trivia-refactoring/commit/6ae3f22923b425d51f7fb657d7236926d2149309">commit</a>):</p><pre><code class="language-java">public void roll(int roll) {
+
+  // QuestionDeck deck = new QuestionDeck(NB_QUESTIONS, CATEGORIES);
+
+  Category currentCategory = board.categoryOf(newPosition);
+  print(&quot;The category is &quot; + currentCategory);
+  print(deck.nextQuestionAbout(currentCategory));
+}</code></pre><p>The private method <code>nextQuestionAbout</code> and the field <code>questionsByCategory</code> are no longer in the <code>Game</code> class.</p><p>When you extract classes from the main code, it is very important not to break the public API. It is possible to annotate some methods with <code>@Deprecated</code> though (see <a href="https://github.com/rnowif/trivia-refactoring/commit/a7c4d85c50395a0a66908eb15e3926b6d8d822de">commit</a>). A good example of this can be seen in this <a href="https://www.crafties.fr/videos/2017-02-27-episode-9-refactoring-dependances-statiques.html">video</a>.</p><h2 id="fourth-step-break-up">Fourth Step: Break up</h2><p>The last step is when we remove all deprecated methods that we introduced during the refactoring. It is not always possible to do it right after the refactoring session as we don’t always have access to the client code that consumes our public API. In this case we do, so I removed these methods (see <a href="https://github.com/rnowif/trivia-refactoring/commit/eb7ab019f62808b589de0f6a4fcf904163fd667d">commit</a>).</p><p>The client code looked like this:</p><pre><code class="language-java">Game aGame = new Game();
+
+aGame.add(&quot;Chet&quot;);
+aGame.add(&quot;Pat&quot;);
+aGame.add(&quot;Sue&quot;);
+
+// aGame.roll()</code></pre><p>Now the <code>Game</code> class is not in charge of questions, board, categories and players anymore so we have to inject them into the constructor.</p><pre><code class="language-java">private static final int NB_CELLS = 12;
+private static final int NB_QUESTIONS = 50;
+private static final List&lt;Category&gt; CATEGORIES = asList(Category.POP, Category.SCIENCE, Category.SPORTS, Category.ROCK);
+private static final List&lt;String&gt; PLAYERS = asList(&quot;Chet&quot;, &quot;Pat&quot;, &quot;Sue&quot;);
+
+// ...
+Game aGame = new Game(
+        System.out,
+        new Board(NB_CELLS, CATEGORIES),
+        new QuestionDeck(NB_QUESTIONS, CATEGORIES),
+        new PlayerList(PLAYERS)
+);
+
+// aGame.roll()</code></pre><h2 id="wrapping-up">Wrapping Up</h2><p>Of course, as it is always the case with refactoring, I could have done more. The main risk is that <em>more</em> does not always mean <em>better</em>. A refactoring session must have a purpose and it is very important to know when to stop. It could be when you can add your new feature or fix a bug seamlessly or simply because you don’t have any more time allocated to this task.</p><p>I hope that this post gave you some tools and methods to refactor your code without the fear of breaking something.</p></div><footer class="wrapper post__footer"><p class="post__last-updated">This article was updated on January 11, 2021</p><ul class="post__tag"><li><a href="https://rnowif.github.io/rnowif.github.io/tags/design/">design</a></li><li><a href="https://rnowif.github.io/rnowif.github.io/tags/refactoring/">refactoring</a></li></ul><div class="post__share"><a href="https://twitter.com/share?url=https%3A%2F%2Frnowif.github.io%2Frnowif.github.io%2Ftrivia-kata-a-refactoring-story.html&amp;via=%40rnowif&amp;text=Trivia%20Kata%3A%20A%20Refactoring%20Story" class="js-share twitter" rel="nofollow noopener noreferrer"><svg class="icon" aria-hidden="true" focusable="false"><use xlink:href="https://rnowif.github.io/rnowif.github.io/assets/svg/svg-map.svg#twitter"/></svg> <span>Twitter</span> </a><a href="http://www.linkedin.com/shareArticle?url=https%3A%2F%2Frnowif.github.io%2Frnowif.github.io%2Ftrivia-kata-a-refactoring-story.html&amp;title=Trivia%20Kata%3A%20A%20Refactoring%20Story" class="js-share linkedin" rel="nofollow noopener noreferrer"><svg class="icon" aria-hidden="true" focusable="false"><use xlink:href="https://rnowif.github.io/rnowif.github.io/assets/svg/svg-map.svg#linkedin"/></svg> <span>LinkedIn</span></a></div><div class="post__bio bio"><img class="bio__avatar" src="https://rnowif.github.io/rnowif.github.io/media/website/renaud.png" loading="lazy" alt="Renaud Humbert-Labeaumaz"><div class="bio__info"><h3 class="bio__name"><a href="https://rnowif.github.io/rnowif.github.io/authors/renaud-humbert-labeaumaz/" class="invert" rel="author">Renaud Humbert-Labeaumaz</a></h3></div></div></footer></article><nav class="post__nav"><div class="post__nav-inner"><div class="post__nav-next"><a href="https://rnowif.github.io/rnowif.github.io/keep-calm-and-use-git-reflog.html" class="invert post__nav-link" rel="next"><span>Next</span> Keep Calm and Use Git Reflog </a><svg width="1.041em" height="0.416em" aria-hidden="true"><use xlink:href="https://rnowif.github.io/rnowif.github.io/assets/svg/svg-map.svg#arrow-next"/></svg></div></div></nav><div class="post__comments"><div class="wrapper"><h2 class="h5">Comments</h2><div id="disqus_thread"></div><script>var disqus_config = function () {
+                       this.page.url = 'https://rnowif.github.io/rnowif.github.io/trivia-kata-a-refactoring-story.html';
+               		this.page.identifier = '11';
+                   };
+               
+                   var disqus_loaded = false;
+               
+                   function publiiLoadDisqus() {
+                       if(disqus_loaded) {
+                           return false;
+                       }
+               
+                       var top = document.getElementById('disqus_thread').offsetTop;
+               
+                       if (!disqus_loaded && (window.scrollY || window.pageYOffset) + window.innerHeight > top) {
+                           disqus_loaded = true;
+               
+                           (function () {
+                               var d = document, s = d.createElement('script');
+                               s.src = 'https://'+'rnowif'.trim()+'.disqus.com/embed.js';
+                               s.setAttribute('data-timestamp', +new Date());
+                               (d.head || d.body).appendChild(s);
+                           })();
+                       }
+                   }
+               
+                   publiiLoadDisqus();
+               
+                   window.onscroll = function() {
+                       publiiLoadDisqus();
+                   };</script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="nofollow noopener noreferrer">comments powered by Disqus.</a></noscript></div></div></main><footer class="footer"><div class="footer__social"><a href="https://twitter.com/rnowif" aria-label="Twitter"><svg><use xlink:href="https://rnowif.github.io/rnowif.github.io/assets/svg/svg-map.svg#twitter"/></svg></a></div><div class="footer__copyright"><p>Renaud Humbert-Labeaumaz - 2021</p></div><button class="footer__bttop js-footer__bttop" aria-label="Back to top"><svg><title>Back to top</title><use xlink:href="https://rnowif.github.io/rnowif.github.io/assets/svg/svg-map.svg#toparrow"/></svg></button></footer></div><script>window.publiiThemeMenuConfig = {    
+        mobileMenuMode: 'sidebar',
+        animationSpeed: 300,
+        submenuWidth: 'auto',
+        doubleClickTime: 500,
+        mobileMenuExpandableSubmenus: true, 
+        relatedContainerForOverlayMenuSelector: '.top',
+   };</script><script defer="defer" src="https://rnowif.github.io/rnowif.github.io/assets/js/scripts.min.js?v=f4c4d35432d0e17d212f2fae4e0f8247"></script><script>var images = document.querySelectorAll('img[loading]');
+
+        for (var i = 0; i < images.length; i++) {
+            if (images[i].complete) {
+                images[i].classList.add('is-loaded');
+            } else {
+                images[i].addEventListener('load', function () {
+                    this.classList.add('is-loaded');
+                }, false);
+            }
+        }</script><script defer="defer" src="https://rnowif.github.io/rnowif.github.io/assets/js/prism.js?v=8a3c962ef789bf5cc575d02e6a4bd4b2"></script></body></html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>C# for the Java Developer: Enums - A Software Gardener</title><meta name="description" content="Enums is a very common concept. It exists, of course, in Java and C# as well. However, Java and C# enums do not have the same capabilities. This blog post aims to show their differences. In Java, enums are very much like regular classes: they&hellip;"><meta name="generator" content="Publii Open-Source CMS for Static Site"><link rel="canonical" href="https://rnowif.github.io/rnowif.github.io/c-for-the-java-developer-enums.html"><link rel="alternate" type="application/atom+xml" href="https://rnowif.github.io/rnowif.github.io/feed.xml"><link rel="alternate" type="application/json" href="https://rnowif.github.io/rnowif.github.io/feed.json"><meta property="og:title" content="C# for the Java Developer: Enums"><meta property="og:image" content="https://rnowif.github.io/rnowif.github.io/media/posts/4/christopher-burns-Kj2SaNHG-hg-unsplash.jpg"><meta property="og:site_name" content="A Software Gardener"><meta property="og:description" content="Enums is a very common concept. It exists, of course, in Java and C# as well. However, Java and C# enums do not have the same capabilities. This blog post aims to show their differences. In Java, enums are very much like regular classes: they&hellip;"><meta property="og:url" content="https://rnowif.github.io/rnowif.github.io/c-for-the-java-developer-enums.html"><meta property="og:type" content="article"><style>:root{--body-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--heading-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--logo-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--menu-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"}</style><link rel="stylesheet" href="https://rnowif.github.io/rnowif.github.io/assets/css/style.css?v=1d9126d5c592483966037cf187b30969"><link rel="stylesheet" href="https://rnowif.github.io/rnowif.github.io/assets/css/prism.css?v=a9de1acca9c12df6ea0d5f1bf5f5f4c7"><script type="application/ld+json">{"@context":"http://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://rnowif.github.io/rnowif.github.io/c-for-the-java-developer-enums.html"},"headline":"C# for the Java Developer: Enums","datePublished":"2018-10-21T09:37","dateModified":"2021-01-11T09:38","image":{"@type":"ImageObject","url":"https://rnowif.github.io/rnowif.github.io/media/posts/4/christopher-burns-Kj2SaNHG-hg-unsplash.jpg","height":3840,"width":5760},"description":"Enums is a very common concept. It exists, of course, in Java and C# as well. However, Java and C# enums do not have the same capabilities. This blog post aims to show their differences. In Java, enums are very much like regular classes: they&hellip;","author":{"@type":"Person","name":"Renaud Humbert-Labeaumaz"},"publisher":{"@type":"Organization","name":"Renaud Humbert-Labeaumaz"}}</script></head><body><div class="site-container"><header class="top" id="js-header"><a class="logo" href="https://rnowif.github.io/rnowif.github.io/">A Software Gardener</a></header><main><article class="post"><div class="hero"><figure class="hero__image hero__image--overlay"><img src="https://rnowif.github.io/rnowif.github.io/media/posts/4/christopher-burns-Kj2SaNHG-hg-unsplash.jpg" srcset="https://rnowif.github.io/rnowif.github.io/media/posts/4/responsive/christopher-burns-Kj2SaNHG-hg-unsplash-xs.jpg 300w, https://rnowif.github.io/rnowif.github.io/media/posts/4/responsive/christopher-burns-Kj2SaNHG-hg-unsplash-sm.jpg 480w, https://rnowif.github.io/rnowif.github.io/media/posts/4/responsive/christopher-burns-Kj2SaNHG-hg-unsplash-md.jpg 768w, https://rnowif.github.io/rnowif.github.io/media/posts/4/responsive/christopher-burns-Kj2SaNHG-hg-unsplash-lg.jpg 1024w, https://rnowif.github.io/rnowif.github.io/media/posts/4/responsive/christopher-burns-Kj2SaNHG-hg-unsplash-xl.jpg 1360w, https://rnowif.github.io/rnowif.github.io/media/posts/4/responsive/christopher-burns-Kj2SaNHG-hg-unsplash-2xl.jpg 1600w" sizes="(max-width: 1600px) 100vw, 1600px" loading="eager" height="3840" width="5760" alt=""><figcaption>https://unsplash.com/@christopher__burns</figcaption></figure><header class="hero__content"><div class="wrapper"><div class="post__meta"><time datetime="2018-10-21T09:37">October 21, 2018</time></div><h1>C# for the Java Developer: Enums</h1><div class="post__meta post__meta--author"><img src="https://rnowif.github.io/rnowif.github.io/media/website/renaud.png" loading="eager" alt="Renaud Humbert-Labeaumaz" class="post__author-thumb"> <a href="https://rnowif.github.io/rnowif.github.io/authors/renaud-humbert-labeaumaz/" class="feed__author invert">Renaud Humbert-Labeaumaz</a></div></div></header></div><div class="wrapper post__entry"><p>Enums is a very common concept. It exists, of course, in Java and C# as well. However, Java and C# enums do not have the same capabilities. This blog post aims to show their differences.</p><p>In Java, enums are very much like regular classes: they can implement interfaces and have methods. However, they cannot inherit other classes or be explicitly instantiated. They can be viewed as <code>final</code> classes (or <code>sealed</code> classes in C#) that already inherit the virtual “enum” class, have only private constructor(s) and a set of pre-defined instances (the values of the enum).</p><p>For instance, let’s take the example of the HTTP status codes. In Java, it is possible to write this code:</p><pre><code class="language-java">enum HttpStatus implements Comparable&lt;HttpStatus&gt; {
+    OK(200), SERVER_ERROR(500), NOT_FOUND(404);
+
+    private final int code;
+
+    HttpStatus(int code) {
+        this.code = code;
+    }
+
+    // This is a regular instance method
+    int code() {
+        return code;
+    }
+
+    // This is the implementation of the Comparable interface
+    @Override
+    int compareTo(HttpStatus o) {
+        // Http statuses will be sorted by status code
+        return Integer.compare(code, o.code);
+    }
+}</code></pre><pre><code class="language-java">HttpStatus status = HttpStatus.OK;
+
+// The &#39;code&#39; method can be invoked like any other method
+int code = status.code();</code></pre><p>In C#, enums are just integers in disguise. The previous snippet can be simulated in C# only because the <code>code</code> attribute happens to be an <code>int</code>. Otherwise, it would be very complex to have the same behaviour:</p><pre><code class="language-csharp">enum HttpStatus {
+    // int value of the enum can be forced to a specific value
+    OK = 200,
+    NOT_FOUND = 404,
+    SERVER_ERROR = 500
+}</code></pre><pre><code class="language-csharp">HttpStatus status = HttpStatus.OK;
+
+// The enum can be casted to an int to get its value
+int code = (int) status;</code></pre><p>To sum up, Java enums are much more powerful than their C# counterparts. I often use these features when I write Java code and I think I would miss them if I had to write C# code on a daily basis.</p></div><footer class="wrapper post__footer"><p class="post__last-updated">This article was updated on January 11, 2021</p><ul class="post__tag"><li><a href="https://rnowif.github.io/rnowif.github.io/tags/csharp/">csharp</a></li><li><a href="https://rnowif.github.io/rnowif.github.io/tags/java/">java</a></li></ul><div class="post__share"><a href="https://twitter.com/share?url=https%3A%2F%2Frnowif.github.io%2Frnowif.github.io%2Fc-for-the-java-developer-enums.html&amp;via=%40rnowif&amp;text=C%23%20for%20the%20Java%20Developer%3A%20Enums" class="js-share twitter" rel="nofollow noopener noreferrer"><svg class="icon" aria-hidden="true" focusable="false"><use xlink:href="https://rnowif.github.io/rnowif.github.io/assets/svg/svg-map.svg#twitter"/></svg> <span>Twitter</span> </a><a href="http://www.linkedin.com/shareArticle?url=https%3A%2F%2Frnowif.github.io%2Frnowif.github.io%2Fc-for-the-java-developer-enums.html&amp;title=C%23%20for%20the%20Java%20Developer%3A%20Enums" class="js-share linkedin" rel="nofollow noopener noreferrer"><svg class="icon" aria-hidden="true" focusable="false"><use xlink:href="https://rnowif.github.io/rnowif.github.io/assets/svg/svg-map.svg#linkedin"/></svg> <span>LinkedIn</span></a></div><div class="post__bio bio"><img class="bio__avatar" src="https://rnowif.github.io/rnowif.github.io/media/website/renaud.png" loading="lazy" alt="Renaud Humbert-Labeaumaz"><div class="bio__info"><h3 class="bio__name"><a href="https://rnowif.github.io/rnowif.github.io/authors/renaud-humbert-labeaumaz/" class="invert" rel="author">Renaud Humbert-Labeaumaz</a></h3></div></div></footer></article><nav class="post__nav"><div class="post__nav-inner"><div class="post__nav-prev"><svg width="1.041em" height="0.416em" aria-hidden="true"><use xlink:href="https://rnowif.github.io/rnowif.github.io/assets/svg/svg-map.svg#arrow-prev"/></svg> <a href="https://rnowif.github.io/rnowif.github.io/c-for-the-java-developer-lambdas.html" class="invert post__nav-link" rel="prev"><span>Previous</span> C# for the Java Developer: Lambdas</a></div><div class="post__nav-next"><a href="https://rnowif.github.io/rnowif.github.io/aspnet-clean-architecture.html" class="invert post__nav-link" rel="next"><span>Next</span> ASP.Net Clean Architecture </a><svg width="1.041em" height="0.416em" aria-hidden="true"><use xlink:href="https://rnowif.github.io/rnowif.github.io/assets/svg/svg-map.svg#arrow-next"/></svg></div></div></nav><div class="post__related related"><div class="wrapper"><h2 class="h5 related__title">You should also read:</h2><article class="related__item"><div class="feed__meta"><time datetime="2018-09-21T11:21" class="feed__date">September 21, 2018</time></div><h3 class="h1"><a href="https://rnowif.github.io/rnowif.github.io/what-is-a-volatile-variable-in-java.html" class="invert">What is a Volatile Variable in Java?</a></h3></article><article class="related__item"><div class="feed__meta"><time datetime="2018-10-20T09:43" class="feed__date">October 20, 2018</time></div><h3 class="h1"><a href="https://rnowif.github.io/rnowif.github.io/c-for-the-java-developer-extension-methods.html" class="invert">C# for the Java Developer: Extension Methods</a></h3></article></div></div><div class="post__comments"><div class="wrapper"><h2 class="h5">Comments</h2><div id="disqus_thread"></div><script>var disqus_config = function () {
+                       this.page.url = 'https://rnowif.github.io/rnowif.github.io/c-for-the-java-developer-enums.html';
+               		this.page.identifier = '4';
+                   };
+               
+                   var disqus_loaded = false;
+               
+                   function publiiLoadDisqus() {
+                       if(disqus_loaded) {
+                           return false;
+                       }
+               
+                       var top = document.getElementById('disqus_thread').offsetTop;
+               
+                       if (!disqus_loaded && (window.scrollY || window.pageYOffset) + window.innerHeight > top) {
+                           disqus_loaded = true;
+               
+                           (function () {
+                               var d = document, s = d.createElement('script');
+                               s.src = 'https://'+'rnowif'.trim()+'.disqus.com/embed.js';
+                               s.setAttribute('data-timestamp', +new Date());
+                               (d.head || d.body).appendChild(s);
+                           })();
+                       }
+                   }
+               
+                   publiiLoadDisqus();
+               
+                   window.onscroll = function() {
+                       publiiLoadDisqus();
+                   };</script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="nofollow noopener noreferrer">comments powered by Disqus.</a></noscript></div></div></main><footer class="footer"><div class="footer__social"><a href="https://twitter.com/rnowif" aria-label="Twitter"><svg><use xlink:href="https://rnowif.github.io/rnowif.github.io/assets/svg/svg-map.svg#twitter"/></svg></a></div><div class="footer__copyright"><p>Renaud Humbert-Labeaumaz - 2021</p></div><button class="footer__bttop js-footer__bttop" aria-label="Back to top"><svg><title>Back to top</title><use xlink:href="https://rnowif.github.io/rnowif.github.io/assets/svg/svg-map.svg#toparrow"/></svg></button></footer></div><script>window.publiiThemeMenuConfig = {    
+        mobileMenuMode: 'sidebar',
+        animationSpeed: 300,
+        submenuWidth: 'auto',
+        doubleClickTime: 500,
+        mobileMenuExpandableSubmenus: true, 
+        relatedContainerForOverlayMenuSelector: '.top',
+   };</script><script defer="defer" src="https://rnowif.github.io/rnowif.github.io/assets/js/scripts.min.js?v=f4c4d35432d0e17d212f2fae4e0f8247"></script><script>var images = document.querySelectorAll('img[loading]');
+
+        for (var i = 0; i < images.length; i++) {
+            if (images[i].complete) {
+                images[i].classList.add('is-loaded');
+            } else {
+                images[i].addEventListener('load', function () {
+                    this.classList.add('is-loaded');
+                }, false);
+            }
+        }</script><script defer="defer" src="https://rnowif.github.io/rnowif.github.io/assets/js/prism.js?v=8a3c962ef789bf5cc575d02e6a4bd4b2"></script></body></html>

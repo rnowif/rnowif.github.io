@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Intersection Types in Java - A Software Gardener</title><meta name="description" content="This blog post aims to explain how we can use intersection types in Java when we expect an object that implements different interfaces. The Interface Segregation Principle (ISP) stipulates that interfaces should contain the least amount of methods as possible. In other terms, a client&hellip;"><meta name="generator" content="Publii Open-Source CMS for Static Site"><link rel="canonical" href="https://rnowif.github.io/rnowif.github.io/intersection-types-in-java.html"><link rel="alternate" type="application/atom+xml" href="https://rnowif.github.io/rnowif.github.io/feed.xml"><link rel="alternate" type="application/json" href="https://rnowif.github.io/rnowif.github.io/feed.json"><meta property="og:title" content="Intersection Types in Java"><meta property="og:image" content="https://rnowif.github.io/rnowif.github.io/media/posts/8/denys-nevozhai-7nrsVjvALnA-unsplash.jpg"><meta property="og:site_name" content="A Software Gardener"><meta property="og:description" content="This blog post aims to explain how we can use intersection types in Java when we expect an object that implements different interfaces. The Interface Segregation Principle (ISP) stipulates that interfaces should contain the least amount of methods as possible. In other terms, a client&hellip;"><meta property="og:url" content="https://rnowif.github.io/rnowif.github.io/intersection-types-in-java.html"><meta property="og:type" content="article"><style>:root{--body-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--heading-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--logo-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--menu-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"}</style><link rel="stylesheet" href="https://rnowif.github.io/rnowif.github.io/assets/css/style.css?v=1d9126d5c592483966037cf187b30969"><link rel="stylesheet" href="https://rnowif.github.io/rnowif.github.io/assets/css/prism.css?v=a9de1acca9c12df6ea0d5f1bf5f5f4c7"><script type="application/ld+json">{"@context":"http://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://rnowif.github.io/rnowif.github.io/intersection-types-in-java.html"},"headline":"Intersection Types in Java","datePublished":"2018-09-19T11:23","dateModified":"2021-01-11T11:25","image":{"@type":"ImageObject","url":"https://rnowif.github.io/rnowif.github.io/media/posts/8/denys-nevozhai-7nrsVjvALnA-unsplash.jpg","height":2992,"width":3992},"description":"This blog post aims to explain how we can use intersection types in Java when we expect an object that implements different interfaces. The Interface Segregation Principle (ISP) stipulates that interfaces should contain the least amount of methods as possible. In other terms, a client&hellip;","author":{"@type":"Person","name":"Renaud Humbert-Labeaumaz"},"publisher":{"@type":"Organization","name":"Renaud Humbert-Labeaumaz"}}</script></head><body><div class="site-container"><header class="top" id="js-header"><a class="logo" href="https://rnowif.github.io/rnowif.github.io/">A Software Gardener</a></header><main><article class="post"><div class="hero"><figure class="hero__image hero__image--overlay"><img src="https://rnowif.github.io/rnowif.github.io/media/posts/8/denys-nevozhai-7nrsVjvALnA-unsplash.jpg" srcset="https://rnowif.github.io/rnowif.github.io/media/posts/8/responsive/denys-nevozhai-7nrsVjvALnA-unsplash-xs.jpg 300w, https://rnowif.github.io/rnowif.github.io/media/posts/8/responsive/denys-nevozhai-7nrsVjvALnA-unsplash-sm.jpg 480w, https://rnowif.github.io/rnowif.github.io/media/posts/8/responsive/denys-nevozhai-7nrsVjvALnA-unsplash-md.jpg 768w, https://rnowif.github.io/rnowif.github.io/media/posts/8/responsive/denys-nevozhai-7nrsVjvALnA-unsplash-lg.jpg 1024w, https://rnowif.github.io/rnowif.github.io/media/posts/8/responsive/denys-nevozhai-7nrsVjvALnA-unsplash-xl.jpg 1360w, https://rnowif.github.io/rnowif.github.io/media/posts/8/responsive/denys-nevozhai-7nrsVjvALnA-unsplash-2xl.jpg 1600w" sizes="(max-width: 1600px) 100vw, 1600px" loading="eager" height="2992" width="3992" alt=""><figcaption>https://unsplash.com/@dnevozhai</figcaption></figure><header class="hero__content"><div class="wrapper"><div class="post__meta"><time datetime="2018-09-19T11:23">September 19, 2018</time></div><h1>Intersection Types in Java</h1><div class="post__meta post__meta--author"><img src="https://rnowif.github.io/rnowif.github.io/media/website/renaud.png" loading="eager" alt="Renaud Humbert-Labeaumaz" class="post__author-thumb"> <a href="https://rnowif.github.io/rnowif.github.io/authors/renaud-humbert-labeaumaz/" class="feed__author invert">Renaud Humbert-Labeaumaz</a></div></div></header></div><div class="wrapper post__entry"><p>This blog post aims to explain how we can use intersection types in Java when we expect an object that implements different interfaces.</p><h2 id="interface-segregation-principle">Interface Segregation Principle</h2><p>The Interface Segregation Principle (ISP) stipulates that interfaces should contain the least amount of methods as possible. In other terms, a client of an interface should use all the methods of this interface.</p><p>For instance, let’s take this <code>File</code> interface:</p><pre><code class="language-java">interface File {
+    Collection&lt;String&gt; readLines();
+    void write(String line);
+    void deleteFile();
+}
+
+class LocalFile implements File {
+    // ...
+}</code></pre><p>As a client of this interface, it is highly unlikely that I need all methods. I may want to just read the file and, in that case, I certainely don’t want to be able to delete it. If I just want to delete the file, I probably don’t want to read all its lines.</p><p>In order to avoid that, it is a good idea to split this interface in 3 seperate ones:</p><pre><code class="language-java">interface FileReader {
+    Collection&lt;String&gt; readLines();
+}
+
+interface FileWriter {
+    void write(String line);
+}
+
+interface FileDestroyer {
+    void deleteFile();
+}
+
+class LocalFile implements FileReader, FileWriter, FileDestroyer {
+    // The concrete class can implement all 3 interfaces
+    // ...
+}</code></pre><p>Now, a client can just require the interface it needs and ignore the rest.</p><h2 id="interface-combination">Interface Combination</h2><p>Writing tiny interfaces is good to enforce ISP and lower the coupling of the code. However, what happens when a client wants to read a file <em>and</em> write at the same time?</p><p>The first two snippets won’t compile because one of the interface is not implemented:</p><pre><code class="language-java">void readAndWrite(FileReader reader) {
+    reader.readLines();
+    reader.write(&quot;Hello&quot;); // That won&#39;t compile since reader does not implement FileWriter
+}
+
+void readAndWrite(FileWriter writer) {
+    reader.readLines(); // That won&#39;t compile since writer does not implement FileReader
+    reader.write(&quot;Hello&quot;);
+}</code></pre><p>As an alternative, it is possible to pass an instance of <code>LocalFile</code> but it introduces a high coupling between the method and the LocalFile concrete class, defeating the whole purpose of interfaces entirely.</p><pre><code class="language-java">void readAndWrite(LocalFile file) {
+    file.readLines();
+    file.write(&quot;Hello&quot;);
+    // That will compile but it is not recommended
+}</code></pre><p>Since Java 1.5, and the introduction of generics, a feature, known as Intersection Types, allows to combine interfaces in this kind of situation.</p><h2 id="intersection-types-to-the-rescue">Intersection Types to the Rescue</h2><p>The following code uses intersection types to solve the issue of needing an object that implements several interfaces:</p><pre><code class="language-java">&lt;T extends FileReader &amp; FileWriter&gt; void readAndWrite(T file) {
+    file.readLines();
+    file.write(&quot;Hello&quot;);    
+}</code></pre><p>The <code>&amp;</code> symbol means that the method expects a type <code>T</code> that implements both the <code>FileReader</code> and <code>FileWriter</code> interfaces.</p><h2 id="conclusion">Conclusion</h2><p>The intersection types is a feature that is not widely used in Java. However, it is very powerful as it allows to write very tiny interfaces and combine them on demand. From now on, there is no excuse to write big fat interfaces that have dozens of totally unrelated methods!</p></div><footer class="wrapper post__footer"><p class="post__last-updated">This article was updated on January 11, 2021</p><ul class="post__tag"><li><a href="https://rnowif.github.io/rnowif.github.io/tags/design/">design</a></li><li><a href="https://rnowif.github.io/rnowif.github.io/tags/java/">java</a></li></ul><div class="post__share"><a href="https://twitter.com/share?url=https%3A%2F%2Frnowif.github.io%2Frnowif.github.io%2Fintersection-types-in-java.html&amp;via=%40rnowif&amp;text=Intersection%20Types%20in%20Java" class="js-share twitter" rel="nofollow noopener noreferrer"><svg class="icon" aria-hidden="true" focusable="false"><use xlink:href="https://rnowif.github.io/rnowif.github.io/assets/svg/svg-map.svg#twitter"/></svg> <span>Twitter</span> </a><a href="http://www.linkedin.com/shareArticle?url=https%3A%2F%2Frnowif.github.io%2Frnowif.github.io%2Fintersection-types-in-java.html&amp;title=Intersection%20Types%20in%20Java" class="js-share linkedin" rel="nofollow noopener noreferrer"><svg class="icon" aria-hidden="true" focusable="false"><use xlink:href="https://rnowif.github.io/rnowif.github.io/assets/svg/svg-map.svg#linkedin"/></svg> <span>LinkedIn</span></a></div><div class="post__bio bio"><img class="bio__avatar" src="https://rnowif.github.io/rnowif.github.io/media/website/renaud.png" loading="lazy" alt="Renaud Humbert-Labeaumaz"><div class="bio__info"><h3 class="bio__name"><a href="https://rnowif.github.io/rnowif.github.io/authors/renaud-humbert-labeaumaz/" class="invert" rel="author">Renaud Humbert-Labeaumaz</a></h3></div></div></footer></article><nav class="post__nav"><div class="post__nav-inner"><div class="post__nav-prev"><svg width="1.041em" height="0.416em" aria-hidden="true"><use xlink:href="https://rnowif.github.io/rnowif.github.io/assets/svg/svg-map.svg#arrow-prev"/></svg> <a href="https://rnowif.github.io/rnowif.github.io/controlling-the-time-in-java.html" class="invert post__nav-link" rel="prev"><span>Previous</span> Controlling the Time in Java</a></div><div class="post__nav-next"><a href="https://rnowif.github.io/rnowif.github.io/what-is-a-volatile-variable-in-java.html" class="invert post__nav-link" rel="next"><span>Next</span> What is a Volatile Variable in Java? </a><svg width="1.041em" height="0.416em" aria-hidden="true"><use xlink:href="https://rnowif.github.io/rnowif.github.io/assets/svg/svg-map.svg#arrow-next"/></svg></div></div></nav><div class="post__related related"><div class="wrapper"><h2 class="h5 related__title">You should also read:</h2><article class="related__item"><div class="feed__meta"><time datetime="2018-10-20T09:43" class="feed__date">October 20, 2018</time></div><h3 class="h1"><a href="https://rnowif.github.io/rnowif.github.io/c-for-the-java-developer-extension-methods.html" class="invert">C# for the Java Developer: Extension Methods</a></h3></article><article class="related__item"><div class="feed__meta"><time datetime="2018-10-20T09:40" class="feed__date">October 20, 2018</time></div><h3 class="h1"><a href="https://rnowif.github.io/rnowif.github.io/c-for-the-java-developer-generics.html" class="invert">C# for the Java Developer: Generics</a></h3></article></div></div><div class="post__comments"><div class="wrapper"><h2 class="h5">Comments</h2><div id="disqus_thread"></div><script>var disqus_config = function () {
+                       this.page.url = 'https://rnowif.github.io/rnowif.github.io/intersection-types-in-java.html';
+               		this.page.identifier = '8';
+                   };
+               
+                   var disqus_loaded = false;
+               
+                   function publiiLoadDisqus() {
+                       if(disqus_loaded) {
+                           return false;
+                       }
+               
+                       var top = document.getElementById('disqus_thread').offsetTop;
+               
+                       if (!disqus_loaded && (window.scrollY || window.pageYOffset) + window.innerHeight > top) {
+                           disqus_loaded = true;
+               
+                           (function () {
+                               var d = document, s = d.createElement('script');
+                               s.src = 'https://'+'rnowif'.trim()+'.disqus.com/embed.js';
+                               s.setAttribute('data-timestamp', +new Date());
+                               (d.head || d.body).appendChild(s);
+                           })();
+                       }
+                   }
+               
+                   publiiLoadDisqus();
+               
+                   window.onscroll = function() {
+                       publiiLoadDisqus();
+                   };</script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="nofollow noopener noreferrer">comments powered by Disqus.</a></noscript></div></div></main><footer class="footer"><div class="footer__social"><a href="https://twitter.com/rnowif" aria-label="Twitter"><svg><use xlink:href="https://rnowif.github.io/rnowif.github.io/assets/svg/svg-map.svg#twitter"/></svg></a></div><div class="footer__copyright"><p>Renaud Humbert-Labeaumaz - 2021</p></div><button class="footer__bttop js-footer__bttop" aria-label="Back to top"><svg><title>Back to top</title><use xlink:href="https://rnowif.github.io/rnowif.github.io/assets/svg/svg-map.svg#toparrow"/></svg></button></footer></div><script>window.publiiThemeMenuConfig = {    
+        mobileMenuMode: 'sidebar',
+        animationSpeed: 300,
+        submenuWidth: 'auto',
+        doubleClickTime: 500,
+        mobileMenuExpandableSubmenus: true, 
+        relatedContainerForOverlayMenuSelector: '.top',
+   };</script><script defer="defer" src="https://rnowif.github.io/rnowif.github.io/assets/js/scripts.min.js?v=f4c4d35432d0e17d212f2fae4e0f8247"></script><script>var images = document.querySelectorAll('img[loading]');
+
+        for (var i = 0; i < images.length; i++) {
+            if (images[i].complete) {
+                images[i].classList.add('is-loaded');
+            } else {
+                images[i].addEventListener('load', function () {
+                    this.classList.add('is-loaded');
+                }, false);
+            }
+        }</script><script defer="defer" src="https://rnowif.github.io/rnowif.github.io/assets/js/prism.js?v=8a3c962ef789bf5cc575d02e6a4bd4b2"></script></body></html>

@@ -1,4 +1,3 @@
 User-agent: *
-Disallow: 
-
-Sitemap: https://rnowif.github.io/sitemap.xml 
+Disallow:
+Sitemap: https://rnowif.github.io/rnowif.github.io/sitemap.xml
