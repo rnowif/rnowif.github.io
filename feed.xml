@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <title>A Software Gardener</title>
-    <link href="https://rnowif.github.io/rnowif.github.io/feed.xml" rel="self" />
-    <link href="https://rnowif.github.io/rnowif.github.io" />
+    <link href="https://rnowif.github.io/feed.xml" rel="self" />
+    <link href="https://rnowif.github.io" />
     <updated>2021-01-11T11:33:38+13:00</updated>
     <author>
         <name>Renaud Humbert-Labeaumaz</name>
     </author>
-    <id>https://rnowif.github.io/rnowif.github.io</id>
+    <id>https://rnowif.github.io</id>
 
     <entry>
         <title>The Blind Golden Master</title>
         <author>
             <name>Renaud Humbert-Labeaumaz</name>
         </author>
-        <link href="https://rnowif.github.io/rnowif.github.io/the-blind-golden-master.html"/>
-        <id>https://rnowif.github.io/rnowif.github.io/the-blind-golden-master.html</id>
+        <link href="https://rnowif.github.io/the-blind-golden-master.html"/>
+        <id>https://rnowif.github.io/the-blind-golden-master.html</id>
             <category term="testing"/>
             <category term="refactoring"/>
 
         <updated>2021-01-11T03:44:38+13:00</updated>
             <summary>
                 <![CDATA[
-                        <img src="https://rnowif.github.io/rnowif.github.io/media/posts/1/autumn-219972_1280.jpg" alt="" />
+                        <img src="https://rnowif.github.io/media/posts/1/autumn-219972_1280.jpg" alt="" />
                     As part of my work, I regularly have to refactor/rewrite some part of our system that has little test coverage, if any. Most of the time, the code is too big or complex to write a test suite comprehensive enough to give me the confidence&hellip;
                 ]]>
             </summary>
         <content type="html">
             <![CDATA[
-                    <img src="https://rnowif.github.io/rnowif.github.io/media/posts/1/autumn-219972_1280.jpg" alt="" />
+                    <img src="https://rnowif.github.io/media/posts/1/autumn-219972_1280.jpg" alt="" />
                 <p>As part of my work, I regularly have to refactor/rewrite some part of our system that has little test coverage, if any. Most of the time, the code is too big or complex to write a test suite comprehensive enough to give me the confidence I need in a timely manner. Consequently, I have come to use a characterisation test technique that I called the “Blind Golden Master”.</p>
 <!-- more -->
 
@@ -58,21 +58,21 @@ assertEquals(legacyValue, newValue);</code></pre>
         <author>
             <name>Renaud Humbert-Labeaumaz</name>
         </author>
-        <link href="https://rnowif.github.io/rnowif.github.io/aspnet-clean-architecture.html"/>
-        <id>https://rnowif.github.io/rnowif.github.io/aspnet-clean-architecture.html</id>
+        <link href="https://rnowif.github.io/aspnet-clean-architecture.html"/>
+        <id>https://rnowif.github.io/aspnet-clean-architecture.html</id>
             <category term="csharp"/>
             <category term="architecture"/>
 
         <updated>2021-01-11T09:22:38+13:00</updated>
             <summary>
                 <![CDATA[
-                        <img src="https://rnowif.github.io/rnowif.github.io/media/posts/2/architecture-3357028_1920.jpg" alt="" />
+                        <img src="https://rnowif.github.io/media/posts/2/architecture-3357028_1920.jpg" alt="" />
                     When creating a new project, it is always a challenge to design a clean, coherent and modular architecture. There are guidelines out there to help us achieve this goal but the implementation is not always straightforward. In this blog post, I will propose an implementation&hellip;
                 ]]>
             </summary>
         <content type="html">
             <![CDATA[
-                    <img src="https://rnowif.github.io/rnowif.github.io/media/posts/2/architecture-3357028_1920.jpg" alt="" />
+                    <img src="https://rnowif.github.io/media/posts/2/architecture-3357028_1920.jpg" alt="" />
                 <p>When creating a new project, it is always a challenge to design a clean, coherent and modular architecture. There are guidelines out there to help us achieve this goal but the implementation is not always straightforward. In this blog post, I will propose an implementation of the Uncle Bob’s <a href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html">Clean Architecture</a> on an ASP.Net project. The source code of this project can be found on my <a href="https://github.com/rnowif/Expenses">GitHub</a>.</p>
 <!-- more -->
 
@@ -141,21 +141,21 @@ public void SubmitExpense([FromBody] SubmitExpenseCommand expense)
         <author>
             <name>Renaud Humbert-Labeaumaz</name>
         </author>
-        <link href="https://rnowif.github.io/rnowif.github.io/c-for-the-java-developer-enums.html"/>
-        <id>https://rnowif.github.io/rnowif.github.io/c-for-the-java-developer-enums.html</id>
+        <link href="https://rnowif.github.io/c-for-the-java-developer-enums.html"/>
+        <id>https://rnowif.github.io/c-for-the-java-developer-enums.html</id>
             <category term="java"/>
             <category term="csharp"/>
 
         <updated>2021-01-11T09:38:39+13:00</updated>
             <summary>
                 <![CDATA[
-                        <img src="https://rnowif.github.io/rnowif.github.io/media/posts/4/christopher-burns-Kj2SaNHG-hg-unsplash.jpg" alt="" />
+                        <img src="https://rnowif.github.io/media/posts/4/christopher-burns-Kj2SaNHG-hg-unsplash.jpg" alt="" />
                     Enums is a very common concept. It exists, of course, in Java and C# as well. However, Java and C# enums do not have the same capabilities. This blog post aims to show their differences. In Java, enums are very much like regular classes: they&hellip;
                 ]]>
             </summary>
         <content type="html">
             <![CDATA[
-                    <img src="https://rnowif.github.io/rnowif.github.io/media/posts/4/christopher-burns-Kj2SaNHG-hg-unsplash.jpg" alt="" />
+                    <img src="https://rnowif.github.io/media/posts/4/christopher-burns-Kj2SaNHG-hg-unsplash.jpg" alt="" />
                 <p>Enums is a very common concept. It exists, of course, in Java and C# as well. However, Java and C# enums do not have the same capabilities. This blog post aims to show their differences.</p>
 <!-- more -->
 
@@ -207,21 +207,21 @@ int code = (int) status;</code></pre>
         <author>
             <name>Renaud Humbert-Labeaumaz</name>
         </author>
-        <link href="https://rnowif.github.io/rnowif.github.io/c-for-the-java-developer-lambdas.html"/>
-        <id>https://rnowif.github.io/rnowif.github.io/c-for-the-java-developer-lambdas.html</id>
+        <link href="https://rnowif.github.io/c-for-the-java-developer-lambdas.html"/>
+        <id>https://rnowif.github.io/c-for-the-java-developer-lambdas.html</id>
             <category term="java"/>
             <category term="csharp"/>
 
         <updated>2021-01-11T09:35:06+13:00</updated>
             <summary>
                 <![CDATA[
-                        <img src="https://rnowif.github.io/rnowif.github.io/media/posts/3/lucas-benjamin-wQLAGv4_OYs-unsplash.jpg" alt="" />
+                        <img src="https://rnowif.github.io/media/posts/3/lucas-benjamin-wQLAGv4_OYs-unsplash.jpg" alt="" />
                     A lambda is an anonymous function that can be assigned to a variable, passed as an argument of a method and invoked at any time. We can find lambdas in Java and C# and the resulting code is very similar. A Java lambda can be&hellip;
                 ]]>
             </summary>
         <content type="html">
             <![CDATA[
-                    <img src="https://rnowif.github.io/rnowif.github.io/media/posts/3/lucas-benjamin-wQLAGv4_OYs-unsplash.jpg" alt="" />
+                    <img src="https://rnowif.github.io/media/posts/3/lucas-benjamin-wQLAGv4_OYs-unsplash.jpg" alt="" />
                 <p>A lambda is an anonymous function that can be assigned to a variable, passed as an argument of a method and invoked at any time. We can find lambdas in Java and C# and the resulting code is very similar. A Java lambda can be viewed as the implementation of an interface with only one method (called a <em>functional interface</em>) whereas a C# lambda can be assigned to a <code>delegate</code>, which is a concept that does not exist in Java. This article aims to explain how lambdas work in Java and C# and highlight their differences and similarities.</p>
 <!-- more -->
 
@@ -306,21 +306,21 @@ print(&quot;Hello World!&quot;);</code></pre><p>Like in Java, some delegates are
         <author>
             <name>Renaud Humbert-Labeaumaz</name>
         </author>
-        <link href="https://rnowif.github.io/rnowif.github.io/c-for-the-java-developer-extension-methods.html"/>
-        <id>https://rnowif.github.io/rnowif.github.io/c-for-the-java-developer-extension-methods.html</id>
+        <link href="https://rnowif.github.io/c-for-the-java-developer-extension-methods.html"/>
+        <id>https://rnowif.github.io/c-for-the-java-developer-extension-methods.html</id>
             <category term="java"/>
             <category term="csharp"/>
 
         <updated>2021-01-11T10:05:52+13:00</updated>
             <summary>
                 <![CDATA[
-                        <img src="https://rnowif.github.io/rnowif.github.io/media/posts/6/jeeray-tang-eY2xn59BSyM-unsplash.jpg" alt="" />
+                        <img src="https://rnowif.github.io/media/posts/6/jeeray-tang-eY2xn59BSyM-unsplash.jpg" alt="" />
                     After spending several years crafting Java code, I recently decided to dive back into C# and share what I learn in the process. In this blog post, I will talk about extensions methods. This concept, which exists in some JVM languages (like Kotlin) but not&hellip;
                 ]]>
             </summary>
         <content type="html">
             <![CDATA[
-                    <img src="https://rnowif.github.io/rnowif.github.io/media/posts/6/jeeray-tang-eY2xn59BSyM-unsplash.jpg" alt="" />
+                    <img src="https://rnowif.github.io/media/posts/6/jeeray-tang-eY2xn59BSyM-unsplash.jpg" alt="" />
                 <p>After spending several years crafting Java code, I recently decided to dive back into C# and share what I learn in the process. In this blog post, I will talk about extensions methods. This concept, which exists in some JVM languages (like <a href="https://kotlinlang.org/docs/reference/extensions.html">Kotlin</a>) but not in Java, let the developer add methods to a class without touching its code (hence the name <em>extension</em> methods).</p>
 <!-- more -->
 
@@ -355,21 +355,21 @@ string capitalizedWord = word.Capitalize();</code></pre>
         <author>
             <name>Renaud Humbert-Labeaumaz</name>
         </author>
-        <link href="https://rnowif.github.io/rnowif.github.io/c-for-the-java-developer-generics.html"/>
-        <id>https://rnowif.github.io/rnowif.github.io/c-for-the-java-developer-generics.html</id>
+        <link href="https://rnowif.github.io/c-for-the-java-developer-generics.html"/>
+        <id>https://rnowif.github.io/c-for-the-java-developer-generics.html</id>
             <category term="java"/>
             <category term="csharp"/>
 
         <updated>2021-01-11T09:40:26+13:00</updated>
             <summary>
                 <![CDATA[
-                        <img src="https://rnowif.github.io/rnowif.github.io/media/posts/5/dna-1811955_1920.jpg" alt="" />
+                        <img src="https://rnowif.github.io/media/posts/5/dna-1811955_1920.jpg" alt="" />
                     In my journey into the C# world, I wanted to talk about generics. Generics exist in both Java and C# languages but their implementation is very different. This blog post aims to explain the differences and the similarities between the two. TL;DR Java generics is&hellip;
                 ]]>
             </summary>
         <content type="html">
             <![CDATA[
-                    <img src="https://rnowif.github.io/rnowif.github.io/media/posts/5/dna-1811955_1920.jpg" alt="" />
+                    <img src="https://rnowif.github.io/media/posts/5/dna-1811955_1920.jpg" alt="" />
                 <p>In my journey into the C# world, I wanted to talk about generics. Generics exist in both Java and C# languages but their implementation is <em>very</em> different. This blog post aims to explain the differences and the similarities between the two.<br>TL;DR Java generics is a lie, C# generics is not.</p>
 <!-- more -->
 
@@ -446,20 +446,20 @@ public IEnumerable&lt;T&gt; FilterObjectsOfType&lt;T&gt;(IEnumerable&lt;object&g
         <author>
             <name>Renaud Humbert-Labeaumaz</name>
         </author>
-        <link href="https://rnowif.github.io/rnowif.github.io/what-is-a-volatile-variable-in-java.html"/>
-        <id>https://rnowif.github.io/rnowif.github.io/what-is-a-volatile-variable-in-java.html</id>
+        <link href="https://rnowif.github.io/what-is-a-volatile-variable-in-java.html"/>
+        <id>https://rnowif.github.io/what-is-a-volatile-variable-in-java.html</id>
             <category term="java"/>
 
         <updated>2021-01-11T11:22:38+13:00</updated>
             <summary>
                 <![CDATA[
-                        <img src="https://rnowif.github.io/rnowif.github.io/media/posts/7/federico-fioravanti-RSA3pnGxPTQ-unsplash.jpg" alt="" />
+                        <img src="https://rnowif.github.io/media/posts/7/federico-fioravanti-RSA3pnGxPTQ-unsplash.jpg" alt="" />
                     The volatile keyword is one of the less known and less understood keyword of the Java language. The goal of this article is to explain what it is and when to use it. In order to understand the value of volatile, one must first understand&hellip;
                 ]]>
             </summary>
         <content type="html">
             <![CDATA[
-                    <img src="https://rnowif.github.io/rnowif.github.io/media/posts/7/federico-fioravanti-RSA3pnGxPTQ-unsplash.jpg" alt="" />
+                    <img src="https://rnowif.github.io/media/posts/7/federico-fioravanti-RSA3pnGxPTQ-unsplash.jpg" alt="" />
                 <p>The <code>volatile</code> keyword is one of the less known and less understood keyword of the Java language. The goal of this article is to explain what it is and when to use it.</p>
 <!-- more -->
 
@@ -519,21 +519,21 @@ Finally, there is the main memory (also called RAM). All CPUs can access this me
         <author>
             <name>Renaud Humbert-Labeaumaz</name>
         </author>
-        <link href="https://rnowif.github.io/rnowif.github.io/intersection-types-in-java.html"/>
-        <id>https://rnowif.github.io/rnowif.github.io/intersection-types-in-java.html</id>
+        <link href="https://rnowif.github.io/intersection-types-in-java.html"/>
+        <id>https://rnowif.github.io/intersection-types-in-java.html</id>
             <category term="java"/>
             <category term="design"/>
 
         <updated>2021-01-11T11:25:04+13:00</updated>
             <summary>
                 <![CDATA[
-                        <img src="https://rnowif.github.io/rnowif.github.io/media/posts/8/denys-nevozhai-7nrsVjvALnA-unsplash.jpg" alt="" />
+                        <img src="https://rnowif.github.io/media/posts/8/denys-nevozhai-7nrsVjvALnA-unsplash.jpg" alt="" />
                     This blog post aims to explain how we can use intersection types in Java when we expect an object that implements different interfaces. The Interface Segregation Principle (ISP) stipulates that interfaces should contain the least amount of methods as possible. In other terms, a client&hellip;
                 ]]>
             </summary>
         <content type="html">
             <![CDATA[
-                    <img src="https://rnowif.github.io/rnowif.github.io/media/posts/8/denys-nevozhai-7nrsVjvALnA-unsplash.jpg" alt="" />
+                    <img src="https://rnowif.github.io/media/posts/8/denys-nevozhai-7nrsVjvALnA-unsplash.jpg" alt="" />
                 <p>This blog post aims to explain how we can use intersection types in Java when we expect an object that implements different interfaces.</p>
 <!-- more -->
 
@@ -605,21 +605,21 @@ void readAndWrite(FileWriter writer) {
         <author>
             <name>Renaud Humbert-Labeaumaz</name>
         </author>
-        <link href="https://rnowif.github.io/rnowif.github.io/controlling-the-time-in-java.html"/>
-        <id>https://rnowif.github.io/rnowif.github.io/controlling-the-time-in-java.html</id>
+        <link href="https://rnowif.github.io/controlling-the-time-in-java.html"/>
+        <id>https://rnowif.github.io/controlling-the-time-in-java.html</id>
             <category term="testing"/>
             <category term="java"/>
 
         <updated>2021-01-11T11:29:57+13:00</updated>
             <summary>
                 <![CDATA[
-                        <img src="https://rnowif.github.io/rnowif.github.io/media/posts/9/fabrizio-verrecchia-Ai7sV3SSMIQ-unsplash.jpg" alt="" />
+                        <img src="https://rnowif.github.io/media/posts/9/fabrizio-verrecchia-Ai7sV3SSMIQ-unsplash.jpg" alt="" />
                     Time is a tricky thing, it’s always changing. Having such moving parts into the codebase can be very annoying when testing, for instance. In this article, we will see how to control the time in Java. Let’s take a simple example of a pizza delivery&hellip;
                 ]]>
             </summary>
         <content type="html">
             <![CDATA[
-                    <img src="https://rnowif.github.io/rnowif.github.io/media/posts/9/fabrizio-verrecchia-Ai7sV3SSMIQ-unsplash.jpg" alt="" />
+                    <img src="https://rnowif.github.io/media/posts/9/fabrizio-verrecchia-Ai7sV3SSMIQ-unsplash.jpg" alt="" />
                 <p>Time is a tricky thing, it’s always changing. Having such moving parts into the codebase can be very annoying when testing, for instance. In this article, we will see how to control the time in Java.</p>
 <!-- more -->
 
@@ -720,20 +720,20 @@ public class ClockConfig {
         <author>
             <name>Renaud Humbert-Labeaumaz</name>
         </author>
-        <link href="https://rnowif.github.io/rnowif.github.io/keep-calm-and-use-git-reflog.html"/>
-        <id>https://rnowif.github.io/rnowif.github.io/keep-calm-and-use-git-reflog.html</id>
+        <link href="https://rnowif.github.io/keep-calm-and-use-git-reflog.html"/>
+        <id>https://rnowif.github.io/keep-calm-and-use-git-reflog.html</id>
             <category term="git"/>
 
         <updated>2021-01-11T11:33:38+13:00</updated>
             <summary>
                 <![CDATA[
-                        <img src="https://rnowif.github.io/rnowif.github.io/media/posts/10/hulki-okan-tabak-T9HLn-g6Cmo-unsplash.jpg" alt="" />
+                        <img src="https://rnowif.github.io/media/posts/10/hulki-okan-tabak-T9HLn-g6Cmo-unsplash.jpg" alt="" />
                     Git is a very powerful tool but it takes a fair amount of time to masterize it. It can be particuarly easy to break or lose things when you amend some commits, resolve conflicts or force push your changes. In this blog post, I will&hellip;
                 ]]>
             </summary>
         <content type="html">
             <![CDATA[
-                    <img src="https://rnowif.github.io/rnowif.github.io/media/posts/10/hulki-okan-tabak-T9HLn-g6Cmo-unsplash.jpg" alt="" />
+                    <img src="https://rnowif.github.io/media/posts/10/hulki-okan-tabak-T9HLn-g6Cmo-unsplash.jpg" alt="" />
                 <p>Git is a very powerful tool but it takes a fair amount of time to masterize it. It can be particuarly easy to break or lose things when you amend some commits, resolve conflicts or force push your changes.</p>
 <p>In this blog post, I will show you how to use the <code>git reflog</code> command to retrieve commits that you thought you lost forever.</p>
 <!-- more -->
