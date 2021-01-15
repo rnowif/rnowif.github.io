@@ -3,12 +3,76 @@
     <title>A Software Gardener</title>
     <link href="https://rnowif.github.io/feed.xml" rel="self" />
     <link href="https://rnowif.github.io" />
-    <updated>2021-01-11T11:33:38+13:00</updated>
+    <updated>2021-01-16T06:29:22+13:00</updated>
     <author>
         <name>Renaud Humbert-Labeaumaz</name>
     </author>
     <id>https://rnowif.github.io</id>
 
+    <entry>
+        <title>Purposeful Testing or Why the Test Pyramid is a Scam</title>
+        <author>
+            <name>Renaud Humbert-Labeaumaz</name>
+        </author>
+        <link href="https://rnowif.github.io/purposeful-testing-or-why-the-test-pyramid-is-a-scam.html"/>
+        <id>https://rnowif.github.io/purposeful-testing-or-why-the-test-pyramid-is-a-scam.html</id>
+            <category term="testing"/>
+
+        <updated>2021-01-16T06:29:22+13:00</updated>
+            <summary>
+                <![CDATA[
+                        <img src="https://rnowif.github.io/media/posts/12/anthony-mcgee-iOZOydyIw3M-unsplash.jpg" alt="" />
+                    The test pyramid is a metaphor that illustrates the “ideal” weight of tests depending on their granularity. It goes from the unit tests at the base - which are more numerous - to the end-to-end tests at the top - which should be scarce. It&hellip;
+                ]]>
+            </summary>
+        <content type="html">
+            <![CDATA[
+                    <img src="https://rnowif.github.io/media/posts/12/anthony-mcgee-iOZOydyIw3M-unsplash.jpg" alt="" />
+                <p>The <a href="https://martinfowler.com/articles/practical-test-pyramid.html">test pyramid</a> is a metaphor that illustrates the “ideal” weight of tests depending on their granularity. It goes from the unit tests at the base - which are more numerous - to the end-to-end tests at the top - which should be scarce.</p>
+<p>It is often opposed to the “ice cream cone” <a href="https://abstracta.us/blog/test-automation/best-testing-practices-agile-teams-automation-pyramid/">anti-pattern</a> that features a few unit tests and a massive amount of manual end-to-end tests.</p>
+<p>I think that this pattern is a good heurisitic - especially when your test suite looks like an ice cream cone - but it also yields a lot of sterile discussions, such as</p>
+<ul>
+<li>What is a unit test? What is an integration test?</li>
+<li>Do I test private methods?</li>
+<li>Do I test pass-through methods? Do I test getters, setters?</li>
+<li>What is an ideal code coverage? Should I go to jail if I have less than 100% coverage?</li>
+</ul>
+<h2 id="purposeful-testing">Purposeful Testing</h2>
+<p>Behind this click-bait title, I would like to go <em>beyond</em> the test pyramid and start reasoning in terms of <em>purpose</em> rather than <em>form</em>. 
+Whenever I write tests, I make sure to ask myself the following questions, to be sure that my tests are fit-for-purpose:</p>
+<ul>
+<li><strong>What is the purpose of this test?</strong> <em>Knowing what the test is supposed to check prevents me from trying to test too much and ultimately write something that will hurt me in the long run. Let’s remember that tests are similar to production code in the way that they require maintenance.</em></li>
+<li><strong>What would make this test fail?</strong> <em>By trying to answer this question, I often realise that this test’s failure does not mean that it has achieved its purpose. Worse, sometimes the test simply <em>cannot</em> fail. Tests are not supposed to check everything, they should keep passing when something that they are not supposed to cover is broken.</em></li>
+<li><strong>Will it impede our ability to refactor?</strong> <em>A test can too heavily coupled with the production code can actually be counterproductive. Indeed, it would incentivise not to refactor and hurt maintainability. Typical symptoms of a test that impedes refactoring is the overuse of mocks.</em></li>
+</ul>
+<h2 id="test-taxonomy">Test Taxonomy</h2>
+<p>By applying this reasoning, I identified the following types of test (this list is far from complete and will get updated in the future).</p>
+<h3 id="support-tests">Support Tests</h3>
+<p>These tests aim to <em>support</em> the development of an algorithm or standalone class (i.e. no dependency). You would typically start with a very straightforward code and incrementaly add test cases to increase the scope and add new edge cases. I have found this type of test to be the perfect use case for <a href="https://www.youtube.com/watch?v=RWYvBNX9wcU">Test Driven Development</a>.</p>
+<h3 id="plumbing-tests">Plumbing Tests</h3>
+<p><em>Plumbing</em> tests ensure that several classes, external libraries, or third-party services work together as intended. In the test pyramid, these tests fall into the generally accepted definition of <em>integration tests</em>. The goal here is not to check all the edge cases but rather the assumptions made about the various APIs.</p>
+<h3 id="use-case-tests">Use Case Tests</h3>
+<p>These end-to-end tests make sure that a user scenario works as intended. <em>Use case tests</em> typically include roundtrips to the database and virtually no mocks. They are good candidates for <a href="https://www.youtube.com/watch?v=Qe84jbwyZ3U&amp;t=47s">double-loop TDD</a>.</p>
+<h3 id="orchestration-tests">Orchestration Tests</h3>
+<p>Unless use case tests, <em>orchestration</em> tests rely heavily on mocks. They are relevant for pieces of code that will just enforce a workflow and call other dependencies. For instance, you may want to check that the code triggers a method call when some conditions are met. I usually make sure to keep these tests are extremely lean as too many mocks can seriously impede refactoring.</p>
+<h3 id="developer-experience-dx-tests">Developer Experience (DX) Tests</h3>
+<p>As I always say to everyone willing to listen to me, tests do not only check your code’s behaviour, but also its design and usability. <em>DX</em> tests are extremely valuable when you are creating an API and want to verify that its usage makes sense and is straightforward. These tests should treat the API as a black box and make absolutely no assumptions about its internal behaviour.</p>
+<h3 id="crutch-tests">Crutch Tests</h3>
+<p>The <em>crutch</em> tests are particularly useful when you want to tackle messy legacy code and refactor it. The objective is to extract a chunk of code, test it from the outside and rewrite it entirely without touching the tests at all. We can readily notice that these tests will typically include roundtrips to the database. The main challenge of these tests is to find <a href="https://biratkirat.medium.com/working-effectively-with-legacy-code-changing-software-part-1-chapter-4-b997b78fc0a2">seams</a> to separate the code you want to rewrite from the rest. These seams are good place to put mocks in place and inject data in the system under test. Once the refactoring is over, some of these tests might become redundant and can be removed.</p>
+<h3 id="confidence-tests">Confidence Tests</h3>
+<p>We often read that we should not test third-party libraries because they are already massively tested and it’s not our place to do it. While this may be true, I think it can be useful to test our <em>assumptions</em> about the libraries we use. The <em>confidence</em> tests make sure you understand how an external library works an ensure that it won’t change its behaviour under you (e.g. during an upgrade). By the way, these tests can also apply to your own legacy code!</p>
+<h3 id="documentation-tests">Documentation Tests</h3>
+<p>We should always thrive to write the simplest code possible. However, it is sometimes not possible and we have to slip some hacky hacks into the codebase (e.g. optimisations, libraries or language shortcomings, etc.). In this case, I like to write <em>documentation</em> tests that will explain the code’s behaviour so that other developers (or me, in a week) can understand what it does.</p>
+<h3 id="scratch-tests">Scratch Tests</h3>
+<p><em>Scratch</em> tests are short-lived tests that I sometimes use to check an assumption I have about the code. I use these tests to ask questions to the code and see what is its answer. I typically delete them as soon as my assumption is verified or discarded.</p>
+<h2 id="takeaways">Takeaways</h2>
+<p>For years, I struggled with the granularity of my tests because I had the feeling to write some tests for the sake of it. Also, I was refraining myself from writing other tests that would have been useful, because they did not fit in any of the boxes that the test pyramid provides.</p>
+<p>When I started to step aside this test pyramid, I realised that I did not care that much about the number of tests or the balance between unit, integration and end-to-end tests. I just write them when I feel that they could bring something to the table.</p>
+<p>Also, I noticed that I am using way less mocks than I used to because I don’t force myself to write “pure” unit tests anymore. As a consequence, I feel that tests enable refactoring instead of impeding it.</p>
+
+            ]]>
+        </content>
+    </entry>
     <entry>
         <title>The Blind Golden Master</title>
         <author>
@@ -711,97 +775,6 @@ public class ClockConfig {
 }</code></pre>
 <h2 id="conclusion">Conclusion</h2>
 <p>I used to think that the time, like random, was a very difficult thing to test. With the Java 8 Date API, it becomes trivial. You just have to acknowledge the dependency you have on the clock and treat it like any other dependency. Now, I almost never use a method of the Date API without passing a clock as a parameter. This allows me to control the time throughout the application very easily (in unit, integration or functional tests).</p>
-
-            ]]>
-        </content>
-    </entry>
-    <entry>
-        <title>Keep Calm and Use Git Reflog</title>
-        <author>
-            <name>Renaud Humbert-Labeaumaz</name>
-        </author>
-        <link href="https://rnowif.github.io/keep-calm-and-use-git-reflog.html"/>
-        <id>https://rnowif.github.io/keep-calm-and-use-git-reflog.html</id>
-            <category term="git"/>
-
-        <updated>2021-01-11T11:33:38+13:00</updated>
-            <summary>
-                <![CDATA[
-                        <img src="https://rnowif.github.io/media/posts/10/hulki-okan-tabak-T9HLn-g6Cmo-unsplash.jpg" alt="" />
-                    Git is a very powerful tool but it takes a fair amount of time to masterize it. It can be particuarly easy to break or lose things when you amend some commits, resolve conflicts or force push your changes. In this blog post, I will&hellip;
-                ]]>
-            </summary>
-        <content type="html">
-            <![CDATA[
-                    <img src="https://rnowif.github.io/media/posts/10/hulki-okan-tabak-T9HLn-g6Cmo-unsplash.jpg" alt="" />
-                <p>Git is a very powerful tool but it takes a fair amount of time to masterize it. It can be particuarly easy to break or lose things when you amend some commits, resolve conflicts or force push your changes.</p>
-<p>In this blog post, I will show you how to use the <code>git reflog</code> command to retrieve commits that you thought you lost forever.</p>
-<!-- more -->
-
-<h2 id="retrieve-an-amended-commit">Retrieve an amended commit</h2>
-<p>The first use case I will show is when you amend a commit:</p>
-<pre><code>$ git init
-$ echo &quot;Hello&quot; &gt; hello.txt
-$ git add hello.txt &amp;&amp; git commit -m &quot;Add hello&quot;
-$ echo &quot;Hello!&quot; &gt; hello.txt
-$ git add hello.txt &amp;&amp; git commit --amend</code></pre><p>If you think that the first commit is lost, read on.</p>
-<p>The <code>git reflog</code> command allows you to display all git commands that you performed on your repo and, most importantly, the associated commit hash. In fact, these commits are not lost, they are just not in the tree anymore but you can still check them out, cherry-pick them or do whatever you need to do.</p>
-<pre><code>$ git reflog
-3e6e190 HEAD@{0}: commit (amend): Add hello
-51587bc HEAD@{1}: commit (initial): Add hello
-$ git diff 51587bc 3e6e190
-diff --git a/hello.txt b/hello.txt
-index e965047..10ddd6d 100644
---- a/hello.txt
-+++ b/hello.txt
-@@ -1 +1 @@
--Hello
-+Hello!</code></pre><h2 id="recover-an-erroneous-merge">Recover an erroneous merge</h2>
-<p>The second scenario is when you rebase a branch on an other one and you have conflicts.</p>
-<pre><code>$ git checkout -b develop
-$ git checkout master
-$ echo &quot;Hello, world!&quot; &gt; hello.txt
-$ git add hello.txt &amp;&amp; git commit -m &quot;Hello, world!&quot;
-$ git checkout develop
-$ echo &quot;Hello, you!&quot; &gt; hello.txt
-$ git add hello.txt &amp;&amp; git commit -m &quot;Hello, you!&quot;
-$ echo &quot;World!&quot; &gt; world.txt
-$ git add world.txt &amp;&amp; git commit -m &quot;Add world.txt&quot;</code></pre><p>This is the resulting tree (note that the hello.txt has been modified on the two branches and there is a conflict):</p>
-<pre><code>* a5c7ca5 - (HEAD -&gt; develop) Hello, you!
-| * 4d016c5 - (master) Hello, world!
-|/  
-* 3e6e190 - Add hello</code></pre><p>Unsurprisingly, the <code>reflog</code> looks like this:</p>
-<pre><code>$ git reflog
-21c2ce2 HEAD@{0}: commit: Add world.txt
-a5c7ca5 HEAD@{1}: commit: Hello, you!
-3e6e190 HEAD@{2}: checkout: moving from master to develop
-4d016c5 HEAD@{3}: commit: Hello, world!
-3e6e190 HEAD@{4}: checkout: moving from develop to master
-3e6e190 HEAD@{5}: checkout: moving from master to develop
-3e6e190 HEAD@{6}: commit (amend): Add hello
-51587bc HEAD@{7}: commit (initial): Add hello</code></pre><p>Now we rebase <code>develop</code> on <code>master</code> and we resolve the conflicts.</p>
-<pre><code>$ git rebase master
-// ... resolve merge conflicts</code></pre><p>The thing is that we made a mistake and took the wrong version of <code>hello.txt</code>. Since we did a rebase, we rewrote the history and we could think we lost the “good” version of <code>hello.txt</code>.</p>
-<p>{% img /images/git-reflog.png %}</p>
-<p>In fact, the <code>reflog</code> will display a line for each commit you rebased so it is very easy to pick the one where you made a mistake.</p>
-<pre><code>$ git reflog
-ae9d1d8 HEAD@{0}: rebase finished: returning to refs/heads/develop
-ae9d1d8 HEAD@{1}: rebase: Add world.txt
-4d016c5 HEAD@{2}: rebase: checkout master
-21c2ce2 HEAD@{3}: commit: Add world.txt
-a5c7ca5 HEAD@{4}: commit: Hello, you!
-$ git diff 21c2ce2
-diff --git c/hello.txt w/hello.txt
-index 624d875..af5626b 100644
---- c/hello.txt
-+++ w/hello.txt
-@@ -1 +1 @@
--Hello, you!
-+Hello, world!</code></pre><p>If you want to go back and fix it, you just have to check the commit out, delete the current <code>develop</code> branch (since it is not in the correct state) and create a new <code>develop</code> branch based upon the right commit.</p>
-<pre><code>$ git checkout 21c2ce2
-$ git branch -D develop
-$ git checkout -b develop</code></pre><h2 id="conclusion">Conclusion</h2>
-<p>I think you got the idea, Git keeps everything that you committed. Thus, don’t panic if you find yourself in a situation where you erase a previous commit and think about the <code>git reflog</code> command to dive into your history and look for the information you thought you lost!</p>
 
             ]]>
         </content>
