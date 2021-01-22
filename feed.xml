@@ -3,12 +3,52 @@
     <title>A Software Gardener</title>
     <link href="https://rnowif.github.io/feed.xml" rel="self" />
     <link href="https://rnowif.github.io" />
-    <updated>2021-01-16T08:13:33+13:00</updated>
+    <updated>2021-01-23T12:17:11+13:00</updated>
     <author>
         <name>Renaud Humbert-Labeaumaz</name>
     </author>
     <id>https://rnowif.github.io</id>
 
+    <entry>
+        <title>In Defence of the Liskov Substitution Principle</title>
+        <author>
+            <name>Renaud Humbert-Labeaumaz</name>
+        </author>
+        <link href="https://rnowif.github.io/rehabilitating-the-liskov-substitution-principle.html"/>
+        <id>https://rnowif.github.io/rehabilitating-the-liskov-substitution-principle.html</id>
+            <category term="design"/>
+
+        <updated>2021-01-23T12:17:11+13:00</updated>
+            <summary>
+                <![CDATA[
+                        <img src="https://rnowif.github.io/media/posts/14/stormtrooper-1343877_1920.jpg" alt="" />
+                    The Liskov Substitution Principle (LSP for short) is the “L” in the SOLID principles. Even though many people know this principle, at least by name, I cannot keep track of how many times it is skipped when the SOLID principles are being explained. Most of&hellip;
+                ]]>
+            </summary>
+        <content type="html">
+            <![CDATA[
+                    <img src="https://rnowif.github.io/media/posts/14/stormtrooper-1343877_1920.jpg" alt="" />
+                <p>The Liskov Substitution Principle (LSP for short) is the “L” in the <a href="https://en.wikipedia.org/wiki/SOLID">SOLID</a> principles. Even though many people know this principle, at least by name, I cannot keep track of how many times it is skipped when the SOLID principles are being explained. Most of the time, the explanation of the LSP is reduced to stating its name and showing a half-assed example to which nobody can relate!</p>
+<h2 id="perceived-complexity">Perceived Complexity</h2>
+<p>I think that the LSP is often overlooked because of its perceived complexity, starting with its name. Indeed, this principle is named after the computer science pioneer and Turing Award winner <a href="https://en.wikipedia.org/wiki/Barbara_Liskov">Barbara Liskov</a>, who laid the base for our understanding of modules and abstraction. As such, it is the only SOLID principle that has not a self-explaining name and I believe that it could throw people off.</p>
+<p>Funnily enough, Barbara Liskov explained - during a <a href="https://youtu.be/oeknOtb0gzQ?t=1339">conference talk</a> she gave in 2020 - that someone asked her once what this principle meant and she was pretty confused because she wasn’t even aware of its existence.</p>
+<div class="post__iframe"><iframe loading="lazy" width="560" height="315" src="https://www.youtube.com/embed/oeknOtb0gzQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+
+<h2 id="its-just-semantics">It’s Just Semantics</h2>
+<p>In a nutshell, the LSP means that there must be a <strong><em>semantic</em></strong> relationship between a class and a subclass - sharing methods with the same name is not enough. For instace, stacks and queues may both have <code>add</code> or <code>remove</code> methods but these classes should not inherit from each other as these methods mean completely different things: a stack would work in a <em>last-in-first-out</em> (LIFO) fashion as opposed to <em>first-in-first-out</em> (FIFO) for a queue. Consequently, if your program is built using a queue and you <em>substitute</em> it for a stack, it might not work anymore.</p>
+<h2 id="temper-your-expectations">Temper your Expectations</h2>
+<p>The idea behind the LSP revolves around expectations and contracts. If I use a stack, I <em>expect</em> it to be a LIFO and would not be happy if it turned out to be a FIFO instead. Any subtype of the stack should respect this <em>contract</em>.</p>
+<p>We can therefore infer that a subtype violates the LSP if</p>
+<ul>
+<li>it expects more than what the contract states (e.g. non-null input, specific concrete type for an interface, etc.)</li>
+<li>it does less than what the contract requires (e.g. return null when it shouldn’t, does not return a list in a proper order)</li>
+<li>it does not implement a method defined in the base class or interface.</li>
+</ul>
+<p>The LSP also means that the client code should not rely on something that is not in the contract.</p>
+
+            ]]>
+        </content>
+    </entry>
     <entry>
         <title>Purposeful Testing or Why the Test Pyramid is a Scam</title>
         <author>
@@ -659,121 +699,6 @@ void readAndWrite(FileWriter writer) {
 <p>The <code>&amp;</code> symbol means that the method expects a type <code>T</code> that implements both the <code>FileReader</code> and <code>FileWriter</code> interfaces.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>The intersection types is a feature that is not widely used in Java. However, it is very powerful as it allows to write very tiny interfaces and combine them on demand. From now on, there is no excuse to write big fat interfaces that have dozens of totally unrelated methods!</p>
-
-            ]]>
-        </content>
-    </entry>
-    <entry>
-        <title>Controlling the Time in Java</title>
-        <author>
-            <name>Renaud Humbert-Labeaumaz</name>
-        </author>
-        <link href="https://rnowif.github.io/controlling-the-time-in-java.html"/>
-        <id>https://rnowif.github.io/controlling-the-time-in-java.html</id>
-            <category term="testing"/>
-            <category term="java"/>
-
-        <updated>2021-01-11T11:29:57+13:00</updated>
-            <summary>
-                <![CDATA[
-                        <img src="https://rnowif.github.io/media/posts/9/fabrizio-verrecchia-Ai7sV3SSMIQ-unsplash.jpg" alt="" />
-                    Time is a tricky thing, it’s always changing. Having such moving parts into the codebase can be very annoying when testing, for instance. In this article, we will see how to control the time in Java. Let’s take a simple example of a pizza delivery&hellip;
-                ]]>
-            </summary>
-        <content type="html">
-            <![CDATA[
-                    <img src="https://rnowif.github.io/media/posts/9/fabrizio-verrecchia-Ai7sV3SSMIQ-unsplash.jpg" alt="" />
-                <p>Time is a tricky thing, it’s always changing. Having such moving parts into the codebase can be very annoying when testing, for instance. In this article, we will see how to control the time in Java.</p>
-<!-- more -->
-
-<p>Let’s take a simple example of a pizza delivery service. Its policy is that pizzas should be delivered in 10 minutes. When the customer ask for a delivery, the delivery time is automatically calculated by the system based on this policy.</p>
-<pre><code class="language-java">public class DeliveryPolicy {
-  public Delivery createDelivery(Pizza pizza) {
-    LocalDateTime deliveryTime = LocalDateTime.now().plus(10, ChronoUnit.MINUTES);
-
-    return new Delivery(pizza, deliveryTime);
-  }
-}</code></pre>
-<h2 id="how-do-we-test-it">How Do we Test it?</h2>
-<p>Since the time always changes we cannot test this method very precisely without changing its code. We could test that the delivery time is <em>approximatively</em> 10 minutes in the future but like all fuzzy tests, it could fail from time to time depending on the context on which it is executed.</p>
-<h2 id="make-dependency-visible">Make Dependency Visible</h2>
-<p>The reason why this code is so difficult to test is that it has a hidden dependency: the clock. Since Java 8, all <code>now</code> methods of the Date API take a clock as an argument. We can then make this dependency visible.</p>
-<pre><code class="language-java">public class DeliveryPolicy {
-
-  private final Clock clock;
-
-  public DeliveryPolicy() {
-    this.clock = Clock.systemDefaultZone();
-  }
-
-  public Delivery createDelivery(Pizza pizza) {
-    LocalDateTime deliveryTime = LocalDateTime.now(clock).plus(10, ChronoUnit.MINUTES);
-
-    return new Delivery(pizza, deliveryTime);
-  }
-}</code></pre>
-<h2 id="dependency-injection-to-the-rescue">Dependency Injection to the Rescue</h2>
-<p>Now that the dependency is out there, we can inject it in the constructor, like any other dependency, and testing this method becomes trivial.</p>
-<pre><code class="language-java">public class DeliveryPolicy {
-
-  private final Clock clock;
-
-  public DeliveryPolicy(ClockProvider clockProvider) {
-    this.clock = clockProvider.get();
-  }
-
-  public Delivery createDelivery(Pizza pizza) {
-    LocalDateTime deliveryTime = LocalDateTime.now(clock).plus(10, ChronoUnit.MINUTES);
-
-    return new Delivery(pizza, deliveryTime);
-  }
-}</code></pre>
-<pre><code class="language-java">public class DeliveryPolicyTest {
-
-  @Test
-  public void should_schedule_delivery_ten_minutes_later() {
-    ZonedDateTime now = ZonedDateTime.of(LocalDateTime.of(2017, 7, 18, 0, 0, 0), ZoneId.of(&quot;+01&quot;));
-    DeliveryPolicy policy = new DeliveryPolicy(() -&gt; Clock.fixed(now.toInstant(), now.getZone()));
-
-    Delivery delivery = policy.createDelivery(new Pizza());
-
-    LocalDateTime tenMinutesLater = LocalDateTime.of(2017, 7, 18, 0, 10, 0);
-    assertThat(delivery.getDeliveryTime()).isEqualTo(tenMinutesLater);
-  }
-}</code></pre>
-<h2 id="usage-with-spring-framework-and-spring-boot">Usage with Spring Framework and Spring Boot</h2>
-<p>If you use Spring Framework in your application, you can create a <code>ClockProvider</code> bean that will give the default Clock. Moreover, if you use Spring Boot, it allows you to mock this bean very easily in integration tests with the <code>@MockBean</code> annotation.</p>
-<pre><code class="language-java">@RunWith(SpringRunner.class)
-@SpringBootTest
-public class DeliveryPolicyIT {
-
-  @MockBean
-  private ClockProvider clockProvider;
-
-  @Autowired
-  private DeliveryPolicy policy;
-
-  @Test
-  public void should_schedule_delivery_ten_minutes_later() {
-    ZonedDateTime now = ZonedDateTime.of(LocalDateTime.of(2017, 7, 18, 0, 0, 0), ZoneId.of(&quot;+01&quot;));
-    Mockito.when(clockProvider.get()).thenReturn(Clock.fixed(now.toInstant(), now.getZone()));
-
-    Delivery delivery = policy.createDelivery(new Pizza());
-
-    LocalDateTime tenMinutesLater = LocalDateTime.of(2017, 7, 18, 0, 10, 0);
-    assertThat(delivery.getDeliveryTime()).isEqualTo(tenMinutesLater);
-  }
-}</code></pre>
-<pre><code class="language-java">@Configuration
-public class ClockConfig {
-
-  @Bean
-  public ClockProvider clockProvider() {
-    return () -&gt; Clock.systemDefaultZone();
-  }
-}</code></pre>
-<h2 id="conclusion">Conclusion</h2>
-<p>I used to think that the time, like random, was a very difficult thing to test. With the Java 8 Date API, it becomes trivial. You just have to acknowledge the dependency you have on the clock and treat it like any other dependency. Now, I almost never use a method of the Date API without passing a clock as a parameter. This allows me to control the time throughout the application very easily (in unit, integration or functional tests).</p>
 
             ]]>
         </content>
