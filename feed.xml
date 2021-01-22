@@ -3,7 +3,7 @@
     <title>A Software Gardener</title>
     <link href="https://rnowif.github.io/feed.xml" rel="self" />
     <link href="https://rnowif.github.io" />
-    <updated>2021-01-23T12:17:11+13:00</updated>
+    <updated>2021-01-23T12:19:32+13:00</updated>
     <author>
         <name>Renaud Humbert-Labeaumaz</name>
     </author>
@@ -18,7 +18,7 @@
         <id>https://rnowif.github.io/rehabilitating-the-liskov-substitution-principle.html</id>
             <category term="design"/>
 
-        <updated>2021-01-23T12:17:11+13:00</updated>
+        <updated>2021-01-23T12:19:32+13:00</updated>
             <summary>
                 <![CDATA[
                         <img src="https://rnowif.github.io/media/posts/14/stormtrooper-1343877_1920.jpg" alt="" />
@@ -35,13 +35,13 @@
 <div class="post__iframe"><iframe loading="lazy" width="560" height="315" src="https://www.youtube.com/embed/oeknOtb0gzQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
 
 <h2 id="its-just-semantics">It’s Just Semantics</h2>
-<p>In a nutshell, the LSP means that there must be a <strong><em>semantic</em></strong> relationship between a class and a subclass - sharing methods with the same name is not enough. For instace, stacks and queues may both have <code>add</code> or <code>remove</code> methods but these classes should not inherit from each other as these methods mean completely different things: a stack would work in a <em>last-in-first-out</em> (LIFO) fashion as opposed to <em>first-in-first-out</em> (FIFO) for a queue. Consequently, if your program is built using a queue and you <em>substitute</em> it for a stack, it might not work anymore.</p>
+<p>In a nutshell, the LSP means that there must be a <strong><em>semantic</em></strong> relationship between a class and a subclass - sharing methods with the same name is not enough. For instance, stacks and queues may both have <code>add</code> or <code>remove</code> methods but these classes should not inherit from each other as these methods mean completely different things: a stack would work in a <em>last-in-first-out</em> (LIFO) fashion as opposed to <em>first-in-first-out</em> (FIFO) for a queue. Consequently, if your program is built using a queue and you <em>substitute</em> it for a stack, it might not work anymore.</p>
 <h2 id="temper-your-expectations">Temper your Expectations</h2>
 <p>The idea behind the LSP revolves around expectations and contracts. If I use a stack, I <em>expect</em> it to be a LIFO and would not be happy if it turned out to be a FIFO instead. Any subtype of the stack should respect this <em>contract</em>.</p>
 <p>We can therefore infer that a subtype violates the LSP if</p>
 <ul>
 <li>it expects more than what the contract states (e.g. non-null input, specific concrete type for an interface, etc.)</li>
-<li>it does less than what the contract requires (e.g. return null when it shouldn’t, does not return a list in a proper order)</li>
+<li>it does less than what the contract requires (e.g. return null when it shouldn’t, does not return a list in proper order)</li>
 <li>it does not implement a method defined in the base class or interface.</li>
 </ul>
 <p>The LSP also means that the client code should not rely on something that is not in the contract.</p>
