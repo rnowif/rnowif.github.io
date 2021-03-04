@@ -3,12 +3,160 @@
     <title>A Software Gardener</title>
     <link href="https://rnowif.github.io/feed.xml" rel="self" />
     <link href="https://rnowif.github.io" />
-    <updated>2021-01-23T12:19:32+13:00</updated>
+    <updated>2021-03-05T06:34:41+13:00</updated>
     <author>
         <name>Renaud Humbert-Labeaumaz</name>
     </author>
     <id>https://rnowif.github.io</id>
 
+    <entry>
+        <title>Untangling Legacy Code with Events</title>
+        <author>
+            <name>Renaud Humbert-Labeaumaz</name>
+        </author>
+        <link href="https://rnowif.github.io/untangling-legacy-code-with-events.html"/>
+        <id>https://rnowif.github.io/untangling-legacy-code-with-events.html</id>
+            <category term="refactoring"/>
+            <category term="design"/>
+            <category term="architecture"/>
+
+        <updated>2021-03-05T06:34:41+13:00</updated>
+            <summary>
+                <![CDATA[
+                        <img src="https://rnowif.github.io/media/posts/16/paper-1565157_1920.jpg" alt="" />
+                    <p>Legacy code is typically characterised by long methods that mix up different concepts and levels of abstraction.
+In this context, it can be hard to extract behaviour into proper modules because it feels like everything depends on everything and it would require a massive overhaul of the entire codebase.
+This article proposes to use events to reduce coupling between legacy code and other properly-bounded modules to either extract existing code or add new one.</p>
+
+                ]]>
+            </summary>
+        <content type="html">
+            <![CDATA[
+                    <img src="https://rnowif.github.io/media/posts/16/paper-1565157_1920.jpg" alt="" />
+                <p>Legacy code is typically characterised by long methods that mix up different concepts and levels of abstraction.
+In this context, it can be hard to extract behaviour into proper modules because it feels like everything depends on everything and it would require a massive overhaul of the entire codebase.
+This article proposes to use events to reduce coupling between legacy code and other properly-bounded modules to either extract existing code or add new one.</p>
+<hr id="read-more" />
+
+<p>Let’s say you have a typical <code>UserManager</code> class which features a <code>CreateUser</code> method.
+Once a user is created, we might want to send a welcome email to set the password and clear a cache somewhere.
+The initial code looks something like this:</p>
+<pre><code class="language-csharp">public class UserManager {
+    // ...
+
+    public async Task CreateUser(string username) {
+        var user = new User { Username = username };
+        int userId = await _repository.Add(user);
+        await ClearCacheForUser(userId);
+        await SendWelcomeEmail(userId, user);
+    }
+
+    private async Task ClearCacheForUser(int userId) {
+        // ...
+    }
+
+    private async Task SendWelcomeEmail(int userId, User user) {
+        // ...
+    }
+}</code></pre>
+<p>The first step could be to extract <code>ClearCacheForUser</code> and <code>SendWelcomeEmail</code> to dedicated classes. However, it would not fundamentally change the issue. Indeed, the <code>CreateUser</code> method would still need to know to clear the cache, send the email, and all the other processes that need to happen upon user creation. Thus, the coupling is still there.</p>
+<p>A simple solution to remove this coupling is to use events. Before you raise an eyebrow, it’s important to note that using events does not necessarily mean implementing a full-blown event-sourcing architecture with an event store and whatnot (keep in mind that event-driven and event-sourcing are <a href="https://martinfowler.com/articles/201701-event-driven.html">two separate things</a>). 
+As a matter of fact, starting with a very straightforward in-process event bus can go a long way to help untangle your legacy code.</p>
+<p>The following code is a complete implementation of an in-process event bus that you can use.</p>
+<pre><code class="language-csharp">public abstract class MyEvent {}
+
+public interface IEventBus
+{
+    Task Publish&lt;T&gt;(T @event) where T : EpEvent;
+
+    void Subscribe&lt;T&gt;(IEventHandler&lt;T&gt; handler) where T : MyEvent;
+}
+
+public interface IEventHandler&lt;in T&gt; where T : MyEvent
+{
+    Task Handle(T @event);
+}
+
+public class InProcessEventBus : IEventBus
+{
+    private readonly IDictionary&lt;Type, IList&lt;object&gt;&gt; _subscriptions = new Dictionary&lt;Type, IList&lt;object&gt;&gt;();
+
+    public async Task Publish&lt;T&gt;(T @event) where T : MyEvent
+    {
+        if (_subscriptions.TryGetValue(typeof(T), out IList&lt;object&gt; handlers))
+        {
+            foreach (IEventHandler&lt;T&gt; handler in handlers.OfType&lt;IEventHandler&lt;T&gt;&gt;())
+            {
+                    await handler.Handle(@event);
+            }
+        }
+    }
+
+    public void Subscribe&lt;T&gt;(IEventHandler&lt;T&gt; handler) where T : MyEvent
+    {
+        if (!_subscriptions.ContainsKey(typeof(T)))
+        {
+            _subscriptions[typeof(T)] = new List&lt;object&gt;();
+        }
+
+        _subscriptions[typeof(T)].Add(handler);
+    }
+}</code></pre>
+<p>Using this minimalist event bus, we can re-write our <code>CreateUser</code> method like this:</p>
+<pre><code class="language-csharp">public class UserCreatedEvent : MyEvent {
+    public int UserId { get; }
+    public string Username { get; }
+
+    public UserCreatedEvent(int userId, string username) {
+        UserId = userId;
+        Username = username;
+    }
+}
+
+public class UserManager {
+    // ...
+    private readonly IEventBus _eventBus;
+
+    public async Task CreateUser(string username) {
+        var user = new User { Username = username };
+        int userId = await _repository.Add(user);
+
+        await _eventBus.Publish(new UserCreatedEvent(userId, username));
+    }
+}</code></pre>
+<p>Now, we can create handlers to process this <code>UserCreatedEvent</code> and do what needs to be done.</p>
+<pre><code class="language-csharp">public class ClearUserCacheEventHandler : IEventHandler&lt;UserCreatedEvent&gt;
+{
+    public ClearUserCacheEventHandler(IEventBus eventBus)
+    {
+        eventBus.Subscribe(this);
+    }
+
+    public Task Handle(UserCreatedEvent @event)
+    {
+        // Clear cache
+    }
+}
+
+public class SendWelcomeEmailEventHandler : IEventHandler&lt;UserCreatedEvent&gt;
+{
+    public SendWelcomeEmailEventHandler(IEventBus eventBus)
+    {
+        eventBus.Subscribe(this);
+    }
+
+    public Task Handle(UserCreatedEvent @event)
+    {
+        // Send welcome email
+    }
+}</code></pre>
+<p>This event bus will not help with scalability as the events are processed synchronously and the <code>Publish</code> method only returns once all the events are processed. 
+However, it can dramatically reduce coupling within the codebase and can act as a stepping stone to make your architecture more <em>event-driven</em>. 
+Moreover, if you need to go further (e.g. two services communicating through events), you already have the abstractions in place to switch the <code>InProcessEventBus</code> for an out-of-process implementation.</p>
+
+            ]]>
+        </content>
+    </entry>
     <entry>
         <title>In Defence of the Liskov Substitution Principle</title>
         <author>
@@ -613,92 +761,6 @@ Finally, there is the main memory (also called RAM). All CPUs can access this me
 <p> A volatile variable is guaranteed to have its last version always available from every CPUs. It is typically used for flags that are modified by a thread and read by another one (like the <code>running</code> boolean in the previous snippet). Globally, you may use a <code>volatile</code> variable if the variable may be accessed by several threads and you don’t need to perform a sequence of operations in an atomic manner (you should not increment a <code>volatile</code> variable for instance). If you need to do so, you should consider using a synchronization mechanism.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>The <code>volatile</code> keyword is seldomly used, maybe because messing with threads is frowned upon in a JEE (or Spring) application, but it can be very useful to know it and understand its usage. Indeed, it could make your code safer and prevent you from writing algorithms that rely on locks and synchronization where it’s not really needed.</p>
-
-            ]]>
-        </content>
-    </entry>
-    <entry>
-        <title>Intersection Types in Java</title>
-        <author>
-            <name>Renaud Humbert-Labeaumaz</name>
-        </author>
-        <link href="https://rnowif.github.io/intersection-types-in-java.html"/>
-        <id>https://rnowif.github.io/intersection-types-in-java.html</id>
-            <category term="java"/>
-            <category term="design"/>
-
-        <updated>2021-01-11T11:25:04+13:00</updated>
-            <summary>
-                <![CDATA[
-                        <img src="https://rnowif.github.io/media/posts/8/denys-nevozhai-7nrsVjvALnA-unsplash.jpg" alt="" />
-                    This blog post aims to explain how we can use intersection types in Java when we expect an object that implements different interfaces. The Interface Segregation Principle (ISP) stipulates that interfaces should contain the least amount of methods as possible. In other terms, a client&hellip;
-                ]]>
-            </summary>
-        <content type="html">
-            <![CDATA[
-                    <img src="https://rnowif.github.io/media/posts/8/denys-nevozhai-7nrsVjvALnA-unsplash.jpg" alt="" />
-                <p>This blog post aims to explain how we can use intersection types in Java when we expect an object that implements different interfaces.</p>
-<!-- more -->
-
-<h2 id="interface-segregation-principle">Interface Segregation Principle</h2>
-<p>The Interface Segregation Principle (ISP) stipulates that interfaces should contain the least amount of methods as possible. In other terms, a client of an interface should use all the methods of this interface.</p>
-<p>For instance, let’s take this <code>File</code> interface:</p>
-<pre><code class="language-java">interface File {
-    Collection&lt;String&gt; readLines();
-    void write(String line);
-    void deleteFile();
-}
-
-class LocalFile implements File {
-    // ...
-}</code></pre>
-<p>As a client of this interface, it is highly unlikely that I need all methods. I may want to just read the file and, in that case, I certainely don’t want to be able to delete it. If I just want to delete the file, I probably don’t want to read all its lines.</p>
-<p>In order to avoid that, it is a good idea to split this interface in 3 seperate ones:</p>
-<pre><code class="language-java">interface FileReader {
-    Collection&lt;String&gt; readLines();
-}
-
-interface FileWriter {
-    void write(String line);
-}
-
-interface FileDestroyer {
-    void deleteFile();
-}
-
-class LocalFile implements FileReader, FileWriter, FileDestroyer {
-    // The concrete class can implement all 3 interfaces
-    // ...
-}</code></pre>
-<p>Now, a client can just require the interface it needs and ignore the rest. </p>
-<h2 id="interface-combination">Interface Combination</h2>
-<p>Writing tiny interfaces is good to enforce ISP and lower the coupling of the code. However, what happens when a client wants to read a file <em>and</em> write at the same time?</p>
-<p>The first two snippets won’t compile because one of the interface is not implemented:</p>
-<pre><code class="language-java">void readAndWrite(FileReader reader) {
-    reader.readLines();
-    reader.write(&quot;Hello&quot;); // That won&#39;t compile since reader does not implement FileWriter
-}
-
-void readAndWrite(FileWriter writer) {
-    reader.readLines(); // That won&#39;t compile since writer does not implement FileReader
-    reader.write(&quot;Hello&quot;);
-}</code></pre>
-<p>As an alternative, it is possible to pass an instance of <code>LocalFile</code> but it introduces a high coupling between the method and the LocalFile concrete class, defeating the whole purpose of interfaces entirely.</p>
-<pre><code class="language-java">void readAndWrite(LocalFile file) {
-    file.readLines();
-    file.write(&quot;Hello&quot;);
-    // That will compile but it is not recommended
-}</code></pre>
-<p>Since Java 1.5, and the introduction of generics, a feature, known as Intersection Types, allows to combine interfaces in this kind of situation.</p>
-<h2 id="intersection-types-to-the-rescue">Intersection Types to the Rescue</h2>
-<p>The following code uses intersection types to solve the issue of needing an object that implements several interfaces:</p>
-<pre><code class="language-java">&lt;T extends FileReader &amp; FileWriter&gt; void readAndWrite(T file) {
-    file.readLines();
-    file.write(&quot;Hello&quot;);    
-}</code></pre>
-<p>The <code>&amp;</code> symbol means that the method expects a type <code>T</code> that implements both the <code>FileReader</code> and <code>FileWriter</code> interfaces.</p>
-<h2 id="conclusion">Conclusion</h2>
-<p>The intersection types is a feature that is not widely used in Java. However, it is very powerful as it allows to write very tiny interfaces and combine them on demand. From now on, there is no excuse to write big fat interfaces that have dozens of totally unrelated methods!</p>
 
             ]]>
         </content>

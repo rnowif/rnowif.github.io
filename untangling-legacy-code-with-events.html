@@ -1,0 +1,151 @@
+<!DOCTYPE html><html lang="en-ca"><head><script async src="https://www.googletagmanager.com/gtag/js?id=UA-127790305-1"></script><script>window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'UA-127790305-1');</script><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Untangling Legacy Code with Events - A Software Gardener</title><meta name="description" content="Legacy code is typically characterised by long methods that mix up different concepts and levels of abstraction.In this context, it can be hard to extract behaviour into proper modules because it feels like everything depends on everything and it would require a massive overhaul of the entire codebase.This article proposes to use events to reduce coupling between legacy code and other properly-bounded modules to either extract existing code or add new one."><meta name="generator" content="Publii Open-Source CMS for Static Site"><link rel="canonical" href="https://rnowif.github.io/untangling-legacy-code-with-events.html"><link rel="alternate" type="application/atom+xml" href="https://rnowif.github.io/feed.xml"><link rel="alternate" type="application/json" href="https://rnowif.github.io/feed.json"><meta property="og:title" content="Untangling Legacy Code with Events"><meta property="og:image" content="https://rnowif.github.io/media/posts/16/paper-1565157_1920.jpg"><meta property="og:site_name" content="A Software Gardener"><meta property="og:description" content="Legacy code is typically characterised by long methods that mix up different concepts and levels of abstraction.In this context, it can be hard to extract behaviour into proper modules because it feels like everything depends on everything and it would require a massive overhaul of the entire codebase.This article proposes to use events to reduce coupling between legacy code and other properly-bounded modules to either extract existing code or add new one."><meta property="og:url" content="https://rnowif.github.io/untangling-legacy-code-with-events.html"><meta property="og:type" content="article"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@rnowif"><meta name="twitter:title" content="Untangling Legacy Code with Events"><meta name="twitter:description" content="Legacy code is typically characterised by long methods that mix up different concepts and levels of abstraction.In this context, it can be hard to extract behaviour into proper modules because it feels like everything depends on everything and it would require a massive overhaul of the entire codebase.This article proposes to use events to reduce coupling between legacy code and other properly-bounded modules to either extract existing code or add new one."><meta name="twitter:image" content="https://rnowif.github.io/media/posts/16/paper-1565157_1920.jpg"><style>:root{--body-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--heading-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--logo-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--menu-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"}</style><link rel="stylesheet" href="https://rnowif.github.io/assets/css/style.css?v=1d9126d5c592483966037cf187b30969"><link rel="stylesheet" href="https://rnowif.github.io/assets/css/prism.css?v=a9de1acca9c12df6ea0d5f1bf5f5f4c7"><script type="application/ld+json">{"@context":"http://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://rnowif.github.io/untangling-legacy-code-with-events.html"},"headline":"Untangling Legacy Code with Events","datePublished":"2021-03-05T05:37","dateModified":"2021-03-05T06:34","image":{"@type":"ImageObject","url":"https://rnowif.github.io/media/posts/16/paper-1565157_1920.jpg","height":1207,"width":1920},"description":"<p>Legacy code is typically characterised by long methods that mix up different concepts and levels of abstraction.\nIn this context, it can be hard to extract behaviour into proper modules because it feels like everything depends on everything and it would require a massive overhaul of the entire codebase.\nThis article proposes to use events to reduce coupling between legacy code and other properly-bounded modules to either extract existing code or add new one.</p>\n","author":{"@type":"Person","name":"Renaud Humbert-Labeaumaz"},"publisher":{"@type":"Organization","name":"Renaud Humbert-Labeaumaz"}}</script></head><body><div class="site-container"><header class="top" id="js-header"><a class="logo" href="https://rnowif.github.io/">A Software Gardener</a></header><main><article class="post"><div class="hero"><figure class="hero__image hero__image--overlay"><img src="https://rnowif.github.io/media/posts/16/paper-1565157_1920.jpg" srcset="https://rnowif.github.io/media/posts/16/responsive/paper-1565157_1920-xs.jpg 300w, https://rnowif.github.io/media/posts/16/responsive/paper-1565157_1920-sm.jpg 480w, https://rnowif.github.io/media/posts/16/responsive/paper-1565157_1920-md.jpg 768w, https://rnowif.github.io/media/posts/16/responsive/paper-1565157_1920-lg.jpg 1024w, https://rnowif.github.io/media/posts/16/responsive/paper-1565157_1920-xl.jpg 1360w, https://rnowif.github.io/media/posts/16/responsive/paper-1565157_1920-2xl.jpg 1600w" sizes="(max-width: 1600px) 100vw, 1600px" loading="eager" height="1207" width="1920" alt=""><figcaption>https://pixabay.com/users/steenjepsen-1490089</figcaption></figure><header class="hero__content"><div class="wrapper"><div class="post__meta"><time datetime="2021-03-05T05:37">March 5, 2021</time></div><h1>Untangling Legacy Code with Events</h1><div class="post__meta post__meta--author"><img src="https://rnowif.github.io/media/website/renaud.png" loading="eager" alt="Renaud Humbert-Labeaumaz" class="post__author-thumb"> <a href="https://rnowif.github.io/authors/renaud-humbert-labeaumaz/" class="feed__author invert">Renaud Humbert-Labeaumaz</a></div></div></header></div><div class="wrapper post__entry"><p>Legacy code is typically characterised by long methods that mix up different concepts and levels of abstraction. In this context, it can be hard to extract behaviour into proper modules because it feels like everything depends on everything and it would require a massive overhaul of the entire codebase. This article proposes to use events to reduce coupling between legacy code and other properly-bounded modules to either extract existing code or add new one.</p><hr id="read-more"><p>Let’s say you have a typical <code>UserManager</code> class which features a <code>CreateUser</code> method. Once a user is created, we might want to send a welcome email to set the password and clear a cache somewhere. The initial code looks something like this:</p><pre><code class="language-csharp">public class UserManager {
+    // ...
+
+    public async Task CreateUser(string username) {
+        var user = new User { Username = username };
+        int userId = await _repository.Add(user);
+        await ClearCacheForUser(userId);
+        await SendWelcomeEmail(userId, user);
+    }
+
+    private async Task ClearCacheForUser(int userId) {
+        // ...
+    }
+
+    private async Task SendWelcomeEmail(int userId, User user) {
+        // ...
+    }
+}</code></pre><p>The first step could be to extract <code>ClearCacheForUser</code> and <code>SendWelcomeEmail</code> to dedicated classes. However, it would not fundamentally change the issue. Indeed, the <code>CreateUser</code> method would still need to know to clear the cache, send the email, and all the other processes that need to happen upon user creation. Thus, the coupling is still there.</p><p>A simple solution to remove this coupling is to use events. Before you raise an eyebrow, it’s important to note that using events does not necessarily mean implementing a full-blown event-sourcing architecture with an event store and whatnot (keep in mind that event-driven and event-sourcing are <a href="https://martinfowler.com/articles/201701-event-driven.html">two separate things</a>). As a matter of fact, starting with a very straightforward in-process event bus can go a long way to help untangle your legacy code.</p><p>The following code is a complete implementation of an in-process event bus that you can use.</p><pre><code class="language-csharp">public abstract class MyEvent {}
+
+public interface IEventBus
+{
+    Task Publish&lt;T&gt;(T @event) where T : EpEvent;
+
+    void Subscribe&lt;T&gt;(IEventHandler&lt;T&gt; handler) where T : MyEvent;
+}
+
+public interface IEventHandler&lt;in T&gt; where T : MyEvent
+{
+    Task Handle(T @event);
+}
+
+public class InProcessEventBus : IEventBus
+{
+    private readonly IDictionary&lt;Type, IList&lt;object&gt;&gt; _subscriptions = new Dictionary&lt;Type, IList&lt;object&gt;&gt;();
+
+    public async Task Publish&lt;T&gt;(T @event) where T : MyEvent
+    {
+        if (_subscriptions.TryGetValue(typeof(T), out IList&lt;object&gt; handlers))
+        {
+            foreach (IEventHandler&lt;T&gt; handler in handlers.OfType&lt;IEventHandler&lt;T&gt;&gt;())
+            {
+                    await handler.Handle(@event);
+            }
+        }
+    }
+
+    public void Subscribe&lt;T&gt;(IEventHandler&lt;T&gt; handler) where T : MyEvent
+    {
+        if (!_subscriptions.ContainsKey(typeof(T)))
+        {
+            _subscriptions[typeof(T)] = new List&lt;object&gt;();
+        }
+
+        _subscriptions[typeof(T)].Add(handler);
+    }
+}</code></pre><p>Using this minimalist event bus, we can re-write our <code>CreateUser</code> method like this:</p><pre><code class="language-csharp">public class UserCreatedEvent : MyEvent {
+    public int UserId { get; }
+    public string Username { get; }
+
+    public UserCreatedEvent(int userId, string username) {
+        UserId = userId;
+        Username = username;
+    }
+}
+
+public class UserManager {
+    // ...
+    private readonly IEventBus _eventBus;
+
+    public async Task CreateUser(string username) {
+        var user = new User { Username = username };
+        int userId = await _repository.Add(user);
+
+        await _eventBus.Publish(new UserCreatedEvent(userId, username));
+    }
+}</code></pre><p>Now, we can create handlers to process this <code>UserCreatedEvent</code> and do what needs to be done.</p><pre><code class="language-csharp">public class ClearUserCacheEventHandler : IEventHandler&lt;UserCreatedEvent&gt;
+{
+    public ClearUserCacheEventHandler(IEventBus eventBus)
+    {
+        eventBus.Subscribe(this);
+    }
+
+    public Task Handle(UserCreatedEvent @event)
+    {
+        // Clear cache
+    }
+}
+
+public class SendWelcomeEmailEventHandler : IEventHandler&lt;UserCreatedEvent&gt;
+{
+    public SendWelcomeEmailEventHandler(IEventBus eventBus)
+    {
+        eventBus.Subscribe(this);
+    }
+
+    public Task Handle(UserCreatedEvent @event)
+    {
+        // Send welcome email
+    }
+}</code></pre><p>This event bus will not help with scalability as the events are processed synchronously and the <code>Publish</code> method only returns once all the events are processed. However, it can dramatically reduce coupling within the codebase and can act as a stepping stone to make your architecture more <em>event-driven</em>. Moreover, if you need to go further (e.g. two services communicating through events), you already have the abstractions in place to switch the <code>InProcessEventBus</code> for an out-of-process implementation.</p></div><footer class="wrapper post__footer"><p class="post__last-updated">This article was updated on March 5, 2021</p><ul class="post__tag"><li><a href="https://rnowif.github.io/tags/architecture/">architecture</a></li><li><a href="https://rnowif.github.io/tags/design/">design</a></li><li><a href="https://rnowif.github.io/tags/refactoring/">refactoring</a></li></ul><div class="post__share"><a href="https://twitter.com/share?url=https%3A%2F%2Frnowif.github.io%2Funtangling-legacy-code-with-events.html&amp;via=%40rnowif&amp;text=Untangling%20Legacy%20Code%20with%20Events" class="js-share twitter" rel="nofollow noopener noreferrer"><svg class="icon" aria-hidden="true" focusable="false"><use xlink:href="https://rnowif.github.io/assets/svg/svg-map.svg#twitter"/></svg> <span>Twitter</span> </a><a href="http://www.linkedin.com/shareArticle?url=https%3A%2F%2Frnowif.github.io%2Funtangling-legacy-code-with-events.html&amp;title=Untangling%20Legacy%20Code%20with%20Events" class="js-share linkedin" rel="nofollow noopener noreferrer"><svg class="icon" aria-hidden="true" focusable="false"><use xlink:href="https://rnowif.github.io/assets/svg/svg-map.svg#linkedin"/></svg> <span>LinkedIn</span></a></div><div class="post__bio bio"><img class="bio__avatar" src="https://rnowif.github.io/media/website/renaud.png" loading="lazy" alt="Renaud Humbert-Labeaumaz"><div class="bio__info"><h3 class="bio__name"><a href="https://rnowif.github.io/authors/renaud-humbert-labeaumaz/" class="invert" rel="author">Renaud Humbert-Labeaumaz</a></h3></div></div></footer></article><nav class="post__nav"><div class="post__nav-inner"><div class="post__nav-prev"><svg width="1.041em" height="0.416em" aria-hidden="true"><use xlink:href="https://rnowif.github.io/assets/svg/svg-map.svg#arrow-prev"/></svg> <a href="https://rnowif.github.io/rehabilitating-the-liskov-substitution-principle.html" class="invert post__nav-link" rel="prev"><span>Previous</span> In Defence of the Liskov Substitution Principle</a></div></div></nav><div class="post__comments"><div class="wrapper"><h2 class="h5">Comments</h2><div id="disqus_thread"></div><script>var disqus_config = function () {
+                       this.page.url = 'https://rnowif.github.io/untangling-legacy-code-with-events.html';
+               		this.page.identifier = '16';
+                   };
+               
+                   var disqus_loaded = false;
+               
+                   function publiiLoadDisqus() {
+                       if(disqus_loaded) {
+                           return false;
+                       }
+               
+                       var top = document.getElementById('disqus_thread').offsetTop;
+               
+                       if (!disqus_loaded && (window.scrollY || window.pageYOffset) + window.innerHeight > top) {
+                           disqus_loaded = true;
+               
+                           (function () {
+                               var d = document, s = d.createElement('script');
+                               s.src = 'https://'+'rnowif'.trim()+'.disqus.com/embed.js';
+                               s.setAttribute('data-timestamp', +new Date());
+                               (d.head || d.body).appendChild(s);
+                           })();
+                       }
+                   }
+               
+                   publiiLoadDisqus();
+               
+                   window.onscroll = function() {
+                       publiiLoadDisqus();
+                   };</script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="nofollow noopener noreferrer">comments powered by Disqus.</a></noscript></div></div></main><footer class="footer"><div class="footer__social"><a href="https://twitter.com/rnowif" aria-label="Twitter"><svg><use xlink:href="https://rnowif.github.io/assets/svg/svg-map.svg#twitter"/></svg></a></div><div class="footer__copyright"><p>Renaud Humbert-Labeaumaz - 2021</p></div><button class="footer__bttop js-footer__bttop" aria-label="Back to top"><svg><title>Back to top</title><use xlink:href="https://rnowif.github.io/assets/svg/svg-map.svg#toparrow"/></svg></button></footer></div><script>window.publiiThemeMenuConfig = {    
+        mobileMenuMode: 'sidebar',
+        animationSpeed: 300,
+        submenuWidth: 'auto',
+        doubleClickTime: 500,
+        mobileMenuExpandableSubmenus: true, 
+        relatedContainerForOverlayMenuSelector: '.top',
+   };</script><script defer="defer" src="https://rnowif.github.io/assets/js/scripts.min.js?v=f4c4d35432d0e17d212f2fae4e0f8247"></script><script>var images = document.querySelectorAll('img[loading]');
+
+        for (var i = 0; i < images.length; i++) {
+            if (images[i].complete) {
+                images[i].classList.add('is-loaded');
+            } else {
+                images[i].addEventListener('load', function () {
+                    this.classList.add('is-loaded');
+                }, false);
+            }
+        }</script><script defer="defer" src="https://rnowif.github.io/assets/js/prism.js?v=8a3c962ef789bf5cc575d02e6a4bd4b2"></script></body></html>
