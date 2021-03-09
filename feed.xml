@@ -3,7 +3,7 @@
     <title>A Software Gardener</title>
     <link href="https://rnowif.github.io/feed.xml" rel="self" />
     <link href="https://rnowif.github.io" />
-    <updated>2021-03-10T04:39:19+13:00</updated>
+    <updated>2021-03-10T04:43:25+13:00</updated>
     <author>
         <name>Renaud Humbert-Labeaumaz</name>
     </author>
@@ -20,7 +20,7 @@
             <category term="legacy"/>
             <category term="design"/>
 
-        <updated>2021-03-10T04:39:19+13:00</updated>
+        <updated>2021-03-10T04:43:25+13:00</updated>
             <summary>
                 <![CDATA[
                         <img src="https://rnowif.github.io/media/posts/17/xavi-cabrera-kn-UmDZQDjM-unsplash.jpg" alt="" />
@@ -57,8 +57,8 @@ This article aims to present a simple, yet extremely effective, solution to this
 <p>Now, this method presents some issues.</p>
 <ul>
 <li><strong>Illegal combinations.</strong> In the best-case scenario, providing the method with an <code>expiryDate</code> and a <code>maxAllowedClicks</code> throws an exception or silently gives priority to one of these fields. In the worst-case scenario, it generates an unpredictable behaviour because the case is not handled. Also, what if both are <code>null</code>?</li>
-<li><strong>Poor expressivity.</strong> The business rules expressed above are far from obvious. Maybe they are documented in the method’s comment but people do not always read documentation and it can become stale very quickly if we forget to update it (maybe that is the reason why people tend to overlook documentation?). Also, there is absolutely nothing preventing the developer to pass illegal or useless combinations.</li>
-<li><strong>Error prone.</strong>  Finally, did you notice the 3 consecutive booleans in the method’s signature? How easy would it be to invert two of them by mistake? The method might work exactly as expected and be thoroughly unit tested, you will still have bugs if you don’t use it properly. </li>
+<li><strong>Poor expressivity.</strong> The business rules expressed above are far from obvious. Maybe they are documented in the method’s comment but people do not always read the documentation and it can become stale very quickly if we forget to update it (maybe that is the reason why people tend to overlook documentation?). Also, there is absolutely nothing preventing the developer to pass illegal or useless combinations.</li>
+<li><strong>Error-prone.</strong>  Finally, did you notice the 3 consecutive booleans in the method’s signature? How easy would it be to invert two of them by mistake? The method might work exactly as expected and be thoroughly unit tested, you will still have bugs if you don’t use it properly. </li>
 </ul>
 <p>The first iteration would be to use a parameter object for this method.</p>
 <pre><code class="language-csharp">public class LoginLinkConfig 
@@ -173,11 +173,11 @@ var expiringLinkConfig = LoginLinkConfig.ExpiringLink(DateTime.Now.AddDays(1))
     .Build();</code></pre>
 <p>This new instantiation process is arguably more verbose, but provides the following benefits:</p>
 <ul>
-<li><strong>More meaningful.</strong> By using a builder, the developer can express what they mean and there is no doubt about it. Since, we got rid of the ambiguity, errors are less likely to occur.</li>
+<li><strong>More meaningful.</strong> By using a builder, the developer can express what they mean and there is no doubt about it. Since we got rid of the ambiguity, errors are less likely to occur.</li>
 <li><strong>No illegal state.</strong> As illustrated in the example, there is absolutely no way of representing an illegal state. For instance, if you want to create an expiring link, you cannot also set the <code>_maxAllowedClicks</code>. Otherwise, when you provide a <code>redirectUrl</code>, the <code>_redirectToHomePage</code> is automatically set to <code>false</code> and cannot be changed.</li>
-<li><strong>Simpler implementation.</strong> Finally, since the business rules described above are embedded into the object creation, there is no need to enforce them into the method - which allow for simpler implementation. Also, other methods can us the config object, knowing that the business rules will always be applied.</li>
+<li><strong>Simpler implementation.</strong> Finally, since the business rules described above are embedded into the object creation, there is no need to enforce them into the method - which allows for simpler implementation. Also, other methods can use the config object, knowing that the business rules will always be applied.</li>
 </ul>
-<p>Overall, using a parameter object in conjuction with the builder pattern is a very simple way to bring back meaning into your legacy codebase and reduce bugs by making illegal states litteraly impossible to represent.</p>
+<p>Overall, using a parameter object in conjunction with the builder pattern is a very simple way to bring back meaning into your legacy codebase and reduce bugs by making illegal states literally impossible to represent.</p>
 
             ]]>
         </content>
