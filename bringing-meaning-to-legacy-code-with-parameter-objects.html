@@ -1,0 +1,162 @@
+<!DOCTYPE html><html lang="en-ca"><head><script async src="https://www.googletagmanager.com/gtag/js?id=UA-127790305-1"></script><script>window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'UA-127790305-1');</script><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bringing Meaning to Legacy Code with Parameter Objects - A Software Gardener</title><meta name="description" content="Most of the legacy codebases I have work on suffered from primitive obsession. One of the symptoms is the presence of methods with a swarm of int, string or bool parameters.These methods harm the codebase as they are hard to understand and easy to misuse - which could cause bugs and headaches.This article aims to present a simple, yet extremely effective, solution to this issue through the use of parameter objects."><meta name="generator" content="Publii Open-Source CMS for Static Site"><link rel="canonical" href="https://rnowif.github.io/bringing-meaning-to-legacy-code-with-parameter-objects.html"><link rel="alternate" type="application/atom+xml" href="https://rnowif.github.io/feed.xml"><link rel="alternate" type="application/json" href="https://rnowif.github.io/feed.json"><meta property="og:title" content="Bringing Meaning to Legacy Code with Parameter Objects"><meta property="og:image" content="https://rnowif.github.io/media/posts/17/xavi-cabrera-kn-UmDZQDjM-unsplash.jpg"><meta property="og:site_name" content="A Software Gardener"><meta property="og:description" content="Most of the legacy codebases I have work on suffered from primitive obsession. One of the symptoms is the presence of methods with a swarm of int, string or bool parameters.These methods harm the codebase as they are hard to understand and easy to misuse - which could cause bugs and headaches.This article aims to present a simple, yet extremely effective, solution to this issue through the use of parameter objects."><meta property="og:url" content="https://rnowif.github.io/bringing-meaning-to-legacy-code-with-parameter-objects.html"><meta property="og:type" content="article"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@rnowif"><meta name="twitter:title" content="Bringing Meaning to Legacy Code with Parameter Objects"><meta name="twitter:description" content="Most of the legacy codebases I have work on suffered from primitive obsession. One of the symptoms is the presence of methods with a swarm of int, string or bool parameters.These methods harm the codebase as they are hard to understand and easy to misuse - which could cause bugs and headaches.This article aims to present a simple, yet extremely effective, solution to this issue through the use of parameter objects."><meta name="twitter:image" content="https://rnowif.github.io/media/posts/17/xavi-cabrera-kn-UmDZQDjM-unsplash.jpg"><style>:root{--body-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--heading-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--logo-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--menu-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"}</style><link rel="stylesheet" href="https://rnowif.github.io/assets/css/style.css?v=1d9126d5c592483966037cf187b30969"><link rel="stylesheet" href="https://rnowif.github.io/assets/css/prism.css?v=a9de1acca9c12df6ea0d5f1bf5f5f4c7"><script type="application/ld+json">{"@context":"http://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://rnowif.github.io/bringing-meaning-to-legacy-code-with-parameter-objects.html"},"headline":"Bringing Meaning to Legacy Code with Parameter Objects","datePublished":"2021-03-09T17:39","dateModified":"2021-03-10T04:39","image":{"@type":"ImageObject","url":"https://rnowif.github.io/media/posts/17/xavi-cabrera-kn-UmDZQDjM-unsplash.jpg","height":3699,"width":5548},"description":"<p>Most of the legacy codebases I have work on suffered from primitive obsession. One of the symptoms is the presence of methods with a swarm of <code>int</code>, <code>string</code> or <code>bool</code> parameters.\nThese methods harm the codebase as they are hard to understand and easy to misuse - which could cause bugs and headaches.\nThis article aims to present a simple, yet extremely effective, solution to this issue through the use of parameter objects.</p>\n","author":{"@type":"Person","name":"Renaud Humbert-Labeaumaz"},"publisher":{"@type":"Organization","name":"Renaud Humbert-Labeaumaz"}}</script></head><body><div class="site-container"><header class="top" id="js-header"><a class="logo" href="https://rnowif.github.io/">A Software Gardener</a></header><main><article class="post"><div class="hero"><figure class="hero__image hero__image--overlay"><img src="https://rnowif.github.io/media/posts/17/xavi-cabrera-kn-UmDZQDjM-unsplash.jpg" srcset="https://rnowif.github.io/media/posts/17/responsive/xavi-cabrera-kn-UmDZQDjM-unsplash-xs.jpg 300w, https://rnowif.github.io/media/posts/17/responsive/xavi-cabrera-kn-UmDZQDjM-unsplash-sm.jpg 480w, https://rnowif.github.io/media/posts/17/responsive/xavi-cabrera-kn-UmDZQDjM-unsplash-md.jpg 768w, https://rnowif.github.io/media/posts/17/responsive/xavi-cabrera-kn-UmDZQDjM-unsplash-lg.jpg 1024w, https://rnowif.github.io/media/posts/17/responsive/xavi-cabrera-kn-UmDZQDjM-unsplash-xl.jpg 1360w, https://rnowif.github.io/media/posts/17/responsive/xavi-cabrera-kn-UmDZQDjM-unsplash-2xl.jpg 1600w" sizes="(max-width: 1600px) 100vw, 1600px" loading="eager" height="3699" width="5548" alt=""><figcaption>https://unsplash.com/@xavi_cabrera</figcaption></figure><header class="hero__content"><div class="wrapper"><div class="post__meta"><time datetime="2021-03-09T17:39">March 9, 2021</time></div><h1>Bringing Meaning to Legacy Code with Parameter Objects</h1><div class="post__meta post__meta--author"><img src="https://rnowif.github.io/media/website/renaud.png" loading="eager" alt="Renaud Humbert-Labeaumaz" class="post__author-thumb"> <a href="https://rnowif.github.io/authors/renaud-humbert-labeaumaz/" class="feed__author invert">Renaud Humbert-Labeaumaz</a></div></div></header></div><div class="wrapper post__entry"><p>Most of the legacy codebases I have work on suffered from primitive obsession. One of the symptoms is the presence of methods with a swarm of <code>int</code>, <code>string</code> or <code>bool</code> parameters. These methods harm the codebase as they are hard to understand and easy to misuse - which could cause bugs and headaches. This article aims to present a simple, yet extremely effective, solution to this issue through the use of parameter objects.</p><hr id="read-more"><p>Let’s take the following method signature to illustrate:</p><pre><code class="language-csharp">string GenerateLoginLink(
+    int userId, 
+    DateTime? expiryDate, 
+    int? maxAllowedClicks, 
+    bool notifyOnClick, 
+    bool sendLinkByEmail, 
+    bool redirectToHomePage, 
+    string? redirectUrl
+);</code></pre><p>This method generates a link that would allow the user to log in to the platform and be redirected to a specific url. This link has an expiry date or a maximal number of clicks allowed. Also, we can optionally send it directly to the user by email and notify an admin when the user has clicked on it.</p><p>There are a couple of business rules to be aware of:</p><ul><li><code>expiryDate</code> and <code>maxAllowedClicks</code> are mutually exclusive (i.e. we can only pass one of them as an argument)</li><li><code>redirectUrl</code> is only useful if <code>redirectToHomePage</code> is <code>false</code></li></ul><p>Now, this method presents some issues.</p><ul><li><strong>Illegal combinations.</strong> In the best-case scenario, providing the method with an <code>expiryDate</code> and a <code>maxAllowedClicks</code> throws an exception or silently gives priority to one of these fields. In the worst-case scenario, it generates an unpredictable behaviour because the case is not handled. Also, what if both are <code>null</code>?</li><li><strong>Poor expressivity.</strong> The business rules expressed above are far from obvious. Maybe they are documented in the method’s comment but people do not always read documentation and it can become stale very quickly if we forget to update it (maybe that is the reason why people tend to overlook documentation?). Also, there is absolutely nothing preventing the developer to pass illegal or useless combinations.</li><li><strong>Error prone.</strong> Finally, did you notice the 3 consecutive booleans in the method’s signature? How easy would it be to invert two of them by mistake? The method might work exactly as expected and be thoroughly unit tested, you will still have bugs if you don’t use it properly.</li></ul><p>The first iteration would be to use a parameter object for this method.</p><pre><code class="language-csharp">public class LoginLinkConfig 
+{
+    public DateTime? ExpiryDate {get; set;}
+    public int? MaxAllowedClicks {get; set;}
+    public bool NotifyOnClick {get; set;}
+    public bool SendLinkByEmail {get; set;}
+    public bool RedirectToHomePage {get; set;}
+    public string? RedirectUrl  {get; set;}
+}
+
+string GenerateLoginLink(int userId, LoginLinkConfig config);</code></pre><p>This change could reduce the risk of error and would make the use of default values easier. However, it would not be very helpful to prevent illegal combinations and increase expressivity.</p><p>A solution to tackle these issues is to use the builder pattern. This pattern provides an expressive API to create an object and is particularly useful when it comes to objects with optional fields.</p><pre><code class="language-csharp">public class LoginLinkConfig 
+{
+    // Properties are now read-only
+    public DateTime? ExpiryDate {get;}
+    public int? MaxAllowedClicks {get;}
+    public bool NotifyOnClick {get;}
+    public bool SendLinkByEmail {get;}
+    public bool RedirectToHomePage {get;}
+    public string? RedirectUrl  {get;}
+
+    // The constructor is private to force the use of the builder
+    private LoginLinkConfig(DateTime? expiryDate, int? maxAllowedClicks, bool notifyOnClick, bool sendLinkByEmail, bool redirectToHomePage, string? redirectUrl) 
+    {
+        ExpiryDate = expiryDate;
+        MaxAllowedClicks = maxAllowedClicks;
+        NotifyOnClick = notifyOnClick;
+        SendLinkByEmail = sendLinkByEmail;
+        RedirectUrl = redirectUrl;
+    }
+
+    // Notice that the parameter in these methods is not nullable
+    public static Builder ExpiringLink(DateTime expiryDate) =&gt; new Builder(expiryDate);
+    public static Builder LimitedClicksLink(int maxAllowedClicks) =&gt; new Builder(maxAllowedClicks);
+
+    public class Builder
+    {
+        private DateTime? _expiryDate;
+        private int? _maxAllowedClicks;
+        private bool _notifyOnClick;
+        private bool _sendLinkByEmail;
+        // We can set sensible default values
+        private bool _redirectToHomePage = true;
+        private string? _redirectUrl;
+
+        public Builder(DateTime expiryDate)
+        {
+            _expiryDate = expiryDate;
+        }
+
+        public Builder(int maxAllowedClicks)
+        {
+            _maxAllowedClicks = maxAllowedClicks;
+        }
+
+        public Builder WithRedirection(string redirectUrl)
+        {
+            _redirectToHomePage = false;
+            _redirectUrl = redirectUrl;
+
+            // Return the builder to allow chaining
+            return this;
+        }
+
+        public Builder WithClickNotification()
+        {
+            _notifyOnClick = true;
+
+            // Return the builder to allow chaining
+            return this;
+        }
+
+        public Builder SentByEmail()
+        {
+            _sendLinkByEmail = true;
+
+            // Return the builder to allow chaining
+            return this;
+        }
+
+        public LoginLinkConfig Build() =&gt; new LoginLinkConfig(_expiryDate, _maxAllowedClicks, _notifyOnClick, _sendLinkByEmail, _redirectUrl);
+    }
+
+}</code></pre><p>With this builder, creating the config object goes from</p><pre><code class="language-csharp">var maxAllowedClicksConfig = new LoginLinkConfig 
+{
+    MaxAllowedClicks = 1,
+    NotifyOnClick = true,
+    RedirectToHomePage = false,
+    RedirectUrl  = &quot;/myaccount&quot;
+};
+
+var expiringLinkConfig = new LoginLinkConfig 
+{
+    ExpiryDate = DateTime.Now.AddDays(1),
+    SendLinkByEmail = true,
+    RedirectToHomePage = true
+};</code></pre><p>to</p><pre><code class="language-csharp">var maxAllowedClicksConfig = LoginLinkConfig.LimitedClicksLink(1)
+    .WithClickNotification()
+    .WithRedirection(&quot;/myaccount&quot;)
+    .Build();
+
+var expiringLinkConfig = LoginLinkConfig.ExpiringLink(DateTime.Now.AddDays(1))
+    .SendByEmail()
+    .Build();</code></pre><p>This new instantiation process is arguably more verbose, but provides the following benefits:</p><ul><li><strong>More meaningful.</strong> By using a builder, the developer can express what they mean and there is no doubt about it. Since, we got rid of the ambiguity, errors are less likely to occur.</li><li><strong>No illegal state.</strong> As illustrated in the example, there is absolutely no way of representing an illegal state. For instance, if you want to create an expiring link, you cannot also set the <code>_maxAllowedClicks</code>. Otherwise, when you provide a <code>redirectUrl</code>, the <code>_redirectToHomePage</code> is automatically set to <code>false</code> and cannot be changed.</li><li><strong>Simpler implementation.</strong> Finally, since the business rules described above are embedded into the object creation, there is no need to enforce them into the method - which allow for simpler implementation. Also, other methods can us the config object, knowing that the business rules will always be applied.</li></ul><p>Overall, using a parameter object in conjuction with the builder pattern is a very simple way to bring back meaning into your legacy codebase and reduce bugs by making illegal states litteraly impossible to represent.</p></div><footer class="wrapper post__footer"><p class="post__last-updated">This article was updated on March 10, 2021</p><ul class="post__tag"><li><a href="https://rnowif.github.io/tags/design/">design</a></li><li><a href="https://rnowif.github.io/tags/legacy/">legacy</a></li><li><a href="https://rnowif.github.io/tags/refactoring/">refactoring</a></li></ul><div class="post__share"><a href="https://twitter.com/share?url=https%3A%2F%2Frnowif.github.io%2Fbringing-meaning-to-legacy-code-with-parameter-objects.html&amp;via=%40rnowif&amp;text=Bringing%20Meaning%20to%20Legacy%20Code%20with%20Parameter%20Objects" class="js-share twitter" rel="nofollow noopener noreferrer"><svg class="icon" aria-hidden="true" focusable="false"><use xlink:href="https://rnowif.github.io/assets/svg/svg-map.svg#twitter"/></svg> <span>Twitter</span> </a><a href="http://www.linkedin.com/shareArticle?url=https%3A%2F%2Frnowif.github.io%2Fbringing-meaning-to-legacy-code-with-parameter-objects.html&amp;title=Bringing%20Meaning%20to%20Legacy%20Code%20with%20Parameter%20Objects" class="js-share linkedin" rel="nofollow noopener noreferrer"><svg class="icon" aria-hidden="true" focusable="false"><use xlink:href="https://rnowif.github.io/assets/svg/svg-map.svg#linkedin"/></svg> <span>LinkedIn</span></a></div><div class="post__bio bio"><img class="bio__avatar" src="https://rnowif.github.io/media/website/renaud.png" loading="lazy" alt="Renaud Humbert-Labeaumaz"><div class="bio__info"><h3 class="bio__name"><a href="https://rnowif.github.io/authors/renaud-humbert-labeaumaz/" class="invert" rel="author">Renaud Humbert-Labeaumaz</a></h3></div></div></footer></article><nav class="post__nav"><div class="post__nav-inner"><div class="post__nav-prev"><svg width="1.041em" height="0.416em" aria-hidden="true"><use xlink:href="https://rnowif.github.io/assets/svg/svg-map.svg#arrow-prev"/></svg> <a href="https://rnowif.github.io/untangling-legacy-code-with-events.html" class="invert post__nav-link" rel="prev"><span>Previous</span> Untangling Legacy Code with Events</a></div></div></nav><div class="post__related related"><div class="wrapper"><h2 class="h5 related__title">You should also read:</h2><article class="related__item"><div class="feed__meta"><time datetime="2021-03-05T05:37" class="feed__date">March 5, 2021</time></div><h3 class="h1"><a href="https://rnowif.github.io/untangling-legacy-code-with-events.html" class="invert">Untangling Legacy Code with Events</a></h3></article></div></div><div class="post__comments"><div class="wrapper"><h2 class="h5">Comments</h2><div id="disqus_thread"></div><script>var disqus_config = function () {
+                       this.page.url = 'https://rnowif.github.io/bringing-meaning-to-legacy-code-with-parameter-objects.html';
+               		this.page.identifier = '17';
+                   };
+               
+                   var disqus_loaded = false;
+               
+                   function publiiLoadDisqus() {
+                       if(disqus_loaded) {
+                           return false;
+                       }
+               
+                       var top = document.getElementById('disqus_thread').offsetTop;
+               
+                       if (!disqus_loaded && (window.scrollY || window.pageYOffset) + window.innerHeight > top) {
+                           disqus_loaded = true;
+               
+                           (function () {
+                               var d = document, s = d.createElement('script');
+                               s.src = 'https://'+'rnowif'.trim()+'.disqus.com/embed.js';
+                               s.setAttribute('data-timestamp', +new Date());
+                               (d.head || d.body).appendChild(s);
+                           })();
+                       }
+                   }
+               
+                   publiiLoadDisqus();
+               
+                   window.onscroll = function() {
+                       publiiLoadDisqus();
+                   };</script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="nofollow noopener noreferrer">comments powered by Disqus.</a></noscript></div></div></main><footer class="footer"><div class="footer__social"><a href="https://twitter.com/rnowif" aria-label="Twitter"><svg><use xlink:href="https://rnowif.github.io/assets/svg/svg-map.svg#twitter"/></svg></a></div><div class="footer__copyright"><p>Renaud Humbert-Labeaumaz - 2021</p></div><button class="footer__bttop js-footer__bttop" aria-label="Back to top"><svg><title>Back to top</title><use xlink:href="https://rnowif.github.io/assets/svg/svg-map.svg#toparrow"/></svg></button></footer></div><script>window.publiiThemeMenuConfig = {    
+        mobileMenuMode: 'sidebar',
+        animationSpeed: 300,
+        submenuWidth: 'auto',
+        doubleClickTime: 500,
+        mobileMenuExpandableSubmenus: true, 
+        relatedContainerForOverlayMenuSelector: '.top',
+   };</script><script defer="defer" src="https://rnowif.github.io/assets/js/scripts.min.js?v=f4c4d35432d0e17d212f2fae4e0f8247"></script><script>var images = document.querySelectorAll('img[loading]');
+
+        for (var i = 0; i < images.length; i++) {
+            if (images[i].complete) {
+                images[i].classList.add('is-loaded');
+            } else {
+                images[i].addEventListener('load', function () {
+                    this.classList.add('is-loaded');
+                }, false);
+            }
+        }</script><script defer="defer" src="https://rnowif.github.io/assets/js/prism.js?v=8a3c962ef789bf5cc575d02e6a4bd4b2"></script></body></html>

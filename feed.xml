@@ -3,12 +3,185 @@
     <title>A Software Gardener</title>
     <link href="https://rnowif.github.io/feed.xml" rel="self" />
     <link href="https://rnowif.github.io" />
-    <updated>2021-03-05T06:34:41+13:00</updated>
+    <updated>2021-03-10T04:39:19+13:00</updated>
     <author>
         <name>Renaud Humbert-Labeaumaz</name>
     </author>
     <id>https://rnowif.github.io</id>
 
+    <entry>
+        <title>Bringing Meaning to Legacy Code with Parameter Objects</title>
+        <author>
+            <name>Renaud Humbert-Labeaumaz</name>
+        </author>
+        <link href="https://rnowif.github.io/bringing-meaning-to-legacy-code-with-parameter-objects.html"/>
+        <id>https://rnowif.github.io/bringing-meaning-to-legacy-code-with-parameter-objects.html</id>
+            <category term="refactoring"/>
+            <category term="legacy"/>
+            <category term="design"/>
+
+        <updated>2021-03-10T04:39:19+13:00</updated>
+            <summary>
+                <![CDATA[
+                        <img src="https://rnowif.github.io/media/posts/17/xavi-cabrera-kn-UmDZQDjM-unsplash.jpg" alt="" />
+                    <p>Most of the legacy codebases I have work on suffered from primitive obsession. One of the symptoms is the presence of methods with a swarm of <code>int</code>, <code>string</code> or <code>bool</code> parameters.
+These methods harm the codebase as they are hard to understand and easy to misuse - which could cause bugs and headaches.
+This article aims to present a simple, yet extremely effective, solution to this issue through the use of parameter objects.</p>
+
+                ]]>
+            </summary>
+        <content type="html">
+            <![CDATA[
+                    <img src="https://rnowif.github.io/media/posts/17/xavi-cabrera-kn-UmDZQDjM-unsplash.jpg" alt="" />
+                <p>Most of the legacy codebases I have work on suffered from primitive obsession. One of the symptoms is the presence of methods with a swarm of <code>int</code>, <code>string</code> or <code>bool</code> parameters.
+These methods harm the codebase as they are hard to understand and easy to misuse - which could cause bugs and headaches.
+This article aims to present a simple, yet extremely effective, solution to this issue through the use of parameter objects.</p>
+<hr id="read-more" />
+
+<p>Let’s take the following method signature to illustrate:</p>
+<pre><code class="language-csharp">string GenerateLoginLink(
+    int userId, 
+    DateTime? expiryDate, 
+    int? maxAllowedClicks, 
+    bool notifyOnClick, 
+    bool sendLinkByEmail, 
+    bool redirectToHomePage, 
+    string? redirectUrl
+);</code></pre>
+<p>This method generates a link that would allow the user to log in to the platform and be redirected to a specific url. This link has an expiry date or a maximal number of clicks allowed. Also, we can optionally send it directly to the user by email and notify an admin when the user has clicked on it.</p>
+<p>There are a couple of business rules to be aware of:</p>
+<ul>
+<li><code>expiryDate</code> and <code>maxAllowedClicks</code> are mutually exclusive (i.e. we can only pass one of them as an argument)</li>
+<li><code>redirectUrl</code> is only useful if <code>redirectToHomePage</code> is <code>false</code></li>
+</ul>
+<p>Now, this method presents some issues.</p>
+<ul>
+<li><strong>Illegal combinations.</strong> In the best-case scenario, providing the method with an <code>expiryDate</code> and a <code>maxAllowedClicks</code> throws an exception or silently gives priority to one of these fields. In the worst-case scenario, it generates an unpredictable behaviour because the case is not handled. Also, what if both are <code>null</code>?</li>
+<li><strong>Poor expressivity.</strong> The business rules expressed above are far from obvious. Maybe they are documented in the method’s comment but people do not always read documentation and it can become stale very quickly if we forget to update it (maybe that is the reason why people tend to overlook documentation?). Also, there is absolutely nothing preventing the developer to pass illegal or useless combinations.</li>
+<li><strong>Error prone.</strong>  Finally, did you notice the 3 consecutive booleans in the method’s signature? How easy would it be to invert two of them by mistake? The method might work exactly as expected and be thoroughly unit tested, you will still have bugs if you don’t use it properly. </li>
+</ul>
+<p>The first iteration would be to use a parameter object for this method.</p>
+<pre><code class="language-csharp">public class LoginLinkConfig 
+{
+    public DateTime? ExpiryDate {get; set;}
+    public int? MaxAllowedClicks {get; set;}
+    public bool NotifyOnClick {get; set;}
+    public bool SendLinkByEmail {get; set;}
+    public bool RedirectToHomePage {get; set;}
+    public string? RedirectUrl  {get; set;}
+}
+
+string GenerateLoginLink(int userId, LoginLinkConfig config);</code></pre>
+<p>This change could reduce the risk of error and would make the use of default values easier. However, it would not be very helpful to prevent illegal combinations and increase expressivity.</p>
+<p>A solution to tackle these issues is to use the builder pattern. This pattern provides an expressive API to create an object and is particularly useful when it comes to objects with optional fields.</p>
+<pre><code class="language-csharp">public class LoginLinkConfig 
+{
+    // Properties are now read-only
+    public DateTime? ExpiryDate {get;}
+    public int? MaxAllowedClicks {get;}
+    public bool NotifyOnClick {get;}
+    public bool SendLinkByEmail {get;}
+    public bool RedirectToHomePage {get;}
+    public string? RedirectUrl  {get;}
+
+    // The constructor is private to force the use of the builder
+    private LoginLinkConfig(DateTime? expiryDate, int? maxAllowedClicks, bool notifyOnClick, bool sendLinkByEmail, bool redirectToHomePage, string? redirectUrl) 
+    {
+        ExpiryDate = expiryDate;
+        MaxAllowedClicks = maxAllowedClicks;
+        NotifyOnClick = notifyOnClick;
+        SendLinkByEmail = sendLinkByEmail;
+        RedirectUrl = redirectUrl;
+    }
+
+    // Notice that the parameter in these methods is not nullable
+    public static Builder ExpiringLink(DateTime expiryDate) =&gt; new Builder(expiryDate);
+    public static Builder LimitedClicksLink(int maxAllowedClicks) =&gt; new Builder(maxAllowedClicks);
+
+    public class Builder
+    {
+        private DateTime? _expiryDate;
+        private int? _maxAllowedClicks;
+        private bool _notifyOnClick;
+        private bool _sendLinkByEmail;
+        // We can set sensible default values
+        private bool _redirectToHomePage = true;
+        private string? _redirectUrl;
+
+        public Builder(DateTime expiryDate)
+        {
+            _expiryDate = expiryDate;
+        }
+
+        public Builder(int maxAllowedClicks)
+        {
+            _maxAllowedClicks = maxAllowedClicks;
+        }
+
+        public Builder WithRedirection(string redirectUrl)
+        {
+            _redirectToHomePage = false;
+            _redirectUrl = redirectUrl;
+
+            // Return the builder to allow chaining
+            return this;
+        }
+
+        public Builder WithClickNotification()
+        {
+            _notifyOnClick = true;
+
+            // Return the builder to allow chaining
+            return this;
+        }
+
+        public Builder SentByEmail()
+        {
+            _sendLinkByEmail = true;
+
+            // Return the builder to allow chaining
+            return this;
+        }
+
+        public LoginLinkConfig Build() =&gt; new LoginLinkConfig(_expiryDate, _maxAllowedClicks, _notifyOnClick, _sendLinkByEmail, _redirectUrl);
+    }
+
+}</code></pre>
+<p>With this builder, creating the config object goes from</p>
+<pre><code class="language-csharp">var maxAllowedClicksConfig = new LoginLinkConfig 
+{
+    MaxAllowedClicks = 1,
+    NotifyOnClick = true,
+    RedirectToHomePage = false,
+    RedirectUrl  = &quot;/myaccount&quot;
+};
+
+var expiringLinkConfig = new LoginLinkConfig 
+{
+    ExpiryDate = DateTime.Now.AddDays(1),
+    SendLinkByEmail = true,
+    RedirectToHomePage = true
+};</code></pre>
+<p>to </p>
+<pre><code class="language-csharp">var maxAllowedClicksConfig = LoginLinkConfig.LimitedClicksLink(1)
+    .WithClickNotification()
+    .WithRedirection(&quot;/myaccount&quot;)
+    .Build();
+
+var expiringLinkConfig = LoginLinkConfig.ExpiringLink(DateTime.Now.AddDays(1))
+    .SendByEmail()
+    .Build();</code></pre>
+<p>This new instantiation process is arguably more verbose, but provides the following benefits:</p>
+<ul>
+<li><strong>More meaningful.</strong> By using a builder, the developer can express what they mean and there is no doubt about it. Since, we got rid of the ambiguity, errors are less likely to occur.</li>
+<li><strong>No illegal state.</strong> As illustrated in the example, there is absolutely no way of representing an illegal state. For instance, if you want to create an expiring link, you cannot also set the <code>_maxAllowedClicks</code>. Otherwise, when you provide a <code>redirectUrl</code>, the <code>_redirectToHomePage</code> is automatically set to <code>false</code> and cannot be changed.</li>
+<li><strong>Simpler implementation.</strong> Finally, since the business rules described above are embedded into the object creation, there is no need to enforce them into the method - which allow for simpler implementation. Also, other methods can us the config object, knowing that the business rules will always be applied.</li>
+</ul>
+<p>Overall, using a parameter object in conjuction with the builder pattern is a very simple way to bring back meaning into your legacy codebase and reduce bugs by making illegal states litteraly impossible to represent.</p>
+
+            ]]>
+        </content>
+    </entry>
     <entry>
         <title>Untangling Legacy Code with Events</title>
         <author>
@@ -17,10 +190,11 @@
         <link href="https://rnowif.github.io/untangling-legacy-code-with-events.html"/>
         <id>https://rnowif.github.io/untangling-legacy-code-with-events.html</id>
             <category term="refactoring"/>
+            <category term="legacy"/>
             <category term="design"/>
             <category term="architecture"/>
 
-        <updated>2021-03-05T06:34:41+13:00</updated>
+        <updated>2021-03-09T17:42:06+13:00</updated>
             <summary>
                 <![CDATA[
                         <img src="https://rnowif.github.io/media/posts/16/paper-1565157_1920.jpg" alt="" />
@@ -688,79 +862,6 @@ public IEnumerable&lt;T&gt; FilterObjectsOfType&lt;T&gt;(IEnumerable&lt;object&g
 <h2 id="conclusion">Conclusion</h2>
 <p>In Java, generics are used to write type-safe code but this feature is limited and the code can be awkward sometimes due to the type erasure mechanism. In C#, it is a runtime feature and its usage is much more straightforward.</p>
 <p><em>PS: I realize that the code I wrote in the snippets is not really idiomatic but I wanted to have Java and C# code as similar as possible to be able to focus only on the usage of generics.</em></p>
-
-            ]]>
-        </content>
-    </entry>
-    <entry>
-        <title>What is a Volatile Variable in Java?</title>
-        <author>
-            <name>Renaud Humbert-Labeaumaz</name>
-        </author>
-        <link href="https://rnowif.github.io/what-is-a-volatile-variable-in-java.html"/>
-        <id>https://rnowif.github.io/what-is-a-volatile-variable-in-java.html</id>
-            <category term="java"/>
-
-        <updated>2021-01-11T11:22:38+13:00</updated>
-            <summary>
-                <![CDATA[
-                        <img src="https://rnowif.github.io/media/posts/7/federico-fioravanti-RSA3pnGxPTQ-unsplash.jpg" alt="" />
-                    The volatile keyword is one of the less known and less understood keyword of the Java language. The goal of this article is to explain what it is and when to use it. In order to understand the value of volatile, one must first understand&hellip;
-                ]]>
-            </summary>
-        <content type="html">
-            <![CDATA[
-                    <img src="https://rnowif.github.io/media/posts/7/federico-fioravanti-RSA3pnGxPTQ-unsplash.jpg" alt="" />
-                <p>The <code>volatile</code> keyword is one of the less known and less understood keyword of the Java language. The goal of this article is to explain what it is and when to use it.</p>
-<!-- more -->
-
-<h2 id="memory-architecture">Memory Architecture</h2>
-<p>In order to understand the value of <code>volatile</code>, one must first understand the memory architecture of a computer:</p>
-<p>{% img /images/memory_architecture.png %}</p>
-<p>Each CPU contains its own registers, which are basically in-CPU memory. Accessing these registers and performing operations on variables here is very fast.
-Each CPU also has cache memory layers. It can access this cache memory fast, but not as fast as the registers.
-Finally, there is the main memory (also called RAM). All CPUs can access this memory. The main memory is much bigger than the cache memories of the CPU.</p>
-<p>Typically, when a CPU needs to read something from the memory, it will read it into its CPU cache memory and perform operations on it. It can even read it into its registers. When the CPU needs to write it back to the memory, it will flush its registers to the cache memory and eventually this cache memory will be flushed back to the main memory.</p>
-<p>In general, the flush is performed when the CPU needs to make room for other information. Thus, it seems clear that one cannot make any assumption about <em>when</em> this flush will occur.</p>
-<h2 id="visibility-of-shared-variables">Visibility of Shared Variables</h2>
-<p>If a computer has 2 CPUs or more, it will be able to run several threads at the same time. It means that, if each thread want to access the same variable, each CPU will have a “copy” of this variable into its cache memory and this could lead to a major synchronization issue.</p>
-<p>Take this code for instance:</p>
-<pre><code class="language-java">public class MyServer implements Runnable {
-    private boolean running = true;
-
-    @Override
-    public void run() {
-        while (running) {
-            // Do some very interesting stuff...
-        }
-    }
-
-    public void stop() {
-        running = false;
-    }
-}</code></pre>
-<p>It is very likely that the <code>stop</code> method will be called from a different thread than the one executing the <code>run</code> method. If these threads are executed on 2 different CPUs, the <code>run</code> method will not stop until the CPU has flushed its cache memory to the main memory. And we saw that there is no way to predict when this will happen.</p>
-<p>In Java, the <code>volatile</code> keyword explicitely ask for a variable to be directly wrote to the main memory, and thus becoming instantely available for all CPUs.</p>
-<p>The code then become:</p>
-<pre><code class="language-java">public class MyServer implements Runnable {
-    private volatile boolean running = true;
-
-    @Override
-    public void run() {
-        while (running) {
-            // Do some very interesting stuff...
-        }
-    }
-
-    public void stop() {
-        running = false;
-    }
-}</code></pre>
-<p>Note that a volatile variable can be a primitive or an object and can be <code>null</code>.</p>
-<h2 id="when-to-use-volatile">When to Use <code>volatile</code></h2>
-<p> A volatile variable is guaranteed to have its last version always available from every CPUs. It is typically used for flags that are modified by a thread and read by another one (like the <code>running</code> boolean in the previous snippet). Globally, you may use a <code>volatile</code> variable if the variable may be accessed by several threads and you don’t need to perform a sequence of operations in an atomic manner (you should not increment a <code>volatile</code> variable for instance). If you need to do so, you should consider using a synchronization mechanism.</p>
-<h2 id="conclusion">Conclusion</h2>
-<p>The <code>volatile</code> keyword is seldomly used, maybe because messing with threads is frowned upon in a JEE (or Spring) application, but it can be very useful to know it and understand its usage. Indeed, it could make your code safer and prevent you from writing algorithms that rely on locks and synchronization where it’s not really needed.</p>
 
             ]]>
         </content>
